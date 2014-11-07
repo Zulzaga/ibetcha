@@ -3,17 +3,16 @@
 //var User = models.User,
 //    Bet = models.Bet,
 //    Milestone = models.Milestone;
-//
 
 var mongoose = require("mongoose"),
 	schema = mongoose.Schema;
 
 // Checks for model statuses
-
 var betStatus = [
-	'Ongoing', // bet open
-	'Closed', //bet over
-	'Pending Action' //requires action from monitors
+	'succeeded', // contributes 5 points to rating
+	'failed', // contributed 1 point to rating
+	'dropped', // failed to get required action within time period, does not count towards rating
+	'Action Required' //requires action from monitors, does not count towards rating
 ];
 
 var milestoneStatus = [
@@ -30,8 +29,8 @@ var userSchema = new Schema({
 	venmo:{
 		clientID: String,
 		clientSecret: String
-	}
-
+	},
+	username: String,
 
 	//Other information (independent of login):
 	rating:{ //reflects the history of bets of the user
@@ -56,6 +55,9 @@ var betSchema = new Schema({
 	endDate: Date,
 	frequency: Number,
 	description: String,
+	dropDate: Date, // date after which no checkoffs are accepted anymore: 
+					// bet is dropped if all action is not done by this date
+					//user does not lost his money in this case
 
 	author:{
 		type: Schema.Types.ObjectId,
@@ -87,7 +89,8 @@ var betSchema = new Schema({
 
 //Milestones Schema
 var milestonesSchema = new Schema({
-	effectiveDate:Date,
+	date:Date,
+	
 	author:{
 		type: Schema.Types.ObjectId,
 		ref: 'User'
@@ -100,7 +103,6 @@ var milestonesSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	}]
-	
 });
 
 
