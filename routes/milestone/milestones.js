@@ -1,12 +1,23 @@
 var express = require('express');
 var router = express.Router();
 
-//linking collections and utils
+//linking collections and utils 
 var utils = require('../../utils/utils')
 var models = require('../../data/models');
 var User = models.User,
     Bet = models.Bet,
     Milestone = models.Milestone;
+
+// GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
+// Request parameters/body: (note req.body for forms)
+//     - none
+// Response:
+//     - success: true if all the milestones are successfully retrieved
+//     - content: TBD
+//     - err: on failure, an error message
+router.get('/', function(req, res) {
+  res.send('respond with a resource');
+});
 
 // GET /milestones/:bet_id
 // Request parameters/body: (note req.body for forms)
