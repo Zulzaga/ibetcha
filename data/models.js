@@ -5,7 +5,7 @@
 //    Milestone = models.Milestone;
 
 var mongoose = require("mongoose"),
-	schema = mongoose.Schema;
+	Schema = mongoose.Schema;
 
 // Checks for model statuses
 var betStatus = [
@@ -94,7 +94,7 @@ var milestonesSchema = new Schema({
 	author:{
 		type: Schema.Types.ObjectId,
 		ref: 'User'
-	}
+	},
 	status:{
 		type: String,
 		enum: milestoneStatus
@@ -109,7 +109,7 @@ var milestonesSchema = new Schema({
 //Bindings
 var User = mongoose.model('User', userSchema),
     Bet = mongoose.model('Bet', betSchema),
-    Milestone = mongoose.model('Milestone', milestoneSchema);
+    Milestone = mongoose.model('Milestone', milestonesSchema);
 
 //exporting for usage anywhere in the app (see above for usage guide)
 module.exports.User = User;
