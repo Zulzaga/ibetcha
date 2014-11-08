@@ -50,6 +50,7 @@ router.get('/:user_id', function(req, res) {
 //     - err: on failure, an error message
 router.get('/friends/:user_id', function(req, res) {
   res.send('respond with a resource');
+});
 
 // GET /users/logout
 // Request parameters/body: (note req.body for forms)
