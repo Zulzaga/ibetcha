@@ -8,32 +8,58 @@ var User = models.User,
     Bet = models.Bet,
     Milestone = models.Milestone;
 
-/* GET users listing. */
+// GET /users
+// Request parameters:
+//     - none
+// Response:
+//     - success: true if all users were successfully retrieved
+//     - content: TDB
+//     - err: on failure, an error message
 router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
-/* POST users listing. */
+// POST /users/login
+// Request body/parameters: (note req.body for forms)
+//     - TBD
+// Response:
+//     - success: true if the user was created (and the verification email sent)
+//     - content: TBD
+//     - err: on failure, an error message
 router.post('/login', function(req, res) {
   res.send('respond with a resource');
 });
 
-/* GET user's profile. */
-router.get('/:userID', function(req, res) {
+// GET /users/:user_id
+// Request parameters:
+//     - user_id: 
+// Response:
+//     - success: true if the user's profile is retrieved
+//     - content: TBD
+//     - err: on failure, an error message
+router.get('/:user_id', function(req, res) {
   res.send('respond with a resource');
 });
 
-/* GET friends of user with user_id userID. */
-router.get('/friends/:userID', function(req, res) {
+// GET /users/friends/:user_id
+// Request parameters:
+//     - user_id: 
+// Response:
+//     - success: true if the user's friends successfully retrieved
+//     - content: TBD
+//     - err: on failure, an error message
+router.get('/friends/:user_id', function(req, res) {
   res.send('respond with a resource');
 
-
-/* GET method: logout a user. */
+// GET /users/logout
+// Request parameters/body: (note req.body for forms)
+//     - TBD 
+// Response:
+//     - success: true if the user is successfully logged out
+//     - content: TBD
+//     - err: on failure, an error message
 router.get('/logout', function(req, res) {
   res.send('respond with a resource');
 });
-
-
-
 
 module.exports = router;
