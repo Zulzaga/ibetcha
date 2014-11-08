@@ -13,4 +13,21 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
+
+/* POST a new bet. */
+router.post('/', function(req, res) {
+  res.send('respond with a resource');
+});
+
+
+/* PUT a new bet. */
+router.post('/:betID', function(req, res) {
+  res.send('respond with a resource');
+});
+
+/* GET a bet object. */
+router.post('/:betID', function(req, res) {
+  res.send('respond with a resource');
+});
+
 module.exports = router;

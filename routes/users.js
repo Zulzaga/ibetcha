@@ -13,4 +13,27 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
+/* POST users listing. */
+router.post('/login', function(req, res) {
+  res.send('respond with a resource');
+});
+
+/* GET user's profile. */
+router.get('/:userID', function(req, res) {
+  res.send('respond with a resource');
+});
+
+/* GET friends of user with user_id userID. */
+router.get('/friends/:userID', function(req, res) {
+  res.send('respond with a resource');
+
+
+/* GET method: logout a user. */
+router.get('/logout', function(req, res) {
+  res.send('respond with a resource');
+});
+
+
+
+
 module.exports = router;
