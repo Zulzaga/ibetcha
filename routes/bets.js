@@ -8,9 +8,9 @@ var User = models.User,
     Bet = models.Bet,
     Milestone = models.Milestone;
 
-/* GET home page. */
+/* GET bets listing. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+  res.send('respond with a resource');
 });
 
 module.exports = router;
