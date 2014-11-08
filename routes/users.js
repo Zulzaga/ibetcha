@@ -32,7 +32,7 @@ router.post('/login', function(req, res) {
 
 // GET /users/:user_id
 // Request parameters:
-//     - user_id: 
+//     - user_id: a String representation of the MongoDB _id of the user
 // Response:
 //     - success: true if the user's profile is retrieved
 //     - content: TBD
@@ -43,7 +43,7 @@ router.get('/:user_id', function(req, res) {
 
 // GET /users/friends/:user_id
 // Request parameters:
-//     - user_id: 
+//     - user_id: a String representation of the MongoDB _id of the user
 // Response:
 //     - success: true if the user's friends successfully retrieved
 //     - content: TBD

@@ -8,13 +8,25 @@ var User = models.User,
     Bet = models.Bet,
     Milestone = models.Milestone;
 
-/* GET milestones listing. */
-router.get('/:betID', function(req, res) {
+// GET /milestones/:bet_id
+// Request parameters/body: (note req.body for forms)
+//     - bet_id: a String representation of the MongoDB _id of the bet
+// Response:
+//     - success: true if the milestones are successfully retrieved
+//     - content: TBD
+//     - err: on failure, an error message
+router.get('/:bet_id', function(req, res) {
   res.send('respond with a resource');
 });
 
-/* PUT method: edit a milestone listing. */
-router.put('/:milestoneID', function(req, res) {
+// PUT /milestones/:milestone_id
+// Request parameters/body: (note req.body for forms)
+//     - milestones_id: a String representation of the MongoDB _id of the milestone
+// Response:
+//     - success: true if the milestone with ID milestne_id is successfully edited
+//     - content: TBD
+//     - err: on failure, an error message
+router.put('/:milestone_id', function(req, res) {
   res.send('respond with a resource');
 });
 
