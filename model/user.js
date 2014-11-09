@@ -30,4 +30,4 @@ var userSchema = new Schema({
 var User = mongoose.model('User', userSchema),
 
 //exporting for usage anywhere in the app (see above for usage guide)
-module.exports.User = User;
+module.exports = User;
