@@ -8,16 +8,6 @@ var User = models.User,
     Bet = models.Bet,
     Milestone = models.Milestone;
 
-// Authenticates the user and redirects to the users login page if necessary.
-function isAuthenticated(req, res, next) {
-    if (req.user) {
-        return next();
-    }
-
-    // If a user is not logged in, redirect to the login page.
-    res.json({success: false, error: "User is not logged in!"});
-};
-
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
 // Request parameters/body: (note req.body for forms)
 //     - none
@@ -25,7 +15,7 @@ function isAuthenticated(req, res, next) {
 //     - success: true if all the milestones are successfully retrieved
 //     - content: TBD
 //     - err: on failure, an error message
-router.get('/', isAuthenticated, function(req, res) {
+router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
@@ -36,7 +26,7 @@ router.get('/', isAuthenticated, function(req, res) {
 //     - success: true if the milestones are successfully retrieved
 //     - content: TBD
 //     - err: on failure, an error message
-router.get('/:bet_id', isAuthenticated, function(req, res) {
+router.get('/:bet_id', function(req, res) {
   res.send('respond with a resource');
 });*/
 
@@ -44,10 +34,10 @@ router.get('/:bet_id', isAuthenticated, function(req, res) {
 // Request parameters/body: (note req.body for forms)
 //     - milestones_id: a String representation of the MongoDB _id of the milestone
 // Response:
-//     - success: true if the milestone with ID milestne_id is successfully edited
+//     - success: true if the milestone with ID milestone_id is successfully edited
 //     - content: TBD
 //     - err: on failure, an error message
-router.put('/:milestone_id', isAuthenticated, function(req, res) {
+router.put('/:milestone_id', function(req, res) {
   res.send('respond with a resource');
 });
 
