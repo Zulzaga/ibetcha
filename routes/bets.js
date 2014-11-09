@@ -4,16 +4,15 @@ var router = express.Router();
 //linking collections and utils
 var utils = require('../utils/utils')
 
-var User = require('./../model/user');
-var Bet = require('./../model/bet');
-var Milestone = require('./../model/milestone');
+var User = require('../models/user');
+var Bet = require('../models/bet');
+var Milestone = require('../models/milestone');
 
 // Authenticates the user and redirects to the users login page if necessary.
 function isAuthenticated(req, res, next) {
     if (req.user) {
         return next();
     }
-
     // If a user is not logged in, redirect to the login page.
      utils.sendErrResponse(res, 401, "User is not logged in!");
 };
