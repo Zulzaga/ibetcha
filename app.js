@@ -14,7 +14,7 @@ var bets = require('./routes/bets');
 var milestones = require('./routes/milestone/milestones');
 
 var app = express();
-var connection_string = 'localhost:27017/ibetcha';
+var connection_string = process.env.MONGOLAB_URI ||'localhost:27017/ibetcha';
 
 mongoose.connect(connection_string);
 var db = mongoose.connection;
