@@ -11,9 +11,10 @@ var Milestone = require('../models/milestone');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	if (req.query["venmo_challenge"]) {
-		res.send(req.query["venmo_challenge"])
-	}
+
+  res.render('index', { title: 'Express test 2' });
+
+
 });
 
 router.get('/auth/venmo', function(req, res, next) {

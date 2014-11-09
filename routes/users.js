@@ -56,6 +56,17 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
   res.send('respond with a resource');
 });
 
+// POST /users/:user_id
+// Request parameters:
+//     - user_id: a String representation of the MongoDB _id of the user
+// Response:
+//     - success: true if a friend is added to the user with id user_id
+//     - content: TBD
+//     - err: on failure, an error message
+router.post('/:user_id', isAuthenticated, function(req, res) {
+  res.send('respond with a resource');
+});
+
 /*// GET /users/friends/:user_id
 // Request parameters:
 //     - user_id: a String representation of the MongoDB _id of the user
