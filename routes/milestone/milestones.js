@@ -8,15 +8,23 @@ var User = require('../../models/User');
 var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
+
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
-// Request parameters/body: (note req.body for forms)
+// Request parameters/body:
 //     - none
 // Response:
 //     - success: true if all the milestones are successfully retrieved
-//     - content: TBD
+//     - content: all milestone objects returned as a JSON
 //     - err: on failure, an error message
 router.get('/', function(req, res) {
-  res.send('respond with a resource');
+
+	Milestone.find({}, function(err, doc){
+		if (err){
+			utils.sendErrResponse(res,500, "Cannot retrieve Milestones");
+		}else{
+			utils.sendSuccessResponse(res,doc);
+		}
+	});
 });
 
 /*// GET /milestones/:bet_id   //NOTE: duplication
@@ -31,14 +39,21 @@ router.get('/:bet_id', function(req, res) {
 });*/
 
 // PUT /milestones/:milestone_id
-// Request parameters/body: (note req.body for forms)
+// Request parameters:
 //     - milestones_id: a String representation of the MongoDB _id of the milestone
 // Response:
 //     - success: true if the milestone with ID milestone_id is successfully edited
-//     - content: TBD
+//     - content: the milestone object with ID milestone_id
 //     - err: on failure, an error message
 router.put('/:milestone_id', function(req, res) {
-  res.send('respond with a resource');
+	var milestone_id = req.params.milestone_id;
+	Milestone.findById(milestone_id, function(err, doc){
+		if (err){
+			utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
+		}else{
+			utils.sendSuccessResponse(res,doc)
+		}
+	})
 });
 
 module.exports = router;

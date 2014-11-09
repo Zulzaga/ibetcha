@@ -15,7 +15,9 @@ var milestones = require('./routes/milestone/milestones');
 var test = require('./routes/test');
 
 var app = express();
+
 var connection_string = 'localhost/ibetcha';
+
 
 mongoose.connect(connection_string);
 var db = mongoose.connection;
