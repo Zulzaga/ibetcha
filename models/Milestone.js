@@ -3,7 +3,7 @@ var mongoose = require("mongoose"),
 	Schema = mongoose.Schema;
 
 var milestoneStatus = [
-	'inactive', //not yet reached the date
+	'Inactive', //not yet reached the date
 	'Open', //awaiting checkoff
 	'Closed', // got checkoff
 	'Pending Action' //still requires action

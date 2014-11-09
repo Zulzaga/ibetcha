@@ -42,16 +42,24 @@ router.get('/:bet_id', function(req, res) {
 // Request parameters:
 //     - milestones_id: a String representation of the MongoDB _id of the milestone
 // Response:
-//     - success: true if the milestone with ID milestone_id is successfully edited
+//     - success: true if the status of the milestone with ID milestone_id is successfully edited
+//				  possible statuses include: Inactive, Open, Closed, Pending Action
 //     - content: the milestone object with ID milestone_id
 //     - err: on failure, an error message
 router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
+	var new_status = req.body.status;
 	Milestone.findById(milestone_id, function(err, doc){
 		if (err){
 			utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
 		}else{
-			utils.sendSuccessResponse(res,doc)
+			doc.status = new_status;
+			doc.save(function(err){
+				if (err){
+					utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
+				}
+				utils.sendSuccessResponse(res,doc);
+			});
 		}
 	})
 });
