@@ -2,10 +2,14 @@ var express = require('express');
 var router = express.Router();
 
 //linking collections and utils
-var utils = require('../utils/utils')
+var utils = require('../utils/utils');
+var emailNotifier = require('../utils/email');
+
+
 var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
+
 
 // Authenticates the user and redirects to the users login page if necessary.
 function isAuthenticated(req, res, next) {
@@ -26,10 +30,22 @@ router.post('/signupTest', function(req, res) {
       if(error) {
           utils.sendErrResponse(res, 500, error);
       } else {
+          req.user = newUser;
           utils.sendSuccessResponse(res, newUser);
       }
     });
 });
+
+
+router.post('/invite', function(req, res) {
+    console.log(req.body);
+    var friendlist = req.body.friendlist;
+    console.log("friendlist: " + friendlist);
+    friendlist.forEach(function(element, index, array) {
+        console.log("inside invite method: " + element);
+        emailNotifier.sendNotification(req.user, element);
+    });
+})
 
 // GET /users
 // Request parameters:

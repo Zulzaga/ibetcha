@@ -35,3 +35,20 @@ $.ajax({
         QUnitTesting("Create new user", false);
     }
 });
+
+
+// Email
+$.ajax({
+    url: urlString + "users/invite",
+    type: "POST",
+    data: {
+        friendlist: JSON.stringify(["ibetcha@mit.edu","hyuglim@gmail.com"])
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+        QUnitTesting("Email friends", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+        QUnitTesting("Email friends", false);
+    }
+});

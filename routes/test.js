@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
 	res.render('test.ejs', {urlString: urlString});
 });
 
+
 // Remove contents of all the collections in db before testing
 var cleanCollections = function() {
 	User.remove({}, function(err) { 
