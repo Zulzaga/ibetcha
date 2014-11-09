@@ -16,7 +16,10 @@ var connection_string = 'localhost:27017/ibetcha';
 
 mongoose.connect(connection_string);
 var db = mongoose.connection;
-db.on("error", console.error.bind(console, "Mongoose connection error."));
+db.on('error', console.error.bind(console, 'Mongoose connection error:'));
+db.once('open', function callback () {
+});
+
 
 
 // view engine setup
