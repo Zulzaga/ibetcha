@@ -15,7 +15,7 @@ function isAuthenticated(req, res, next) {
     }
 
     // If a user is not logged in, redirect to the login page.
-     res.json(res, {res, 401, "User is not logged in!");
+     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
 // GET /bets
