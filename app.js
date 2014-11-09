@@ -50,7 +50,7 @@ passport.use(new FacebookStrategy({
   },
 
   function(accessToken, refreshToken, profile, done) {
-    User.findOne({ 'facebook.id' : profile.id}, function(err, user) {
+    User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
       if (err) { return done(err); }
       if (user) {
         return done(null, user);
@@ -76,7 +76,6 @@ passport.use(new FacebookStrategy({
     });
   }
 ));
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
