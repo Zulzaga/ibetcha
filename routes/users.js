@@ -3,9 +3,9 @@ var router = express.Router();
 
 //linking collections and utils
 var utils = require('../utils/utils')
-var User = require('../models/user');
-var Bet = require('../models/bet');
-var Milestone = require('../models/milestone');
+var User = require('../models/User');
+var Bet = require('../models/Bet');
+var Milestone = require('../models/Milestone');
 
 // Authenticates the user and redirects to the users login page if necessary.
 function isAuthenticated(req, res, next) {
@@ -16,6 +16,20 @@ function isAuthenticated(req, res, next) {
     // If a user is not logged in, redirect to the login page.
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
+
+
+router.post('/signupTest', function(req, res) {
+    var venmo = req.body.venmo;
+    var username = req.body.username;
+    var newUser = new User({venmo:venmo, username:username});
+    newUser.save(function(error, newUser) {
+      if(error) {
+          utils.sendErrResponse(res, 500, error);
+      } else {
+          utils.sendSuccessResponse(res, newUser);
+      }
+    });
+});
 
 // GET /users
 // Request parameters:
@@ -88,5 +102,11 @@ router.get('/friends/:user_id', isAuthenticated, function(req, res) {
 router.get('/logout', isAuthenticated, function(req, res) {
   res.send('respond with a resource');
 });
+
+
+router.post('/invite', isAuthenticated, function(req, res) {
+
+})
+
 
 module.exports = router;
