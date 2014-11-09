@@ -9,7 +9,7 @@ var Bet = require('../../models/bet');
 var Milestone = require('../../models/milestone');
 
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
-// Request parameters/body: (note req.body for forms)
+// Request parameters/body:
 //     - none
 // Response:
 //     - success: true if all the milestones are successfully retrieved
@@ -41,7 +41,7 @@ router.get('/:bet_id', function(req, res) {
 //     - milestones_id: a String representation of the MongoDB _id of the milestone
 // Response:
 //     - success: true if the milestone with ID milestone_id is successfully edited
-//     - content: TBD
+//     - content: the milestone object with ID milestone_id
 //     - err: on failure, an error message
 router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
