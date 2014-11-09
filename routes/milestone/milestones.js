@@ -8,6 +8,34 @@ var User = require('../../models/User');
 var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
+//a function, that given a properly formatted JSON (including author name), 
+//makes a milestone object and posts it to the database
+var store_Milestone = function(res, milestoneJSON){
+	var my_milestone = new Milestone(milestoneJSON);
+	my_milestone.save(function(err, doc){
+		if (err){
+			utils.sendErrResponse(res,500, "Cannot post milestone object")
+		}else{
+			utils.sendSuccessResponse(res,doc);
+		}
+	})
+};
+
+//second approach
+var store_all_milestones = function(res, MilestonesArray){
+	Milestone.create(MilestonesArray, function(err, arguments){
+		var milestone_ids = [];
+		if (err){
+			utils.sendErrResponse(res,500, "Cannot post milestones to database")
+		}
+		else{
+			for (var i=1; i< arguments.length, i++){
+				milestone_ids.push(arguments._id);
+			};
+			return milestone_ids;
+		}
+	})
+}
 
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
 // Request parameters/body:
