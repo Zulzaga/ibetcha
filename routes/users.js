@@ -3,10 +3,9 @@ var router = express.Router();
 
 //linking collections and utils
 var utils = require('../utils/utils')
-
-var User = require('../model/user');
-var Bet = require('../model/bet');
-var Milestone = require('../model/milestone');
+var User = require('../models/user');
+var Bet = require('../models/bet');
+var Milestone = require('../models/milestone');
 
 // Authenticates the user and redirects to the users login page if necessary.
 function isAuthenticated(req, res, next) {
@@ -29,11 +28,11 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
-router.get('/auth/facebook', passport.authenticate('facebook'));
+// router.get('/auth/facebook', passport.authenticate('facebook'));
 
-router.get('/auth/facebook/callback', 
-  passport.authenticate('facebook', { successRedirect: '/',
-                                      failureRedirect: '/login' }));
+// router.get('/auth/facebook/callback', 
+//   passport.authenticate('facebook', { successRedirect: '/',
+//                                       failureRedirect: '/login' }));
 
 // POST /users/login
 // Request body/parameters: (note req.body for forms)
@@ -57,7 +56,7 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
   res.send('respond with a resource');
 });
 
-// GET /users/friends/:user_id
+/*// GET /users/friends/:user_id
 // Request parameters:
 //     - user_id: a String representation of the MongoDB _id of the user
 // Response:
@@ -66,7 +65,7 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
 //     - err: on failure, an error message
 router.get('/friends/:user_id', isAuthenticated, function(req, res) {
   res.send('respond with a resource');
-});
+});*/
 
 // GET /users/logout
 // Request parameters/body: (note req.body for forms)

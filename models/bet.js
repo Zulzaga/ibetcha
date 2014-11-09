@@ -1,6 +1,6 @@
 var mongoose = require("mongoose"),
 	Schema = mongoose.Schema;
-	ObjectId = mongoose.Schema.Types.ObjectId;
+	ObjectId = mongoose.Schema.ObjectId;
 
 // Checks for model statuses
 var betStatus = [
@@ -48,6 +48,6 @@ var betSchema = new Schema({
 });
 
 //Bindings
-var Bet = mongoose.model('Bet', betSchema)
+var Bet = mongoose.model('Bet', betSchema);
 
 module.exports = Bet;
