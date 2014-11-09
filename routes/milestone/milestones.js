@@ -4,9 +4,9 @@ var router = express.Router();
 //linking collections and utils 
 var utils = require('../../utils/utils')
 
-var User = require('../../models/user');
-var Bet = require('../../models/bet');
-var Milestone = require('../../models/milestone');
+var User = require('../../models/User');
+var Bet = require('../../models/Bet');
+var Milestone = require('../../models/Milestone');
 
 
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
