@@ -43,18 +43,18 @@ app.use('/bets', bets);
 app.use('/milestones', milestones);
 
 // strategy for authentication
-passport.use(new FacebookStrategy({
-    clientID: "341293122717646",
-    clientSecret: "c596a5dd015b8580e4cba5a0319de2a7",
-    callbackURL: "http://www.example.com/auth/facebook/callback"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    User.findOrCreate(..., function(err, user) {
-      if (err) { return done(err); }
-      done(null, user);
-    });
-  }
-));
+// passport.use(new FacebookStrategy({
+//     clientID: "341293122717646",
+//     clientSecret: "c596a5dd015b8580e4cba5a0319de2a7",
+//     callbackURL: "http://www.example.com/auth/facebook/callback"
+//   },
+//   function(accessToken, refreshToken, profile, done) {
+//     User.findOrCreate(..., function(err, user) {
+//       if (err) { return done(err); }
+//       done(null, user);
+//     });
+//   }
+// ));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
