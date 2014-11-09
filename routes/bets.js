@@ -17,26 +17,7 @@ function isAuthenticated(req, res, next) {
      utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
-// GET /bets
-// Request parameters/body: (note req.body for forms)
-//     - TBD 
-// Response:
-//     - success: true if the bets are successfully retrieved
-//     - content: user.bets (list of in user's bets)
-//     - err: on failure, an error message
-router.get('/:user_id', function(req, res) {
-	//return only logged in user's bets
-	var user_id = req.params.user_id;
 
-	User.findOne({_id:user_id}).populate('bets').exec(function(err, user){
-		if (err){
-			util.sendErrResponse(res, 500, err);
-		}
-		else{
-			util.sendSuccessResponse(res, user.bets);
-		}
-	});
-});
 
 // POST /bets
 // Request parameters/body: (note req.body for forms)
@@ -69,8 +50,8 @@ router.put('/:bet_id', function(req, res) {
 //     - content: bet (Bet object)
 //     - err: on failure, an error message
 router.get('/:bet_id', function(req, res) {
-  var betId = req.params.bet_id;
-  Bets.findOne({_id:bet_id}).populate('author monitors').exec(function(err, bet){
+  var bet_id = req.params.bet_id;
+  Bet.findOne({_id:bet_id}).populate('author monitors').exec(function(err, bet){
   	if (err){
   		utils.sendErrResponse(res, 500, err);
   	}

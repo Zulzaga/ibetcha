@@ -4,9 +4,9 @@ var mongoose = require("mongoose"),
 
 // Checks for model statuses
 var betStatus = [
-	'succeeded', // contributes 5 points to rating
-	'failed', // contributed 1 point to rating
-	'dropped', // failed to get required action within time period, does not count towards rating
+	'Succeeded', // contributes 5 points to rating
+	'Failed', // contributed 1 point to rating
+	'Dropped', // failed to get required action within time period, does not count towards rating
 	'Action Required' //requires action from monitors, does not count towards rating
 ];
 
