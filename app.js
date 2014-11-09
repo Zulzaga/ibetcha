@@ -6,8 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport')
-  , FacebookStrategy = require('passport-facebook').Strategy;
-
+var VenmoStrategy = require('passport-venmo').Strategy;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -43,26 +42,25 @@ app.use('/milestones', milestones);
 var User = require('./models/user');
 
 // strategy for authentication
-passport.use(new FacebookStrategy({
-    clientID: "341293122717646",
-    clientSecret: "c596a5dd015b8580e4cba5a0319de2a7",
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
+passport.use('signup', new VenmoStrategy({
+    clientID: "2088",
+    clientSecret: "wuG43PaVwh2kgJFwNxmJZuXLwYaF3Sbc",
+    callbackURL: "http://localhost:3000/auth/venmo/callback"
   },
 
   function(accessToken, refreshToken, profile, done) {
-    User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
+    console.log(req);
+    User.findOne({ 'venmo.id' : profile.id }, function(err, user) {
       if (err) { return done(err); }
       if (user) {
         return done(null, user);
       } else {
             // if there is no user found with that facebook id, create them
             var newUser = new User();
+            console.log(profile)
 
             // set all of the facebook information in our user model
-            newUser.facebook.id    = profile.id; // set the users facebook id                   
-            newUser.facebook.token = token; // we will save the token that facebook provides to the user                    
-            newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
-            newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+            newUser.venmo.id = profile.id; // set the users facebook id                   
 
             // save our user to the database
             newUser.save(function(err) {

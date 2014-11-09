@@ -5,7 +5,7 @@ var mongoose = require("mongoose"),
 // Users Schema
 var userSchema = new Schema({
 	//login related information:
-	facebook:{
+	venmo:{
 		id: Number,
 		token: String,
 		name: String,

@@ -16,6 +16,29 @@ router.get('/', function(req, res) {
 	}
 });
 
+router.get('/auth/venmo', function(req, res, next) {
+	console.log(req);
+	passport.authenticate('signup', function(err, newUser, info) {
+		if (err) {
+            res.status(500).json({ error: "There was an error!", success: false });
+        } else if (!newUser){
+            res.json(info);
+        } else {
+            req.logIn(newUser, function(err) {
+              if (err) { 
+                    res.status(500).json({ error: "There was an error!", success: false });
+              } else {
+                    res.redirect('/');
+              }
+            }); 
+        }
+    })(req, res, next);
+});
+
+router.get('/auth/venmo/callback', function(req, res, next) {
+	console.log(req);
+});
+
 // router.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 
 // router.get('/auth/facebook/callback',
