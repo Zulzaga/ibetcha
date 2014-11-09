@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
-// GET /milestones/:bet_id
+/*// GET /milestones/:bet_id   //NOTE: duplication
 // Request parameters/body: (note req.body for forms)
 //     - bet_id: a String representation of the MongoDB _id of the bet
 // Response:
@@ -28,7 +28,7 @@ router.get('/', function(req, res) {
 //     - err: on failure, an error message
 router.get('/:bet_id', function(req, res) {
   res.send('respond with a resource');
-});
+});*/
 
 // PUT /milestones/:milestone_id
 // Request parameters/body: (note req.body for forms)

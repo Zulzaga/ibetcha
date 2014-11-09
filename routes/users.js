@@ -41,7 +41,7 @@ router.get('/:user_id', function(req, res) {
   res.send('respond with a resource');
 });
 
-// GET /users/friends/:user_id
+/*// GET /users/friends/:user_id NOTE: duplication with users/:user_id
 // Request parameters:
 //     - user_id: a String representation of the MongoDB _id of the user
 // Response:
@@ -50,7 +50,7 @@ router.get('/:user_id', function(req, res) {
 //     - err: on failure, an error message
 router.get('/friends/:user_id', function(req, res) {
   res.send('respond with a resource');
-});
+});*/
 
 // GET /users/logout
 // Request parameters/body: (note req.body for forms)
