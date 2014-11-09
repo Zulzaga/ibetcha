@@ -6,8 +6,10 @@ var mongoose = require("mongoose"),
 var userSchema = new Schema({
 	//login related information:
 	facebook:{
-		clientID: String,
-		clientSecret: String
+		id: Number,
+		token: String,
+		name: String,
+		email: String
 	},
 	username: String,
 

@@ -40,21 +40,43 @@ app.use('/users', users);
 app.use('/bets', bets);
 app.use('/milestones', milestones);
 
-// var User = require('./../model/user');
+var User = require('./models/user');
 
-// // strategy for authentication
-// passport.use(new FacebookStrategy({
-//     clientID: "341293122717646",
-//     clientSecret: "c596a5dd015b8580e4cba5a0319de2a7",
-//     callbackURL: "http://localhost:8080/auth/facebook/callback"
-//   },
-//   function(accessToken, refreshToken, profile, done) {
-//     User.findOne({}, function(err, user) {
-//       if (err) { return done(err); }
-//       done(null, user);
-//     });
-//   }
-// ));
+// strategy for authentication
+passport.use(new FacebookStrategy({
+    clientID: "341293122717646",
+    clientSecret: "c596a5dd015b8580e4cba5a0319de2a7",
+    callbackURL: "http://localhost:3000/auth/facebook/callback"
+  },
+
+  function(accessToken, refreshToken, profile, done) {
+    User.findOne({ 'facebook.id' : profile.id}, function(err, user) {
+      if (err) { return done(err); }
+      if (user) {
+        return done(null, user);
+      } else {
+            // if there is no user found with that facebook id, create them
+            var newUser = new User();
+
+            // set all of the facebook information in our user model
+            newUser.facebook.id    = profile.id; // set the users facebook id                   
+            newUser.facebook.token = token; // we will save the token that facebook provides to the user                    
+            newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
+            newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+
+            // save our user to the database
+            newUser.save(function(err) {
+                if (err)
+                    throw err;
+
+                // if successful, return the new user
+                return done(null, newUser);
+            });
+      }
+    });
+  }
+));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -68,8 +90,8 @@ passport.serializeUser(function(user, next) {
     next(null, user);
 });
 
-passport.deserializeUser(function(id, next) {
-    next(null, id);
+passport.deserializeUser(function(user, next) {
+    next(null, user);
 });
 
 // error handlers
