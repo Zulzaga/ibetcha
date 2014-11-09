@@ -22,10 +22,20 @@ function isAuthenticated(req, res, next) {
 //     - TBD 
 // Response:
 //     - success: true if the bets are successfully retrieved
-//     - content: TBD
+//     - content: user.bets (list of in user's bets)
 //     - err: on failure, an error message
-router.get('/', function(req, res) {
-  res.send('respond with a resource');
+router.get('/:user_id', function(req, res) {
+	//return only logged in user's bets
+	var user_id = req.params.user_id;
+
+	User.findOne({_id:user_id}).populate('bets').exec(function(err, user){
+		if (err){
+			util.sendErrResponse(res, 500, err);
+		}
+		else{
+			util.sendSuccessResponse(res, user.bets);
+		}
+	});
 });
 
 // POST /bets
@@ -56,10 +66,18 @@ router.put('/:bet_id', function(req, res) {
 //     - bet_id : a String representation of the MongoDB _id of the bet
 // Response:
 //     - success: true if the bet with ID bet_id is successfully retrieved
-//     - content: TBD
+//     - content: bet (Bet object)
 //     - err: on failure, an error message
 router.get('/:bet_id', function(req, res) {
-  res.send('respond with a resource');
+  var betId = req.params.bet_id;
+  Bets.findOne({_id:bet_id}).populate('author monitors').exec(function(err, bet){
+  	if (err){
+  		utils.sendErrResponse(res, 500, err);
+  	}
+  	else{
+  		utils.sendSuccessResponse(res, bet);
+  	}
+  });
 });
 
 module.exports = router;
