@@ -40,7 +40,7 @@ app.use('/users', users);
 app.use('/bets', bets);
 app.use('/milestones', milestones);
 
-var User = require('../model/user');
+// var User = require('./../model/user');
 
 // // strategy for authentication
 // passport.use(new FacebookStrategy({

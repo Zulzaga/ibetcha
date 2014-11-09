@@ -1,5 +1,5 @@
 var mongoose = require("mongoose"),
-	ObjectId = mongoose.Schema.Types.ObjectId;
+	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 
 var milestoneStatus = [

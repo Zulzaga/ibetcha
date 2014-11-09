@@ -1,5 +1,5 @@
 var mongoose = require("mongoose"),
-	ObjectId = mongoose.Schema.Types;
+	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 
 // Users Schema
@@ -27,7 +27,7 @@ var userSchema = new Schema({
 	}]
 });
 
-var User = mongoose.model('User', userSchema),
+var User = mongoose.model('User', userSchema);
 
 //exporting for usage anywhere in the app (see above for usage guide)
 module.exports = User;
