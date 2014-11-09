@@ -8,6 +8,7 @@ var User = require('../../models/user');
 var Bet = require('../../models/bet');
 var Milestone = require('../../models/milestone');
 
+
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
 // Request parameters/body:
 //     - none
@@ -16,13 +17,14 @@ var Milestone = require('../../models/milestone');
 //     - content: all milestone objects returned as a JSON
 //     - err: on failure, an error message
 router.get('/', function(req, res) {
+
 	Milestone.find({}, function(err, doc){
 		if (err){
 			utils.sendErrResponse(res,500, "Cannot retrieve Milestones");
 		}else{
-			utils.sendSuccessResponse(res,doc)
+			utils.sendSuccessResponse(res,doc);
 		}
-	})
+	});
 });
 
 /*// GET /milestones/:bet_id   //NOTE: duplication
