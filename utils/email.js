@@ -4,8 +4,8 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'tim.in.a.suit@gmail.com',
-        pass: 'TiMSuiT14'
+        user: 'ibetcha.mit@gmail.com',
+        pass: 'mitKidsHere'
     }
 });
 
@@ -14,16 +14,16 @@ var transporter = nodemailer.createTransport({
 
 var emailNotifier = {}
 
-emailNotifier.sendNotification = function (user){
+emailNotifier.sendNotification = function (user, emailTo){
 
     if (user){ // only for sending activation code to user
         // setup e-mail data
         var mailOptions = {
-            from: 'Tim in a Suit', // sender address
-            to: user.venmo.email, // list of receivers
+            from: user.venmo.name, // sender address
+            to: emailTo, // list of receivers
             subject: 'Activate Your Account', // Subject line
             text: "You have a new message on Tim in a Suit.", // plaintext body
-            html: "Hi " + user.username + "," + "<br><br>" + "Please go the following link to activate your account:" + "<br><br>" + "http://timinsuit-kkatongo.rhcloud.com/users/activate/" + user._id + "<br><br>" + "Best," + "<br><br>" + "Tim in a Suit Team" // html body
+            html: "Hi " + user.username + "," + "<br><br>" + "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login" + user.venmo.id + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
         };
     } 
    
@@ -38,8 +38,4 @@ emailNotifier.sendNotification = function (user){
     });
 }
 
-
-
-
-//emailNotifier({username: "Kapaya", email: 'kkatongo@mit.edu'});
-module.exports = emailNotifier
+module.exports = emailNotifier;
