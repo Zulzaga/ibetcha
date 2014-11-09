@@ -42,12 +42,36 @@ app.use('/users', users);
 app.use('/bets', bets);
 app.use('/milestones', milestones);
 
+// strategy for authentication
+passport.use(new FacebookStrategy({
+    clientID: "341293122717646",
+    clientSecret: "c596a5dd015b8580e4cba5a0319de2a7",
+    callbackURL: "http://www.example.com/auth/facebook/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate(..., function(err, user) {
+      if (err) { return done(err); }
+      done(null, user);
+    });
+  }
+));
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
+
+passport.serializeUser(function(user, next) {
+    // store user id
+    next(null, user._id);
+});
+
+passport.deserializeUser(function(id, next) {
+    next(null, id);
+});
+
 
 // error handlers
 

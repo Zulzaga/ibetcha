@@ -25,9 +25,15 @@ function isAuthenticated(req, res, next) {
 //     - success: true if all users were successfully retrieved
 //     - content: TDB
 //     - err: on failure, an error message
-router.get('/', isAuthenticated, function(req, res) {
+router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
+
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
+router.get('/auth/facebook/callback', 
+  passport.authenticate('facebook', { successRedirect: '/',
+                                      failureRedirect: '/login' }));
 
 // POST /users/login
 // Request body/parameters: (note req.body for forms)
