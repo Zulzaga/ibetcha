@@ -8,7 +8,6 @@ var User = require('../../models/user');
 var Bet = require('../../models/bet');
 var Milestone = require('../../models/milestone');
 
-
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
 // Request parameters/body: (note req.body for forms)
 //     - none
