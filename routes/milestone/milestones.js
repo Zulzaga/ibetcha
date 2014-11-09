@@ -3,10 +3,12 @@ var router = express.Router();
 
 //linking collections and utils 
 var utils = require('../../utils/utils')
-var models = require('../../data/models');
-var User = models.User,
-    Bet = models.Bet,
-    Milestone = models.Milestone;
+
+var User = require('../../model/user');
+var Bet = require('../../model/bet');
+var Milestone = require('../../model/milestone');
+
+var FB = require('fb');
 
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
 // Request parameters/body: (note req.body for forms)
