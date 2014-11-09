@@ -9,7 +9,7 @@ var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
 //a function, that given a properly formatted JSON (including author name), 
-//makes a milestone object and posts it to the database
+//makes a milestone object and posts it to the database    
 var store_Milestone = function(res, milestoneJSON){
 	var my_milestone = new Milestone(milestoneJSON);
 	my_milestone.save(function(err, doc){
