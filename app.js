@@ -18,7 +18,7 @@ var test = require('./routes/test');
 var app = express();
 
 var connection_string = 'localhost/ibetcha';
-
+var User = require('./models/User');
 
 mongoose.connect(connection_string);
 var db = mongoose.connection;
@@ -38,6 +38,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({secret: '1234567890QWERTY'}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
@@ -45,38 +46,31 @@ app.use('/bets', bets);
 app.use('/milestones', milestones);
 app.use('/test', test);
 
-var User = require('./models/User');
-
 // strategy for authentication
-passport.use('signup', new VenmoStrategy({
+passport.use(new VenmoStrategy({
     clientID: "2088",
-    clientSecret: "wuG43PaVwh2kgJFwNxmJZuXLwYaF3Sbc",
-    callbackURL: "http://localhost:3000/auth/venmo/callback"
-  },
+    clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
+    callbackURL: "http://localhost:5000/users/"
+    },
 
-  function(accessToken, refreshToken, profile, done) {
-    console.log(req);
-    User.findOne({ 'venmo.id' : profile.id }, function(err, user) {
-      if (err) { return done(err); }
-      if (user) {
-        return done(null, user);
-      } else {
-            // if there is no user found with that facebook id, create them
-            var newUser = new User();
-            console.log(profile)
-
-            // set all of the facebook information in our user model
-            newUser.venmo.id = profile.id; // set the users facebook id                   
-
-            // save our user to the database
-            newUser.save(function(err) {
-                if (err)
-                    throw err;
-
-                // if successful, return the new user
-                return done(null, newUser);
-            });
-      }
+    function(accessToken, refreshToken, venmo, done) {
+        User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
+            if (err) { 
+                return done(err); 
+            } else if (user) {
+                return done(null, user);
+            } else {
+                // if there is no user found with that facebook id, create them
+                User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
+                    if (err) {
+                        return done(err);
+                    } else if (user === null){
+                        return done(null, false, { error: "Could not create a new user!", success: false });
+                    } else {
+                        return done(null, user);
+                    }
+                })
+            }
     });
   }
 ));

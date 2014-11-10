@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 //linking collections and utils
+var utils = require('../utils/utils')
+var passport = require('passport');
 var utils = require('../utils/utils');
 var emailNotifier = require('../utils/email');
 
@@ -67,7 +69,13 @@ router.post('/inviteSingle', function(req, res) {
 //     - content: TDB
 //     - err: on failure, an error message
 router.get('/', function(req, res) {
-  res.send('respond with a resource');
+    User.find({}, function (err, users) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
+        } else {
+            utils.sendSuccessResponse(res, users);
+        }
+    });
 });
 
 // router.get('/auth/facebook', passport.authenticate('facebook'));
@@ -76,15 +84,17 @@ router.get('/', function(req, res) {
 //   passport.authenticate('facebook', { successRedirect: '/',
 //                                       failureRedirect: '/login' }));
 
-// POST /users/login
+// GET /users/login
 // Request body/parameters: (note req.body for forms)
 //     - TBD
 // Response:
 //     - success: true if the user was created (and the verification email sent)
 //     - content: TBD
 //     - err: on failure, an error message
-router.post('/login', isAuthenticated, function(req, res) {
-  res.send('respond with a resource');
+router.get('/login', passport.authenticate('venmo', {
+    scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
+    failureRedirect: '/'
+    }), function(req, res) {
 });
 
 // GET /users/:user_id
@@ -95,7 +105,13 @@ router.post('/login', isAuthenticated, function(req, res) {
 //     - content: TBD
 //     - err: on failure, an error message
 router.get('/:user_id', isAuthenticated, function(req, res) {
-  res.send('respond with a resource');
+    User.findById( req.params.userId, function (err, user) {
+        if (err){
+          utils.sendErrResponse(res, 500, 'There was an error!')
+        } else {
+          utils.sendSuccessResponse(res, user);
+        }
+    });
 });
 
 // POST /users/:user_id
@@ -106,7 +122,6 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
 //     - content: TBD
 //     - err: on failure, an error message
 router.post('/:user_id', isAuthenticated, function(req, res) {
-  res.send('respond with a resource');
 });
 
 /*// GET /users/friends/:user_id
@@ -127,8 +142,12 @@ router.get('/friends/:user_id', isAuthenticated, function(req, res) {
 //     - success: true if the user is successfully logged out
 //     - content: TBD
 //     - err: on failure, an error message
-router.get('/logout', isAuthenticated, function(req, res) {
-  res.send('respond with a resource');
+router.get('/logout', function(req, res) {
+    if (req.user) {
+        req.logout();
+    }
+    
+    res.redirect('/users/');
 });
 
 

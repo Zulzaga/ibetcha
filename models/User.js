@@ -7,10 +7,10 @@ var userSchema = new Schema({
 	//login related information:
 	venmo:{
 		id: Number,
-		token: String,
 		name: String,
 		email: String
 	},
+
 	username: String,
 
 	//Other information (independent of login):
@@ -28,6 +28,18 @@ var userSchema = new Schema({
 		ref: 'User'
 	}]
 });
+
+userSchema.statics.create = function(venmo, username, callback) {
+    var newUser = new User({
+        'venmo': venmo,
+        'username': username,
+        'bets': [],
+        'friends': [],
+        'rating': 0
+    });
+
+    newUser.save(callback);
+}
 
 var User = mongoose.model('User', userSchema);
 
