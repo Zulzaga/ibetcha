@@ -2,11 +2,22 @@ var express = require('express');
 var router = express.Router();
 
 //linking collections and utils
+<<<<<<< HEAD
 var utils = require('../utils/utils')
 var User = require('../models/user');
 var Bet = require('../models/bet');
 var passport = require('passport');
 var Milestone = require('../models/milestone');
+=======
+var utils = require('../utils/utils');
+var emailNotifier = require('../utils/email');
+
+
+var User = require('../models/User');
+var Bet = require('../models/Bet');
+var Milestone = require('../models/Milestone');
+
+>>>>>>> 59060227cbb80cac0642970bfb87c31e59e96a5c
 
 // Authenticates the user and redirects to the users login page if necessary.
 function isAuthenticated(req, res, next) {
@@ -17,6 +28,32 @@ function isAuthenticated(req, res, next) {
     // If a user is not logged in, redirect to the login page.
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
+
+
+router.post('/signupTest', function(req, res) {
+    var venmo = req.body.venmo;
+    var username = req.body.username;
+    var newUser = new User({venmo:venmo, username:username});
+    newUser.save(function(error, newUser) {
+      if(error) {
+          utils.sendErrResponse(res, 500, error);
+      } else {
+          req.user = newUser;
+          utils.sendSuccessResponse(res, newUser);
+      }
+    });
+});
+
+
+router.post('/invite', function(req, res) {
+    console.log(req.body);
+    var friendlist = req.body.friendlist;
+    console.log("friendlist: " + friendlist);
+    friendlist.forEach(function(element, index, array) {
+        console.log("inside invite method: " + element);
+        emailNotifier.sendNotification(req.user, element);
+    });
+})
 
 // GET /users
 // Request parameters:
@@ -96,5 +133,11 @@ router.get('/friends/:user_id', isAuthenticated, function(req, res) {
 router.get('/logout', isAuthenticated, function(req, res) {
   res.send('respond with a resource');
 });
+
+
+router.post('/invite', isAuthenticated, function(req, res) {
+
+})
+
 
 module.exports = router;

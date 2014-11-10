@@ -12,9 +12,12 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var bets = require('./routes/bets');
 var milestones = require('./routes/milestone/milestones');
+var test = require('./routes/test');
 
 var app = express();
-var connection_string = 'localhost:27017/ibetcha';
+
+var connection_string = 'localhost/ibetcha';
+
 
 mongoose.connect(connection_string);
 var db = mongoose.connection;
@@ -39,8 +42,9 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/bets', bets);
 app.use('/milestones', milestones);
+app.use('/test', test);
 
-var User = require('./models/user');
+var User = require('./models/User');
 
 // // strategy for authentication
 // passport.use('login', new VenmoStrategy({

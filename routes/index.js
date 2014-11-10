@@ -3,11 +3,11 @@ var router = express.Router();
 var passport = require('passport');
 
 //linking collections and utils
-var utils = require('../utils/utils')
+var utils = require('../utils/utils');
 
-var User = require('../models/user');
-var Bet = require('../models/bet');
-var Milestone = require('../models/milestone');
+var User = require('../models/User');
+var Bet = require('../models/Bet');
+var Milestone = require('../models/Milestone');
 
 /* GET home page. */
 router.get('/', function(req, res) {
