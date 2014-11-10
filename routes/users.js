@@ -51,6 +51,7 @@ router.post('/signup', function(req, res, next) {
             } else if (!newUser){
                 utils.sendErrResponse(res, 500, info);
             } else {
+
                 req.logIn(newUser, function(err) {
                   if (err) { 
                         utils.sendErrResponse(res, 500, 'There was an error!');
@@ -61,25 +62,6 @@ router.post('/signup', function(req, res, next) {
             }
         })(req, res, next);
     }
-})
-
-router.post('/signupTest', function(req, res) {
-    // console.log("got here: " + req.body.venmo, typeof(req.body.venmo));
-    // var venmo = JSON.parse(req.body.venmo);
-    // console.log('&&&&&&&&&&&&&&' + venmo.id);
-    // console.log("got here: " + req.body);
-    var venmo = JSON.parse(req.body.venmo);
-    var username = req.body.username;
-    var newUser = new User({venmo:venmo, username:username});
-    newUser.save(function(error, newUser) {
-      if(error) {
-          utils.sendErrResponse(res, 500, error);
-      } else {
-          req.session.user = newUser;
-          console.log("req user is : " + req.session.user);
-          utils.sendSuccessResponse(res, newUser);
-      }
-    });
 });
 
 
@@ -95,22 +77,25 @@ router.post('/signupTest', function(req, res) {
 //     });
 // });
 
-router.post('/inviteSingle', function(req, res) {
-    console.log("dddddd %j", req.body);
-    console.log("dddddd" + JSON.stringify(req.body));
-    console.log("eeeee %j", req.params);
+router.post('/emailinvite', function(req, res) {
     var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
-    emailNotifier.sendNotification(req.session.user, [req.body.friend], res, msg);
+    console.log("req.user is this", req.user);
+    emailNotifier.sendNotification(req.user, [req.body.friend], res, msg);
 });
 
-router.post('/askfriend', function(req, res) {
-    console.log('inside askfriend');
-    var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
-})
+router.post('/emailfriend', function(req, res) {
+    var msg = "Please go the following link to confirm friendship:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/acceptfriend/"+req.user.username;
+    emailNotifier.sendNotification(req.user, [req.body.friend], res, msg);
+});
+
+// router.post('/askfriend/:username', function(req, res) {
+//     console.log('inside askfriend');
+//     var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
+// })
 
 router.post('/acceptfriend', function(req, res) {
     console.log('inside makefriend');
-
+    
 })
 
 // GET /users

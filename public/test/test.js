@@ -15,21 +15,24 @@ var compareResponseText = function(jqXHR, expectedString) {
 
 // Create new user
 $.ajax({
-    url: urlString + "users/signupTest",
+    url: urlString + "users/signup",
     type: "POST",
     dataType:"json",
     data: {
       //login related information:
-      venmo: JSON.stringify({
-        id: 12345,
-        token: "thisistoken",
-        name: "falafel",
-        email: "test@test.com"
-      }),
-      username: "butts"
+      // venmo: JSON.stringify({
+      //   id: 12345,
+      //   token: "thisistoken",
+      //   name: "falafel",
+      //   email: "test@test.com"
+      // }),
+      username: "butts",
+      email:"dhlim@mit.edu",
+      password:"butts"
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
       QUnitTesting("Create new user1", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -37,29 +40,32 @@ $.ajax({
     }
 });
 
-// Create new user
-$.ajax({
-    url: urlString + "users/signupTest",
-    type: "POST",
-    dataType:"json",
-    data: {
-      //login related information:
-      venmo: JSON.stringify({
-        id: 54321,
-        token: "testtoken",
-        name: "jonathan",
-        email: "dhlim@mit.edu"
-      }),
-      username: "fff**k"
-    },
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      QUnitTesting("Create new user2", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new user2", false);
-    }
-});
+
+
+
+// // Create new user
+// $.ajax({
+//     url: urlString + "users/signupTest",
+//     type: "POST",
+//     dataType:"json",
+//     data: {
+//       //login related information:
+//       venmo: JSON.stringify({
+//         id: 54321,
+//         token: "testtoken",
+//         name: "jonathan",
+//         email: "dhlim@mit.edu"
+//       }),
+//       username: "fff**k"
+//     },
+//     async: false,
+//     success: function(data, textStatus, jqXHR) {
+//       QUnitTesting("Create new user2", data.success === true);
+//     },
+//     error: function(jqXHR, textStatus, err) {
+//       QUnitTesting("Create new user2", false);
+//     }
+// });
 
 
 var emails = {
@@ -86,7 +92,7 @@ console.log("friendlist", emails.friendlist);
 
 // Email
 $.ajax({
-  url: urlString + "users/invite",
+  url: urlString + "users/emailinvite",
   type: "POST",
   data: emails,
   dataType: "json",
