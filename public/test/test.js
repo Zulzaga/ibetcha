@@ -15,40 +15,62 @@ var compareResponseText = function(jqXHR, expectedString) {
 
 // Create new user
 $.ajax({
-    url: urlString + "users/signupTest",
-    type: "POST",
-    data: {
-        //login related information:
-        venmo: {
-          id: 12345,
-          token: "thisistoken",
-          name: "falafel",
-          email: "test@test.com"
-        },
-        username: "butts"
-    },
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-        QUnitTesting("Create new user", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-        QUnitTesting("Create new user", false);
-    }
+  url: urlString + "users/signupTest",
+  type: "POST",
+  dataType:"json",
+  data: {
+    //login related information:
+    venmo: JSON.stringify({
+      id: 12345,
+      token: "thisistoken",
+      name: "falafel",
+      email: "test@test.com"
+    }),
+    username: "butts"
+  },
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    QUnitTesting("Create new user", data.success === true);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Create new user", false);
+  }
 });
 
+
+var emails = {
+  friendlist: ["ibetcha@mit.edu", "dhlim@mit.edu"]
+};
+
+console.log("friendlist", emails.friendlist);
 
 // Email
 $.ajax({
-    url: urlString + "users/invite",
-    type: "POST",
-    data: {
-        friendlist: JSON.stringify(["ibetcha@mit.edu","hyuglim@gmail.com"])
-    },
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-        QUnitTesting("Email friends", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-        QUnitTesting("Email friends", false);
-    }
+  url: urlString + "users/inviteSingle",
+  type: "POST",
+  //dataType: "script",
+  data: {friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'},
+  //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    QUnitTesting("Email friends", data.success === true);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Email friends", false);
+  }
 });
+
+// // Email
+// $.ajax({
+//   url: urlString + "users/invite",
+//   type: "POST",
+//   // dataType: "json",
+//   data: emails.friendlist,
+//   async: false,
+//   success: function(data, textStatus, jqXHR) {
+//     QUnitTesting("Email friends", data.success === true);
+//   },
+//   error: function(jqXHR, textStatus, err) {
+//     QUnitTesting("Email friends", false);
+//   }
+// });
