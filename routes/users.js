@@ -23,6 +23,45 @@ function isAuthenticated(req, res, next) {
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
+// GET /users
+// Request parameters:
+//     - none
+// Response:
+//     - success: true if all users were successfully retrieved
+//     - content: TDB
+//     - err: on failure, an error message
+router.get('/', function(req, res) {
+    User.find({}, function (err, users) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
+        } else {
+            utils.sendSuccessResponse(res, users);
+        }
+    });
+});
+
+
+router.post('/signup', function(req, res, next) {
+    if (req.user) {
+        res.redirect('/');
+    } else {
+        passport.authenticate('signup', function(err, newUser, info){
+            if (err) {
+                utils.sendErrResponse(res, 500, 'There was an error!');
+            } else if (!newUser){
+                utils.sendErrResponse(res, 500, info);
+            } else {
+                req.logIn(newUser, function(err) {
+                  if (err) { 
+                        utils.sendErrResponse(res, 500, 'There was an error!');
+                  } else {
+                        utils.sendSuccessResponse(res, formatUser(newUser));
+                  }
+                }); 
+            }
+        })(req, res, next);
+    }
+})
 
 router.post('/signupTest', function(req, res) {
     var venmo = req.body.venmo;
@@ -49,23 +88,6 @@ router.post('/invite', function(req, res) {
     });
 })
 
-// GET /users
-// Request parameters:
-//     - none
-// Response:
-//     - success: true if all users were successfully retrieved
-//     - content: TDB
-//     - err: on failure, an error message
-router.get('/', function(req, res) {
-    User.find({}, function (err, users) {
-        if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
-        } else {
-            utils.sendSuccessResponse(res, users);
-        }
-    });
-});
-
 // router.get('/auth/facebook', passport.authenticate('facebook'));
 
 // router.get('/auth/facebook/callback', 
@@ -79,10 +101,28 @@ router.get('/', function(req, res) {
 //     - success: true if the user was created (and the verification email sent)
 //     - content: TBD
 //     - err: on failure, an error message
-router.get('/login', passport.authenticate('venmo', {
-    scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
-    failureRedirect: '/'
-    }), function(req, res) {
+// router.get('/login', passport.authenticate('venmo', {
+//     scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
+//     failureRedirect: '/'
+//     }), function(req, res) {
+// });
+
+router.post('/login', function(req, res, next) {
+    passport.authenticate('login', function(err, newUser, info){
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error!');
+        } else if (!newUser){
+            utils.sendErrResponse(res, 500, info);
+        } else {
+            req.logIn(newUser, function(err) {
+                if (err) { 
+                    utils.sendErrResponse(res, 500, 'There was an error!');
+                } else {
+                    utils.sendSuccessResponse(res, formatUser(newUser));
+                }
+            }); 
+        }
+    })(req, res, next);
 });
 
 // GET /users/:user_id
@@ -143,5 +183,15 @@ router.post('/invite', isAuthenticated, function(req, res) {
 
 })
 
+var formatUser = function (user) {
+    return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        friends: user.friends,
+        bets: user.bets,
+        rating: user.rating
+    };
+}
 
 module.exports = router;

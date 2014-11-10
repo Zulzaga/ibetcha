@@ -1,17 +1,20 @@
 var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
+	passwordHash = require('password-hash');
 
 // Users Schema
 var userSchema = new Schema({
 	//login related information:
-	venmo:{
-		id: Number,
-		name: String,
-		email: String
-	},
+	// venmo:{
+	// 	id: Number,
+	// 	name: String,
+	// 	email: String
+	// },
 
 	username: String,
+	email: String,
+	password: {type: String, required: true},
 
 	//Other information (independent of login):
 	rating:{ //reflects the history of bets of the user
@@ -29,13 +32,15 @@ var userSchema = new Schema({
 	}]
 });
 
-userSchema.statics.create = function(venmo, username, callback) {
+userSchema.statics.create = function(username, password, email, callback) {
+    password = passwordHash.generate(password);
     var newUser = new User({
-        'venmo': venmo,
         'username': username,
+        'password': password,
+        'email': email,
         'bets': [],
         'friends': [],
-        'rating': 0
+        'rating': 3
     });
 
     newUser.save(callback);
