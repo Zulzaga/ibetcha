@@ -75,27 +75,12 @@ var emails = {
 console.log("friendlist", emails.friendlist);
 
 // Email
-// $.ajax({
-//   url: urlString + "users/inviteSingle",
-//   type: "POST",
-//   //dataType: "script",
-//   data: {friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'},
-//   //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
-//   async: false,
-//   success: function(data, textStatus, jqXHR) {
-//     QUnitTesting("Email friends", data.success === true);
-//   },
-//   error: function(jqXHR, textStatus, err) {
-//     QUnitTesting("Email friends", false);
-//   }
-// });
-
-// Email
 $.ajax({
   url: urlString + "users/emailinvite",
   type: "POST",
-  data: emails,
-  dataType: "json",
+  //dataType: "script",
+  data: {friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'},
+  //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
   async: false,
   success: function(data, textStatus, jqXHR) {
     QUnitTesting("Email friends", data.success === true);
@@ -104,3 +89,18 @@ $.ajax({
     QUnitTesting("Email friends", false);
   }
 });
+
+// Email
+// $.ajax({
+//   url: urlString + "users/emailinvite",
+//   type: "POST",
+//   data: emails,
+//   dataType: "json",
+//   async: false,
+//   success: function(data, textStatus, jqXHR) {
+//     QUnitTesting("Email friends", data.success === true);
+//   },
+//   error: function(jqXHR, textStatus, err) {
+//     QUnitTesting("Email friends", false);
+//   }
+// });
