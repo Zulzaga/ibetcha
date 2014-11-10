@@ -33,6 +33,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
@@ -41,35 +42,65 @@ app.use('/milestones', milestones);
 
 var User = require('./models/user');
 
+// // strategy for authentication
+// passport.use('login', new VenmoStrategy({
+//     clientID: "2088",
+//     clientSecret: "wuG43PaVwh2kgJFwNxmJZuXLwYaF3Sbc",
+//     callbackURL: "http://localhost:3000/auth/venmo/callback"
+//   },
+
+//   function(accessToken, refreshToken, venmo, done) {
+//     console.log(venmo);
+//     User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
+//       if (err) { return done(err); }
+//       if (user) {
+//         return done(null, user);
+//       } else {
+//             // if there is no user found with that facebook id, create them
+//             var newUser = new User();
+//             console.log(profile)
+
+//             // set all of the facebook information in our user model
+//             newUser.venmo.id = profile.id; // set the users facebook id                   
+
+//             // save our user to the database
+//             newUser.save(function(err) {
+//                 if (err)
+//                     throw err;
+
+//                 // if successful, return the new user
+//                 return done(null, newUser);
+//             });
+//       }
+//     });
+//   }
+// ));
+
+
 // strategy for authentication
-passport.use('signup', new VenmoStrategy({
+passport.use(new VenmoStrategy({
     clientID: "2088",
     clientSecret: "wuG43PaVwh2kgJFwNxmJZuXLwYaF3Sbc",
     callbackURL: "http://localhost:3000/auth/venmo/callback"
   },
 
-  function(accessToken, refreshToken, profile, done) {
-    console.log(req);
-    User.findOne({ 'venmo.id' : profile.id }, function(err, user) {
+  function(accessToken, refreshToken, venmo, done) {
+    console.log("Boop boop");
+    User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
       if (err) { return done(err); }
       if (user) {
         return done(null, user);
       } else {
             // if there is no user found with that facebook id, create them
-            var newUser = new User();
-            console.log(profile)
-
-            // set all of the facebook information in our user model
-            newUser.venmo.id = profile.id; // set the users facebook id                   
-
-            // save our user to the database
-            newUser.save(function(err) {
-                if (err)
-                    throw err;
-
-                // if successful, return the new user
-                return done(null, newUser);
-            });
+            User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
+                if (err) {
+                    return done(err);
+                } else if (user === null){
+                    return done(null, false, { error: "Could not create a new user!", success: false });
+                } else {
+                    return done(null, user);
+                }
+            })
       }
     });
   }

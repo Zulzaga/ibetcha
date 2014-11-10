@@ -17,28 +17,38 @@ router.get('/', function(req, res) {
 
 });
 
-router.get('/auth/venmo', function(req, res, next) {
-	console.log(req);
-	passport.authenticate('signup', function(err, newUser, info) {
-		if (err) {
-            res.status(500).json({ error: "There was an error!", success: false });
-        } else if (!newUser){
-            res.json(info);
-        } else {
-            req.logIn(newUser, function(err) {
-              if (err) { 
-                    res.status(500).json({ error: "There was an error!", success: false });
-              } else {
-                    res.redirect('/');
-              }
-            }); 
-        }
-    })(req, res, next);
+// router.get('/auth/venmo', function(req, res, next) {
+// 	console.log(req);
+// 	passport.authenticate('signup', function(err, newUser, info) {
+// 		if (err) {
+//             res.status(500).json({ error: "There was an error!", success: false });
+//         } else if (!newUser){
+//             res.json(info);
+//         } else {
+//             req.logIn(newUser, function(err) {
+//               if (err) { 
+//                     res.status(500).json({ error: "There was an error!", success: false });
+//               } else {
+//                     res.redirect('/');
+//               }
+//             }); 
+//         }
+//     })(req, res, next);
+// });
+
+router.get('/auth/venmo', passport.authenticate('venmo', {
+    scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
+    failureRedirect: '/'
+}), function(req, res) {
 });
 
-router.get('/auth/venmo/callback', function(req, res, next) {
-	console.log(req);
+
+router.get('/auth/venmo/callback', passport.authenticate('venmo', {
+    failureRedirect: '/'
+}), function(req, res) {
+	res.send("hello" + req.user.username);
 });
+
 
 // router.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 

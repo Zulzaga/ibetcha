@@ -5,6 +5,7 @@ var router = express.Router();
 var utils = require('../utils/utils')
 var User = require('../models/user');
 var Bet = require('../models/bet');
+var passport = require('passport');
 var Milestone = require('../models/milestone');
 
 // Authenticates the user and redirects to the users login page if necessary.
@@ -25,7 +26,13 @@ function isAuthenticated(req, res, next) {
 //     - content: TDB
 //     - err: on failure, an error message
 router.get('/', function(req, res) {
-  res.send('respond with a resource');
+    User.find({}, function (err, users) {
+        if (err) {
+            res.status(500).json({ error: "There was an error!", success: false });
+        } else {
+            res.json({ message: users, success: true });
+        }
+    });
 });
 
 // router.get('/auth/facebook', passport.authenticate('facebook'));
@@ -42,8 +49,9 @@ router.get('/', function(req, res) {
 //     - content: TBD
 //     - err: on failure, an error message
 router.post('/login', isAuthenticated, function(req, res) {
-  res.send('respond with a resource');
+  	res.send('respond with a resource');
 });
+
 
 // GET /users/:user_id
 // Request parameters:
