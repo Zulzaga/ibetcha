@@ -61,4 +61,39 @@ router.get('/:bet_id', function(req, res) {
   });
 });
 
+
+//Helper
+function validateBetData(data){
+	var result = true;
+	var startDate = data.startDate;
+	var endDate = data.endDate;
+	var result = startDate<endDate;
+	return result;
+}
+
+function makeBet(res,req){
+	var data = req.body.data;
+	var betJSON = {author:req.user.venmo.id, 
+				  startDate:data.startDate, 
+				  endDate:data.endDate,
+				  dropDate:data.dropData,
+				  frequency:data.frequency,
+				  description:data.description,
+				  status: "Action Required",
+				  milestones:store_all_milestones(data.milestones),
+				  amount: data.amount,
+				  monitors:[],
+				  }
+	var newBet = new Bet(betJSON);
+	newBet.save(function(err){
+		if (err){
+			utils.sendErrResponse(res, 500, err);
+		}
+		else{
+			utils.sendSuccessResponse(newBet);
+		}
+	});
+
+}
+
 module.exports = router;

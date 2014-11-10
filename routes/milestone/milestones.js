@@ -23,15 +23,18 @@ var store_Milestone = function(res, milestoneJSON){
 
 //second approach
 var store_all_milestones = function(res, MilestonesArray){
-	Milestone.create(MilestonesArray, function(err, arguments){
-		var milestone_ids = [];
+	var milestone_ids = [];
+	Milestone.create(MilestonesArray, function(err){
+		
 		if (err){
 			utils.sendErrResponse(res,500, "Cannot post milestones to database")
 		}
 		else{
-			for (var i=1; i< arguments.length, i++){
-				milestone_ids.push(arguments._id);
+			for (var i=1; i< arguments.length; ++i){
+				milestone_ids.push(arguments[i]._id);
+				
 			};
+
 			return milestone_ids;
 		}
 	})
