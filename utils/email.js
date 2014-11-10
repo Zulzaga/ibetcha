@@ -15,9 +15,9 @@ var transporter = nodemailer.createTransport({
 
 var emailNotifier = {}
 
-emailNotifier.sendNotification = function (user, emailTo, res){
+emailNotifier.sendNotification = function (user, emailTo, res, msg){
     console.log("email user: " + user);
-    console.log("email reciever: " + emailTo);
+    console.log("email receiver: " + emailTo);
     console.log("res shit: " + res);
     if (user){ // only for sending activation code to user
         // setup e-mail data
@@ -27,7 +27,7 @@ emailNotifier.sendNotification = function (user, emailTo, res){
             to: emailTo, // list of receivers
             subject: 'Ibetcha Invite from Your Friend!', // Subject line
             text: "You have been invited by your friend to join ibetcha.", // plaintext body
-            html: "Hi " + user.username /*user.venmo.name*/+ "," + "<br><br>" + "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login" + user.username/*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
+            html: "Hi " + user.username /*user.venmo.name*/+ "," + "<br><br>" + msg + user.username/*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
         };
         transmitEmail(mailOptions, res);       
     } 
@@ -41,7 +41,7 @@ var transmitEmail = function(mail, res) {
         if(error){
             console.log(error);
             utils.sendErrResponse( res, 500, error);
-        }else{
+        } else {
             console.log('Message sent: ' + info.response);
             utils.sendSuccessResponse(res, "success");
         }
