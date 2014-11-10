@@ -26,7 +26,7 @@ function isAuthenticated(req, res, next) {
 //     - success: true if the new bet is successfully posted
 //     - content: new bet object
 //     - err: on failure, an error message
-router.get('/', function(req, res) {
+router.post('/', function(req, res) {
   //if (validateBetData(req.body)){
   	makeBet(req, res);
   //}
@@ -80,13 +80,31 @@ function makeBet(req,res){
 	var testData = {startDate:10000, 
 		endDate:1000000, 
 		frequency: 2, 
+		amount: 30,
 		author:"545fff1a27e4ef0000dc7205",
-		milstones:[{date:100000, author: "545fff1a27e4ef0000dc7205"}]}
+		milestones:[{date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
+				   {date:100000, author: "545fff1a27e4ef0000dc7205"}]
+				}
 	var testUser = "545fff1a27e4ef0000dc7205";
 	//var data = req.body.data;
 	//var userId = req.body.venmo.id;
 	var data = testData;
 	var userId = testUser;
+	
 	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
 				  endDate:data.endDate,
@@ -104,11 +122,43 @@ function makeBet(req,res){
 			utils.sendErrResponse(res, 500, err);
 		}
 		else{
-			newBet.milestones = (function (err) {return store_all_milestones(data.milestones);})();
+			store_all_milestones(res, data.milestones, newBet._id);
 
-			utils.sendSuccessResponse(res, newBet);
+			
 		}
 	});
+
+}
+
+var store_all_milestones = function(res, MilestonesArray, betId){
+	console.log("lenghth: "+MilestonesArray.length);
+	Bet.findOne({_id:betId}, function(err, bet){
+		if (err){
+			utils.sendErrResponse(res, 500, err);
+		}
+		Milestone.create(MilestonesArray, function(err){
+
+			if (err){
+				utils.sendErrResponse(res,500, "Cannot post milestones to database")
+			}
+			else{
+
+				for (var i=1; i< arguments.length; ++i){
+					console.log("counting: "+i);
+					bet.milestones.push(arguments[i]._id);
+				}
+			}
+			bet.save(function(err){
+				if (err){
+					utils.sendErrResponse(res,500, "Cannot post milestones to database");
+				}
+				else{
+					utils.sendSuccessResponse(res,"created Bet");
+				}
+			});
+		});
+	});
+
 
 }
 
