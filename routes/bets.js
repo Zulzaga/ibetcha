@@ -21,13 +21,19 @@ function isAuthenticated(req, res, next) {
 
 // POST /bets
 // Request parameters/body: (note req.body for forms)
-//     - TBD 
+//     - Bet json object is in req.body
 // Response:
 //     - success: true if the new bet is successfully posted
-//     - content: TBD
+//     - content: new bet object
 //     - err: on failure, an error message
-router.post('/', function(req, res) {
-  res.send('respond with a resource');
+router.get('/', function(req, res) {
+  //if (validateBetData(req.body)){
+  	makeBet(req, res);
+  //}
+  //else{
+  	//utils.sendErrResponse(res, 500, "Can't create a new Bet object");
+
+  //}
 });
 
 // PUT /bets/:bet_id
@@ -70,16 +76,25 @@ function validateBetData(data){
 	return result;
 }
 
-function makeBet(res,req){
-	var data = req.body.data;
-	var betJSON = {author:req.user.venmo.id, 
+function makeBet(req,res){
+	var testData = {startDate:10000, 
+		endDate:1000000, 
+		frequency: 2, 
+		author:"545fff1a27e4ef0000dc7205",
+		milstones:[{date:100000, author: "545fff1a27e4ef0000dc7205"}]}
+	var testUser = "545fff1a27e4ef0000dc7205";
+	//var data = req.body.data;
+	//var userId = req.body.venmo.id;
+	var data = testData;
+	var userId = testUser;
+	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
 				  endDate:data.endDate,
 				  dropDate:data.dropData,
 				  frequency:data.frequency,
 				  description:data.description,
 				  status: "Action Required",
-				  milestones:store_all_milestones(data.milestones),
+				  milestones:[],
 				  amount: data.amount,
 				  monitors:[],
 				  }
@@ -89,7 +104,9 @@ function makeBet(res,req){
 			utils.sendErrResponse(res, 500, err);
 		}
 		else{
-			utils.sendSuccessResponse(newBet);
+			newBet.milestones = (function (err) {return store_all_milestones(data.milestones);})();
+
+			utils.sendSuccessResponse(res, newBet);
 		}
 	});
 
