@@ -1,4 +1,5 @@
 var nodemailer = require('nodemailer');
+var utils = require('../utils/utils');
 
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
@@ -14,26 +15,35 @@ var transporter = nodemailer.createTransport({
 
 var emailNotifier = {}
 
-emailNotifier.sendNotification = function (user, emailTo){
-
+emailNotifier.sendNotification = function (user, emailTo, res){
+    console.log("email user: " + user);
+    console.log("email reciever: " + emailTo);
+    console.log("res shit: " + res);
     if (user){ // only for sending activation code to user
         // setup e-mail data
+        console.log("user is fuck");
         var mailOptions = {
-            from: user.venmo.name, // sender address
+            from: user.username,//user.venmo.name, // sender address
             to: emailTo, // list of receivers
-            subject: 'Activate Your Account', // Subject line
-            text: "You have a new message on Tim in a Suit.", // plaintext body
-            html: "Hi " + user.username + "," + "<br><br>" + "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login" + user.venmo.id + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
+            subject: 'Ibetcha Invite from Your Friend!', // Subject line
+            text: "You have been invited by your friend to join ibetcha.", // plaintext body
+            html: "Hi " + user.username /*user.venmo.name*/+ "," + "<br><br>" + "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login" + user.username/*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
         };
+        transmitEmail(mailOptions, res);       
     } 
-   
+    
+};
 
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error, info){
+// send mail with defined transport object
+var transmitEmail = function(mail, res) {
+    console.log("inside transmit");
+    transporter.sendMail(mail, function(error, info){
         if(error){
             console.log(error);
+            utils.sendErrResponse( res, 500, error);
         }else{
             console.log('Message sent: ' + info.response);
+            utils.sendSuccessResponse(res, "success");
         }
     });
 }

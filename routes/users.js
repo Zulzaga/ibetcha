@@ -66,12 +66,16 @@ router.post('/signup', function(req, res, next) {
 router.post('/signupTest', function(req, res) {
     var venmo = req.body.venmo;
     var username = req.body.username;
+    console.log("singup test", req.body);
+    console.log("singup test", req.body.venmo);
+    console.log("singup test", req.body.username);
     var newUser = new User({venmo:venmo, username:username});
     newUser.save(function(error, newUser) {
       if(error) {
           utils.sendErrResponse(res, 500, error);
       } else {
-          req.user = newUser;
+          req.session.user = newUser;
+          console.log("req user is : " + req.session.user);
           utils.sendSuccessResponse(res, newUser);
       }
     });
@@ -80,13 +84,21 @@ router.post('/signupTest', function(req, res) {
 
 router.post('/invite', function(req, res) {
     console.log(req.body);
+    console.log(req.query);
     var friendlist = req.body.friendlist;
     console.log("friendlist: " + friendlist);
     friendlist.forEach(function(element, index, array) {
         console.log("inside invite method: " + element);
-        emailNotifier.sendNotification(req.user, element);
+        emailNotifier.sendNotification(req.user, element, res);
     });
-})
+});
+
+router.post('/inviteSingle', function(req, res) {
+    console.log("dddddd %j", req.body);
+    console.log("dddddd" + JSON.stringify(req.body));
+    console.log("eeeee %j", req.params);
+    emailNotifier.sendNotification(req.session.user, [req.body.friend], res);
+});
 
 // router.get('/auth/facebook', passport.authenticate('facebook'));
 

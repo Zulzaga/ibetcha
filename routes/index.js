@@ -14,6 +14,9 @@ router.get('/', function(req, res) {
 	if (req.query["venmo_challenge"]) {
 		res.send(req.query["venmo_challenge"]);
 	}
+	else{
+		res.send("No venmo query");
+	}
 });
 
 router.get('/auth/venmo', passport.authenticate('venmo', {
