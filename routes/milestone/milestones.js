@@ -42,7 +42,7 @@ var store_all_milestones = function(res, MilestonesArray){
 
 // GET /milestones (TEMP FUNCTION FOR TESTING PURPOSES)
 // Request parameters/body:
-//     - none
+//     - none 
 // Response:
 //     - success: true if all the milestones are successfully retrieved
 //     - content: all milestone objects returned as a JSON
