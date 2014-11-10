@@ -49,34 +49,34 @@ app.use('/bets', bets);
 app.use('/milestones', milestones);
 app.use('/test', test);
 
-// // strategy for authentication
-// passport.use(new VenmoStrategy({
-//     clientID: "2088",
-//     clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
-//     callbackURL: "http://localhost:5000/users/"
-//     },
+// strategy for authentication
+passport.use(new VenmoStrategy({
+    clientID: "2088",
+    clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
+    callbackURL: "http://localhost:5000/users/"
+    },
 
-//     function(accessToken, refreshToken, venmo, done) {
-//         User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
-//             if (err) { 
-//                 return done(err); 
-//             } else if (user) {
-//                 return done(null, user);
-//             } else {
-//                 // if there is no user found with that facebook id, create them
-//                 User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
-//                     if (err) {
-//                         return done(err);
-//                     } else if (user === null){
-//                         return done(null, false, { error: "Could not create a new user!", success: false });
-//                     } else {
-//                         return done(null, user);
-//                     }
-//                 })
-//             }
-//     });
-//   }
-// ));
+    function(accessToken, refreshToken, venmo, done) {
+        User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
+            if (err) { 
+                return done(err); 
+            } else if (user) {
+                return done(null, user);
+            } else {
+                // if there is no user found with that facebook id, create them
+                User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
+                    if (err) {
+                        return done(err);
+                    } else if (user === null){
+                        return done(null, false, { error: "Could not create a new user!", success: false });
+                    } else {
+                        return done(null, user);
+                    }
+                })
+            }
+    });
+  }
+));
 
 
 passport.use('login', new LocalStrategy({
