@@ -6,7 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoose = require('mongoose');
-var passport = require('passport')
+var passport = require('passport');
+var passwordHash = require('password-hash');
+var LocalStrategy = require('passport-local').Strategy;
 var VenmoStrategy = require('passport-venmo').Strategy;
 
 var routes = require('./routes/index');
@@ -46,33 +48,95 @@ app.use('/bets', bets);
 app.use('/milestones', milestones);
 app.use('/test', test);
 
-// strategy for authentication
-passport.use(new VenmoStrategy({
-    clientID: "2088",
-    clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
-    callbackURL: "http://localhost:5000/users/"
-    },
+// // strategy for authentication
+// passport.use(new VenmoStrategy({
+//     clientID: "2088",
+//     clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
+//     callbackURL: "http://localhost:5000/users/"
+//     },
 
-    function(accessToken, refreshToken, venmo, done) {
-        User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
-            if (err) { 
-                return done(err); 
-            } else if (user) {
-                return done(null, user);
-            } else {
-                // if there is no user found with that facebook id, create them
-                User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
-                    if (err) {
-                        return done(err);
-                    } else if (user === null){
-                        return done(null, false, { error: "Could not create a new user!", success: false });
-                    } else {
-                        return done(null, user);
+//     function(accessToken, refreshToken, venmo, done) {
+//         User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
+//             if (err) { 
+//                 return done(err); 
+//             } else if (user) {
+//                 return done(null, user);
+//             } else {
+//                 // if there is no user found with that facebook id, create them
+//                 User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
+//                     if (err) {
+//                         return done(err);
+//                     } else if (user === null){
+//                         return done(null, false, { error: "Could not create a new user!", success: false });
+//                     } else {
+//                         return done(null, user);
+//                     }
+//                 })
+//             }
+//     });
+//   }
+// ));
+
+
+passport.use('login', new LocalStrategy({
+    passReqToCallback: true
+    }, function(req, username, password, done) {
+        if (req.user) {
+            return done(null, req.user);
+        } else {
+            // find a user in Mongo with provided username
+            User.findOne({'username': username}, function(err, user) {
+                // In case of any error return
+                if (err){
+                    return done(err);
+                }
+                // already exists
+                if (!user) {
+                    return done(null, false, {error: 'User does not exist', success: false});
+                } else {
+                    if (!passwordHash.verify(password, user.password)) {
+                        return done(null, false, {error: 'Wrong username and password combination!', success: false});
                     }
-                })
-            }
-    });
-  }
+
+                    return done(null, user);
+                }
+            });
+        }
+    }
+));
+
+passport.use('signup', new LocalStrategy({
+    passReqToCallback: true
+    },
+    function(req, username, password, done) {
+        if (req.user) {
+            return done(null, req.user);
+        } else {
+            // find a user in Mongo with provided username
+            User.findOne({'username': username}, function(err, user) {
+                // In case of any error return
+                if (err){
+                    return done(err);
+                }
+                // already exists
+                if (user) {
+                    return done(null, false, {error: 'User already exists', success: false});
+                } else {
+                    // if there is no user with that email
+                    // create the user
+                    User.create(req.body.username, req.body.password, req.body.email, function (err, user) {
+                        if (err) {
+                            return done(err);
+                        } else if (user === null){
+                            return done(null, false, { error: "Could not create a new user!", success: false });
+                        } else {
+                            return done(null, user);
+                        }
+                    })
+                }
+            });
+        }
+    }
 ));
 
 // catch 404 and forward to error handler

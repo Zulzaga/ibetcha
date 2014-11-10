@@ -13,6 +13,10 @@ var milestoneStatus = [
 var milestonesSchema = new Schema({
 	date:Date,
 	
+	bet:{
+		type: ObjectId,
+		ref: 'Bet'
+	},
 	author:{
 		type: ObjectId,
 		ref: 'User'
