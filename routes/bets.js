@@ -137,10 +137,16 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 
 function makeBet(req,res){
 	//adding logic stuff TBD
+	//console.log("Once testing");
 	var milestones_JSONs = generate_milestones(req.body.startDate, req.body.endDate, req.body.frequency);
-	var data = req.body.data;
-	var userId = req.user._id;
+	var data = req.body;
 
+	if (data.test){
+		var userId = "545fff1a27e4ef0000dc7205";
+	}
+	else{
+		var userId = req.user._id;
+	}
 	//var data = testData;
 	//var userId = testUser;
 	

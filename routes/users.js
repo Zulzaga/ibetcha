@@ -56,7 +56,8 @@ router.post('/signup', function(req, res, next) {
                   if (err) { 
                         utils.sendErrResponse(res, 500, 'There was an error!');
                   } else {
-                        utils.sendSuccessResponse(res, formatUser(newUser));
+                        res.json({success:true});
+                        // utils.sendSuccessResponse(res, formatUser(newUser));
                   }
                 }); 
             }
@@ -145,7 +146,8 @@ router.post('/login', function(req, res, next) {
                 if (err) { 
                     utils.sendErrResponse(res, 500, 'There was an error!');
                 } else {
-                    utils.sendSuccessResponse(res, formatUser(newUser));
+                    res.json({success:true});
+                    // utils.sendSuccessResponse(res, formatUser(newUser));
                 }
             }); 
         }
