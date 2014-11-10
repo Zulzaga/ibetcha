@@ -61,7 +61,6 @@ router.get('/:bet_id', function(req, res) {
   });
 });
 
-
 //Helper
 function validateBetData(data){
 	var result = true;
