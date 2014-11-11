@@ -12,136 +12,107 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
- // Create new user
-  $.ajax({
-    url: urlString + "bets",
+// Login
+$.ajax({
+    url: urlString + "users/login",
     type: "POST",
     dataType:"json",
-    data: { 
-      test: true,
-      startDate:10000, 
-      endDate:1000000, 
-      frequency: 2, 
-      amount: 30,
-      author:"545fff1a27e4ef0000dc7205",
-      milestones:[{date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"}]
+    data: {
+      username: "butts",
+      email:"dhlim@mit.edu",
+      password:"butts"
     },
-
     async: false,
     success: function(data, textStatus, jqXHR) {
-      QUnitTesting("Create new Bet", data.success===true);
+      console.log('dataaa');
+      QUnitTesting("User login", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new Bet but error", false);
+      QUnitTesting("User login", false);
     }
-  });
-  
-
-asyncTest("Testing logging in with wrong credentials", function() {
-	$.ajax({
-		url: "http://tim-kkatongo.rhcloud.com/users/login",
-		type: "POST",
-		dataType: "json",
-		data: { username: "Zulaa", password: "13" },
-		xhrFields: { withCredentials: true },
-		success : function(data) {
-			ok(data.error === "Wrong username and password combination!", "Testing login");
-			start();
-		}
-	});
 });
 
-asyncTest("Testing logging out with wrong credentials", function() {
-	$.ajax({
-		url: "http://tim-kkatongo.rhcloud.com/users/logout",
-		type: "GET",
-		dataType: "json",
-		xhrFields: { withCredentials: true },
-		success : function(data) {
-			ok(data.error === "No logged in user!", "Testing login");
-			start();
-		}
-	});
-});
-
-asyncTest("Testing succesful login", function() {
-	$.ajax({
-		url: "http://tim-kkatongo.rhcloud.com/users/login",
-		type: "POST",
-		dataType: "json",
-		data: { username: "Zulaa", password: "11" },
-		xhrFields: { withCredentials: true },
-		success : function(data) {
-			ok(data.message === "Succesfully logged in!", "Testing successful login");
-			start();
-		}
-	});
-});
-
-asyncTest("Testing getting user reviews", function() {
-	$.ajax({
-		url: "http://tim-kkatongo.rhcloud.com/users/5447103e44a02700002e27c4/reviews",
-		type: "GET",
-		dataType: "json",
-		xhrFields: { withCredentials: true },
-		success : function(data) {
-			ok(data.message !== undefined, "Testing getting user reviews");
-			start();
-		}
-	});
-});
-
-asyncTest("Testing getting user review by review id", function() {
-	$.ajax({
-		url: "http://tim-kkatongo.rhcloud.com/users/54446f225db0bd9721eeda11/reviews/544722987eca0f0000250327",
-		type: "GET",
-		dataType: "json",
-		xhrFields: { withCredentials: true },
-		success : function(data) {
-			ok(data.message.user === "Katongo", "Testing getting user review by id");
-			start();
-		}
-	});
-});
-
-asyncTest("Testing logout", function() {
-	$.ajax({
-		url: "http://tim-kkatongo.rhcloud.com/users/logout",
-		type: "GET",
-		dataType: "json",
-		xhrFields: { withCredentials: true },
-		success : function(data) {
-			ok(data.message === "Succesfully logged out!", "Testing logout");
-			start();
-		}
-	});
-});
-=======
-
-// // Create new user
-// $.ajax({
-//     url: urlString + "users/signup",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "butts",
-//       email:"dhlim@mit.edu",
-//       password:"butts"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("Create new user1", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("Create new user1", false);
-//     }
+//  // Create new user
+// asyncTest("Testing logging in with wrong credentials", function() {
+// 	$.ajax({
+// 		url: "http://tim-kkatongo.rhcloud.com/users/login",
+// 		type: "POST",
+// 		dataType: "json",
+// 		data: { username: "Zulaa", password: "13" },
+// 		xhrFields: { withCredentials: true },
+// 		success : function(data) {
+// 			ok(data.error === "Wrong username and password combination!", "Testing login");
+// 			start();
+// 		}
+// 	});
 // });
+
+// asyncTest("Testing logging out with wrong credentials", function() {
+// 	$.ajax({
+// 		url: "http://tim-kkatongo.rhcloud.com/users/logout",
+// 		type: "GET",
+// 		dataType: "json",
+// 		xhrFields: { withCredentials: true },
+// 		success : function(data) {
+// 			ok(data.error == "No logged in user!", "Testing login");
+// 			start();
+// 		}
+// 	});
+// });
+
+// asyncTest("Testing succesful login", function() {
+// 	$.ajax({
+// 		url: "http://tim-kkatongo.rhcloud.com/users/login",
+// 		type: "POST",
+// 		dataType: "json",
+// 		data: { username: "Zulaa", password: "11" },
+// 		xhrFields: { withCredentials: true },
+// 		success : function(data) {
+// 			ok(data.message == "Succesfully logged in!", "Testing successful login");
+// 			start();
+// 		}
+// 	});
+// });
+
+// asyncTest("Testing getting user reviews", function() {
+// 	$.ajax({
+// 		url: "http://tim-kkatongo.rhcloud.com/users/5447103e44a02700002e27c4/reviews",
+// 		type: "GET",
+// 		dataType: "json",
+// 		xhrFields: { withCredentials: true },
+// 		success : function(data) {
+// 			ok(data.message != undefined, "Testing getting user reviews");
+// 			start();
+// 		}
+// 	});
+// });
+
+// asyncTest("Testing getting user review by review id", function() {
+// 	$.ajax({
+// 		url: "http://tim-kkatongo.rhcloud.com/users/54446f225db0bd9721eeda11/reviews/544722987eca0f0000250327",
+// 		type: "GET",
+// 		dataType: "json",
+// 		xhrFields: { withCredentials: true },
+// 		success : function(data) {
+// 			ok(data.message.user == "Katongo", "Testing getting user review by id");
+// 			start();
+// 		}
+// 	});
+// });
+
+// asyncTest("Testing logout", function() {
+// 	$.ajax({
+// 		url: "http://tim-kkatongo.rhcloud.com/users/logout",
+// 		type: "GET",
+// 		dataType: "json",
+// 		xhrFields: { withCredentials: true },
+// 		success : function(data) {
+// 			ok(data.message == "Succesfully logged out!", "Testing logout");
+// 			start();
+// 		}
+// 	});
+// });
+
 
 // $.ajax({
 //   url: urlString + "users/logout",
