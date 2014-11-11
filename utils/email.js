@@ -21,13 +21,13 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
     console.log("res shit: " + res);
     if (user){ // only for sending activation code to user
         // setup e-mail data
-        console.log("user is fuck");
+        console.log("user is fuck", msg.receiver);
         var mailOptions = {
             from: user.username,//user.venmo.name, // sender address
             to: emailTo, // list of receivers
-            subject: 'Ibetcha Invite from Your Friend!', // Subject line
-            text: "You have been invited by your friend to join ibetcha.", // plaintext body
-            html: "Hi " + user.username /*user.venmo.name*/+ "," + "<br><br>" + msg + user.username/*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
+            subject: msg.subject, // Subject line
+            text: msg.text, // plaintext body
+            html: "Hi " + msg.receiver /*user.venmo.name*/+ "," + "<br><br>" + msg.body /*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
         };
         transmitEmail(mailOptions, res);       
     } 

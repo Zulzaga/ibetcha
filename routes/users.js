@@ -42,8 +42,11 @@ router.get('/', function(req, res) {
 
 
 router.post('/signup', function(req, res, next) {
+    console.log("inside signup function");
     if (req.user) {
-        res.redirect('/');
+        console.log("rebound...");
+        //res.redirect('/');
+        utils.sendErrResponse(res, 500, 'There was an error!');
     } else {
         passport.authenticate('signup', function(err, newUser, info){
             if (err) {
@@ -56,8 +59,7 @@ router.post('/signup', function(req, res, next) {
                   if (err) { 
                         utils.sendErrResponse(res, 500, 'There was an error!');
                   } else {
-                        res.json({success:true});
-                        // utils.sendSuccessResponse(res, formatUser(newUser));
+                        utils.sendSuccessResponse(res, {success:true});
                   }
                 }); 
             }
@@ -66,27 +68,44 @@ router.post('/signup', function(req, res, next) {
 });
 
 
-// router.post('/invite', function(req, res) {
-//     console.log(req.body);
-//     console.log(req.query);
-//     var friendlist = JSON.parse(req.body.friendlist);
-//     console.log("friendlist: " + friendlist, typeof(friendlist));
-//     var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
-//     friendlist.forEach(function(element, index, array) {
-//         console.log("inside invite method: " + element);
-//         emailNotifier.sendNotification(req.session.user, [element], res, msg);
-//     });
-// });
-
 router.post('/emailinvite', function(req, res) {
-    var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
-    console.log("req.user is this", req.user);
-    emailNotifier.sendNotification(req.user, [req.body.friend], res, msg);
+    var msg = {
+      body: "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login",
+      subject: "Ibetcha Invite from Your Friend!",
+      text: "You have been invited by your friend to join ibetcha.",
+      receiver: req.body.friendName
+    };
+    console.log("req.user is this", req.user, req.body.friendName);
+    emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
 
-router.post('/emailfriend', function(req, res) {
-    var msg = "Please go the following link to confirm friendship:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/acceptfriend/"+req.user.username;
-    emailNotifier.sendNotification(req.user, [req.body.friend], res, msg);
+router.post('/acceptfriend/:friend/by/:me', function(req, res) {
+    var accepted = req.params.friend;
+    console.log("accepted: ", accepted);
+    User.findOne({username:accepted}, function(error, user) {
+        if(error) { // error handling
+            utils.sendErrResponse(res, 500, error);
+        }
+        else if (user) {
+          console.log("fuck you guys");
+          utils.sendSuccessResponse(res, user);
+        }
+    });
+    
+});
+
+
+router.post('/askfriend', function(req, res) {
+    var msg = {
+      body: "Please go the following link to confirm friendship:" + "<br><br>" 
+          + "http://ibetcha-mit.herokuapp.com/acceptfriend/"+req.user.username
+          +"/by/"+req.body.friendName,
+      subject: "Ibetcha Invite from Your Friend!",
+      text: "You have been invited by your friend to join ibetcha.",
+      receiver: req.body.friendName
+    };
+    
+    emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
 
 // router.post('/askfriend/:username', function(req, res) {
@@ -94,33 +113,6 @@ router.post('/emailfriend', function(req, res) {
 //     var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
 // })
 
-router.post('/acceptfriend', function(req, res) {
-    console.log('inside makefriend');
-    
-})
-
-// GET /users
-// Request parameters:
-//     - none
-// Response:
-//     - success: true if all users were successfully retrieved
-//     - content: TDB
-//     - err: on failure, an error message
-router.get('/', function(req, res) {
-    User.find({}, function (err, users) {
-        if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
-        } else {
-            utils.sendSuccessResponse(res, users);
-        }
-    });
-});
-
-// router.get('/auth/facebook', passport.authenticate('facebook'));
-
-// router.get('/auth/facebook/callback', 
-//   passport.authenticate('facebook', { successRedirect: '/',
-//                                       failureRedirect: '/login' }));
 
 // GET /users/login
 // Request body/parameters: (note req.body for forms)
@@ -164,7 +156,7 @@ router.post('/login', function(req, res, next) {
 router.get('/:user_id', isAuthenticated, function(req, res) {
     User.findById( req.params.userId, function (err, user) {
         if (err){
-          utils.sendErrResponse(res, 500, 'There was an error!')
+          utils.sendErrResponse(res, 500, 'There was an error!');
         } else {
           utils.sendSuccessResponse(res, user);
         }
@@ -202,9 +194,13 @@ router.get('/friends/:user_id', isAuthenticated, function(req, res) {
 router.get('/logout', function(req, res) {
     if (req.user) {
         req.logout();
+        req.user = undefined;
+        utils.sendSuccessResponse(res, {success:true});
+    } else {
+        utils.sendErrResponse(res, 500, 'There was an error!');
     }
     
-    res.redirect('/users/');
+    //res.redirect('/users/');
 });
 
 

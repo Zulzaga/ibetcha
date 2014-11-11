@@ -13,73 +13,15 @@ var compareResponseText = function(jqXHR, expectedString) {
 };
 
 
-// Create new user
-$.ajax({
-    url: urlString + "users/signup",
-    type: "POST",
-    dataType:"json",
-    data: {
-      //login related information:
-      // venmo: JSON.stringify({
-      //   id: 12345,
-      //   token: "thisistoken",
-      //   name: "falafel",
-      //   email: "test@test.com"
-      // }),
-      username: "butts",
-      email:"dhlim@mit.edu",
-      password:"butts"
-    },
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
-      QUnitTesting("Create new user1", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new user1", false);
-    }
-});
 
 
-
-
-// // Create new user
-// $.ajax({
-//     url: urlString + "users/signupTest",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       //login related information:
-//       venmo: JSON.stringify({
-//         id: 54321,
-//         token: "testtoken",
-//         name: "jonathan",
-//         email: "dhlim@mit.edu"
-//       }),
-//       username: "fff**k"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       QUnitTesting("Create new user2", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("Create new user2", false);
-//     }
-// });
-
-
-var emails = {
-  friendlist: JSON.stringify(["ibetcha@mit.edu", "dhlim@mit.edu"])
-};
-
-console.log("friendlist", emails.friendlist);
-
-// Email
+// Email invite to join ibetcha
 $.ajax({
   url: urlString + "users/emailinvite",
   type: "POST",
   //dataType: "script",
-  data: {friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'},
+  data: {friendEmail: '"Ibetcha Receiver" <hyuglim@gmail.com>',
+         friendName: "Friend Ash"},
   //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
   async: false,
   success: function(data, textStatus, jqXHR) {
@@ -90,17 +32,44 @@ $.ajax({
   }
 });
 
-// Email
-// $.ajax({
-//   url: urlString + "users/emailinvite",
-//   type: "POST",
-//   data: emails,
-//   dataType: "json",
-//   async: false,
-//   success: function(data, textStatus, jqXHR) {
-//     QUnitTesting("Email friends", data.success === true);
-//   },
-//   error: function(jqXHR, textStatus, err) {
-//     QUnitTesting("Email friends", false);
-//   }
-// });
+
+// Email invite to be a friend
+$.ajax({
+  url: urlString + "users/askfriend",
+  type: "POST",
+  //dataType: "script",
+  data: {
+    friendEmail: '"Future friend" <hyuglim@gmail.com>',
+    friendName: 'Friend Barney'
+  },
+  //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    QUnitTesting("Ask friend request", data.success === true);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Ask friend request", false);
+  }
+});
+
+var friend = "butts";
+var me = ""
+
+// Email invite to accept a friend
+$.ajax({
+  url: urlString + "users/acceptfriend/" + friend,
+  type: "POST",
+  //dataType: "script",
+  data: {
+    friendEmail: '"Future friend" <hyuglim@gmail.com>',
+    friendName: 'Friend Barney'
+  },
+  //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    QUnitTesting("Ask friend request", data.success === true);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Ask friend request", false);
+  }
+});
