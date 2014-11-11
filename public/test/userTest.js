@@ -18,9 +18,9 @@ $.ajax({
     type: "POST",
     dataType:"json",
     data: {
-      username: "butts",
-      email:"dhlim@mit.edu",
-      password:"butts"
+      username: "Zulaa",
+      email:"zulsar@mit.edu",
+      password:"11"
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
@@ -29,6 +29,21 @@ $.ajax({
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("User login", false);
+    }
+});
+
+// Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
     }
 });
 

@@ -95,6 +95,8 @@ router.get('/', function(req, res) {
     User.find({}, function (err, users) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
+        } else if (users === null){
+            utils.sendSuccessResponse(res, "No users found!");
         } else {
             utils.sendSuccessResponse(res, users);
         }
