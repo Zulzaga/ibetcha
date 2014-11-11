@@ -12,45 +12,45 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
-// // Logging in with wrong credentials
-// $.ajax({
-//     url: urlString + "users/login",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "Zulaa",
-//       email:"zulsar@mit.edu",
-//       password:"113"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("User login", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("User logging in with wrong credentials", false);
-//     }
-// });
+// Logging in with wrong credentials
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Zulaa",
+      email:"zulsar@mit.edu",
+      password:"113"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logging in with wrong credentials", false);
+    }
+});
 
-// Login
-// $.ajax({
-//     url: urlString + "users/login",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "Zulaa",
-//       email:"zulsar@mit.edu",
-//       password:"11"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("User successful login", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("User login", false);
-//     }
-// });
+Login
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Zulaa",
+      email:"zulsar@mit.edu",
+      password:"11"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User successful login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User login", false);
+    }
+});
 
 // $.ajax({
 //     url: urlString + "users/signup",

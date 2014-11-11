@@ -172,7 +172,8 @@ router.post('/acceptfriend/:friend/by/:me', function(req, res) {
 
 router.post('/askfriend', function(req, res) {
     console.log("********************");
-    req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
+    console.log("req.user is this crap: " + req.user);
+    //req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
     var msg = {
       body: "Please go the following link to confirm friendship:" + "<br><br>" 
           + "http://ibetcha-mit.herokuapp.com/acceptfriend/"+req.user.username
