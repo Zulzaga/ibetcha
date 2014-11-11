@@ -11,20 +11,25 @@ var Milestone = require('../models/Milestone');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	res.render('login');
+	if (req.query["venmo_challenge"]) {
+		res.send(req.query["venmo_challenge"])
+	}
+	else{
+		res.render('login');
+	}
 });
 
-// router.get('/auth/venmo', passport.authenticate('venmo', {
-//     scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
-//     failureRedirect: '/'
-// }), function(req, res) {
-// });
+router.get('/auth/venmo', passport.authenticate('venmo', {
+    scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
+    failureRedirect: '/'
+}), function(req, res) {
+});
 
 
-// router.get('/auth/venmo/callback', passport.authenticate('venmo', {
-//     failureRedirect: '/'
-// }), function(req, res) {
-// 	res.send("hello" + req.user.username);
-// });
+router.get('/auth/venmo/callback', passport.authenticate('venmo', {
+    failureRedirect: '/'
+}), function(req, res) {
+	res.send("hello" + req.user.username);
+});
 
 module.exports = router;

@@ -12,37 +12,44 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
-
-// // Create new user
+// // Logging in with wrong credentials
 // $.ajax({
-//     url: urlString + "users/signup",
+//     url: urlString + "users/login",
 //     type: "POST",
 //     dataType:"json",
 //     data: {
-//       username: "butts",
-//       email:"dhlim@mit.edu",
-//       password:"butts"
+//       username: "Zulaa",
+//       email:"zulsar@mit.edu",
+//       password:"113"
 //     },
 //     async: false,
 //     success: function(data, textStatus, jqXHR) {
 //       console.log('dataaa');
-//       QUnitTesting("Create new user1", data.success === true);
+//       QUnitTesting("User login", data.success === true);
 //     },
 //     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("Create new user1", false);
+//       QUnitTesting("User logging in with wrong credentials", false);
 //     }
 // });
 
+// Login
 // $.ajax({
-//   url: urlString + "users/logout",
-//   type: "GET", 
-//   async: false,
-//   success: function(data, textStatus, jqXHR) {
-//     QUnitTesting("Logout", data.success === true);
-//   }, 
-//   error: function(jqXHR, textStatus, err) {
-//     QUnitTesting("Logout", false);
-//   }
+//     url: urlString + "users/login",
+//     type: "POST",
+//     dataType:"json",
+//     data: {
+//       username: "Zulaa",
+//       email:"zulsar@mit.edu",
+//       password:"11"
+//     },
+//     async: false,
+//     success: function(data, textStatus, jqXHR) {
+//       console.log('dataaa');
+//       QUnitTesting("User successful login", data.success === true);
+//     },
+//     error: function(jqXHR, textStatus, err) {
+//       QUnitTesting("User login", false);
+//     }
 // });
 
 // $.ajax({
@@ -76,25 +83,22 @@ var compareResponseText = function(jqXHR, expectedString) {
 //   }
 // });
 
-
-
-// // Email invite to join ibetcha
-// $.ajax({
-//   url: urlString + "users/emailinvite",
-//   type: "POST",
-//   //dataType: "script",
-//   data: {friendEmail: '"Ibetcha Receiver" <hyuglim@gmail.com>',
-//          friendName: "Friend Ash"},
-//   //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
-//   async: false,
-//   success: function(data, textStatus, jqXHR) {
-//     QUnitTesting("Email friends", data.success === true);
-//   },
-//   error: function(jqXHR, textStatus, err) {
-//     QUnitTesting("Email friends", false);
-//   }
-// });
-
+// Email invite to join ibetcha
+$.ajax({
+  url: urlString + "users/emailinvite",
+  type: "POST",
+  //dataType: "script",
+  data: {friendEmail: '"Ibetcha Receiver" <hyuglim@gmail.com>',
+         friendName: "Friend Ash"},
+  //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    QUnitTesting("Email friends", data.success === true);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Email friends", false);
+  }
+});
 
 // ONLY WORKS AFTER MANUALLY PUTTING IN TWO USERS INTO MONGODB
 
@@ -138,3 +142,19 @@ $.ajax({
     QUnitTesting("Accept friend request", false);
   }
 });
+
+// Logout
+// $.ajax({
+//     url: urlString + "users/logout",
+//     type: "GET",
+//     dataType:"json",
+//     async: false,
+//     success: function(data, textStatus, jqXHR) {
+//       console.log('dataaa');
+//       QUnitTesting("User logout", data.success === true);
+//     },
+//     error: function(jqXHR, textStatus, err) {
+//       QUnitTesting("User logout", false);
+//     }
+// });
+

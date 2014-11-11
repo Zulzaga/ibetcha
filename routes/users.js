@@ -102,6 +102,25 @@ router.get('/', function(req, res) {
 });
 
 
+// GET /users/logout
+// Request parameters/body: (note req.body for forms)
+//     - TBD 
+// Response:
+//     - success: true if the user is successfully logged out
+//     - content: TBD
+//     - err: on failure, an error message
+router.get('/logout', function(req, res) {
+    if (req.user) {
+        req.logout();
+        utils.sendSuccessResponse(res, "Successfully logged out!.");
+    } else {
+        utils.sendErrResponse(res, 401, 'No user logged in.');
+    }
+    
+    //res.redirect('/users/');
+});
+
+
 router.post('/signup', function(req, res, next) {
     console.log("inside signup function");
     if (req.user) {
@@ -151,8 +170,6 @@ router.post('/acceptfriend/:friend/by/:me', function(req, res) {
 });
 
 
-
-
 router.post('/askfriend', function(req, res) {
     console.log("********************");
     req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
@@ -195,7 +212,7 @@ router.post('/login', function(req, res, next) {
             utils.sendErrResponse(res, 500, 'There was an error!');
         } else if (!newUser){
             console.log("2");
-            utils.sendErrResponse(res, 500, info);
+            utils.sendErrResponse(res, 401, info);
         } else {
             req.logIn(newUser, function(err) {
                 if (err) { 
@@ -218,11 +235,13 @@ router.post('/login', function(req, res, next) {
 //     - content: TBD
 //     - err: on failure, an error message
 router.get('/:user_id', isAuthenticated, function(req, res) {
-    User.findById( req.params.userId, function (err, user) {
+    User.findById( req.params.user_id, function (err, user) {
         if (err){
-          utils.sendErrResponse(res, 500, 'There was an error!');
+            utils.sendErrResponse(res, 500, 'There was an error!');
+        } else if (user === null){
+            utils.sendErrResponse(res, 401, 'No such user found!');
         } else {
-          utils.sendSuccessResponse(res, user);
+            utils.sendSuccessResponse(res, formatUser(user));
         }
     });
 });
@@ -247,26 +266,6 @@ router.post('/:user_id', isAuthenticated, function(req, res) {
 router.get('/friends/:user_id', isAuthenticated, function(req, res) {
   res.send('respond with a resource');
 });*/
-
-// GET /users/logout
-// Request parameters/body: (note req.body for forms)
-//     - TBD 
-// Response:
-//     - success: true if the user is successfully logged out
-//     - content: TBD
-//     - err: on failure, an error message
-router.get('/logout', function(req, res) {
-    if (req.user) {
-        req.logout();
-        req.user = undefined;
-        utils.sendSuccessResponse(res, {success:true});
-    } else {
-        utils.sendErrResponse(res, 500, 'There was an error!');
-    }
-    
-    //res.redirect('/users/');
-});
-
 
 router.post('/invite', isAuthenticated, function(req, res) {
 
