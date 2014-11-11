@@ -14,18 +14,18 @@
   };
 
 
-  // Create new user
+  // Create new bet
   $.ajax({
     url: urlString + "bets",
     type: "POST",
     dataType:"json",
     data: { 
       test: true,
-      startDate:10000, 
+      startDate:10000, //DO YOU REALIZE THIS IS AN INTEGER, NOT A DATE?
       endDate:1000000, 
       frequency: 2, 
       amount: 30,
-      author:"545fff1a27e4ef0000dc7205",
+      author:"545fff1a27e4ef0000dc7205", // WHY IS THE AUTHOR HARD CODED? SHOULD BE GETTING FROM REQ.USER
       milestones:[{date:100000, author: "545fff1a27e4ef0000dc7205"},
              {date:100000, author: "545fff1a27e4ef0000dc7205"},
              {date:100000, author: "545fff1a27e4ef0000dc7205"},

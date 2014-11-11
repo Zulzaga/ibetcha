@@ -96,7 +96,7 @@ var compareResponseText = function(jqXHR, expectedString) {
 // });
 
 
-// ONLY WORKS AFTER MANUALLY PUTTING IN DATA INTO MONGODB
+// ONLY WORKS AFTER MANUALLY PUTTING IN TWO USERS INTO MONGODB
 
 // Email invite to be a friend
 $.ajax({
