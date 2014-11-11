@@ -23,6 +23,55 @@ function isAuthenticated(req, res, next) {
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
+var findFriendIds = function(username1, username2, res) {
+    var userId1 = null;
+    var userId2 = null;
+
+    User.findOne({username:username1}, function(error, user1) {
+        if(error) {
+          return false;
+        } else if(user1) {
+          userId1 = user1._id;
+          User.findOne({username:username2}, function(error, user2) {
+              if(error) {
+                return false;
+              } else if(user2) {
+                userId2 = user2._id;
+                console.log("userids", userId1, userId2);
+                console.log("users", user1,'\n', user2, typeof(user1), typeof(user2));
+                console.log("users and hsit", user1._id, user2._id);
+                friendEachOther(userId1, userId2, res);
+              }
+          });
+        }
+    });    
+};
+
+var friendEachOther = function(userid1, userid2, res) {
+    console.log("inside friendEachOther");
+    User.findOneAndUpdate({_id:userid1}, 
+                          {$push: { 'friends' : userid2}},
+                          {safe: true, upsert: true},
+                          function(err1, user1) {
+                            if(err1) {
+                              console.log(error);
+                              utils.sendErrResponse( res, 500, err1);
+                            } else if(user1){
+                              User.findOneAndUpdate({_id:userid2}, 
+                                              {$push: { 'friends' : userid1}},
+                                              {safe: true, upsert: true},
+                                              function(err2, user2) {
+                                                if(err2) {
+                                                  console.log(error);
+                                                  utils.sendErrResponse( res, 500, err2);
+                                                } else if (user2){
+                                                  utils.sendSuccessResponse(res, {success:true});
+                                                }
+                                });
+                            }
+                          });
+}; // end of the method
+
 // GET /users
 // Request parameters:
 //     - none
@@ -69,6 +118,7 @@ router.post('/signup', function(req, res, next) {
 
 
 router.post('/emailinvite', function(req, res) {
+
     var msg = {
       body: "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login",
       subject: "Ibetcha Invite from Your Friend!",
@@ -81,21 +131,19 @@ router.post('/emailinvite', function(req, res) {
 
 router.post('/acceptfriend/:friend/by/:me', function(req, res) {
     var accepted = req.params.friend;
+    var asker = req.params.me;
     console.log("accepted: ", accepted);
-    User.findOne({username:accepted}, function(error, user) {
-        if(error) { // error handling
-            utils.sendErrResponse(res, 500, error);
-        }
-        else if (user) {
-          console.log("fuck you guys");
-          utils.sendSuccessResponse(res, user);
-        }
-    });
+    console.log("asker; ", asker);
     
+    findFriendIds(asker, accepted, res);
 });
 
 
+
+
 router.post('/askfriend', function(req, res) {
+    console.log("********************");
+    req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
     var msg = {
       body: "Please go the following link to confirm friendship:" + "<br><br>" 
           + "http://ibetcha-mit.herokuapp.com/acceptfriend/"+req.user.username
@@ -104,6 +152,7 @@ router.post('/askfriend', function(req, res) {
       text: "You have been invited by your friend to join ibetcha.",
       receiver: req.body.friendName
     };
+    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     
     emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
@@ -130,12 +179,15 @@ router.post('/askfriend', function(req, res) {
 router.post('/login', function(req, res, next) {
     passport.authenticate('login', function(err, newUser, info){
         if (err) {
+            console.log("1");
             utils.sendErrResponse(res, 500, 'There was an error!');
         } else if (!newUser){
+            console.log("2");
             utils.sendErrResponse(res, 500, info);
         } else {
             req.logIn(newUser, function(err) {
                 if (err) { 
+                    console.log("3");
                     utils.sendErrResponse(res, 500, 'There was an error!');
                 } else {
                     res.json({success:true});
