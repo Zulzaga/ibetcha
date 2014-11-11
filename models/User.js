@@ -28,7 +28,8 @@ var userSchema = new Schema({
 	}],
 	friends:[{ //list of friends of the user
 		type: ObjectId,
-		ref: 'User'
+		ref: 'User',
+		unique: true
 	}]
 });
 

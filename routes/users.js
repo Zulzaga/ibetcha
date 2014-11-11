@@ -49,27 +49,39 @@ var findFriendIds = function(username1, username2, res) {
 
 var friendEachOther = function(userid1, userid2, res) {
     console.log("inside friendEachOther");
-    User.findOneAndUpdate({_id:userid1}, 
-                          {$push: { 'friends' : userid2}},
-                          {safe: true, upsert: true},
-                          function(err1, user1) {
-                            if(err1) {
-                              console.log(error);
-                              utils.sendErrResponse( res, 500, err1);
-                            } else if(user1){
-                              User.findOneAndUpdate({_id:userid2}, 
-                                              {$push: { 'friends' : userid1}},
-                                              {safe: true, upsert: true},
-                                              function(err2, user2) {
-                                                if(err2) {
-                                                  console.log(error);
-                                                  utils.sendErrResponse( res, 500, err2);
-                                                } else if (user2){
-                                                  utils.sendSuccessResponse(res, {success:true});
-                                                }
-                                });
-                            }
-                          });
+    User.findOne({_id:userid1}, function(error, user1) {
+        if (error) {
+          console.log("11");
+          utils.sendErrResponse(res, 500, "Internal Error1 has occurred"); 
+        } else if (user1 && user1.friends && user1.friends.indexOf(userid2) == -1) {
+          user1.update({$push: { 'friends' : userid2}}, {upsert: true}, function(error2, model1) {
+            if(error2) {
+              console.log("22");
+              utils.sendErrResponse(res, 500, "Internal Error2 has occurred"); 
+            } else {
+              User.findOne({_id:userid2}, function(error2, user2) {
+                if(user2 && user2.friends && user2.friends.indexOf(userid1) == -1) {
+                  user2.update({$push: { 'friends' : userid1}}, {upsert: true}, function(error3, model2){
+                    if(error3) {
+                      console.log("33");
+                      utils.sendErrResponse(res, 500, "Internal Error3 has occurred"); 
+                    } else {
+                      console.log("44");
+                      utils.sendSuccessResponse(res, {success:true}); 
+                    }
+                  });
+                } else {
+                  console.log("55");
+                  utils.sendErrResponse(res, 500, "You already have4 this friend"); 
+                }
+              });
+            }
+          });
+        } else {
+          console.log("66");
+          utils.sendErrResponse(res, 500, "You already have5 this friend");
+        }
+    });
 }; // end of the method
 
 // GET /users
