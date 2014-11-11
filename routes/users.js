@@ -95,8 +95,6 @@ router.get('/', function(req, res) {
     User.find({}, function (err, users) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
-        } else if (users === null){
-            utils.sendSuccessResponse(res, "No users found!");
         } else {
             utils.sendSuccessResponse(res, users);
         }
@@ -151,8 +149,6 @@ router.post('/acceptfriend/:friend/by/:me', function(req, res) {
     
     findFriendIds(asker, accepted, res);
 });
-
-
 
 
 router.post('/askfriend', function(req, res) {
@@ -258,9 +254,10 @@ router.get('/friends/:user_id', isAuthenticated, function(req, res) {
 //     - content: TBD
 //     - err: on failure, an error message
 router.get('/logout', function(req, res) {
+    console.log("in lofout");
     if (req.user) {
         req.logout();
-        req.user = undefined;
+        console.log("user:", req.user);
         utils.sendSuccessResponse(res, {success:true});
     } else {
         utils.sendErrResponse(res, 500, 'There was an error!');
