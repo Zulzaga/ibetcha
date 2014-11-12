@@ -2,13 +2,22 @@
   var urlString = $('#urlString').text();
   //form dummy bet attributes
   var start_date = new Date();
+  var test_date = new Date();
   start_date.setDate(start_date.getDate());
   var end_date = new Date(start_date);
   end_date.setDate(end_date.getDate() + 7);
   var frequency = 2; //every other day
   var amount = 30;
+  var numTestMilestonesInserted = 2; //will be removed once get logic to generate milestones
   var new_status = "Dropped";
   var new_bet_id;
+  var dummyData = { 
+      test: true,
+      startDate:start_date,//those were milliseconds, not numbers.
+      endDate:end_date, 
+      frequency:frequency, 
+      amount: amount
+    }
   //var new_monitor; need to somehow know someones _id and insert it
 
 function memberCheckObjectId(list, el){
@@ -37,19 +46,8 @@ function memberCheckObjectId(list, el){
     url: urlString + "bets",
     type: "POST",
     dataType:"json",
-    data: { 
-      test: true,
-      startDate:start_date,//those were milliseconds, not numbers.
-      endDate:end_date, 
-      frequency:frequency, 
-      amount: amount,
-      milestones:[{date:start_date, author: "545fff1a27e4ef0000dc7205"},
-             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
-             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
-             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
-             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
-             {date:end_date, author: "545fff1a27e4ef0000dc7205"}]
-    },
+
+    data: dummyData,
 
     async: false,
     success: function(data, textStatus, jqXHR) {
@@ -59,7 +57,7 @@ function memberCheckObjectId(list, el){
       QUnitTesting("Create new Bet: check amount", data.content.amount=== amount);
       QUnitTesting("Create new Bet: check start date", (new Date(data.content.startDate)).toLocaleString()===start_date.toLocaleString());
       QUnitTesting("Create new Bet: check end date", (new Date(data.content.endDate)).toLocaleString()===end_date.toLocaleString());
-      //QUnitTesting("Create new Bet: check milestones", data.content.milestones.length === 5);
+      QUnitTesting("Create new Bet: check milestones", data.content.milestones.length === numTestMilestonesInserted);
 
     },
     error: function(jqXHR, textStatus, err) {
@@ -67,6 +65,7 @@ function memberCheckObjectId(list, el){
     }
   });
 //edit bet: change status
+
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
     type: "PUT",
@@ -87,4 +86,5 @@ $.ajax({
       QUnitTesting("Edit bet: error", false);
     }
   });
+
 

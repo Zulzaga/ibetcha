@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var moment = require('moment');
+moment().format();
 
 //linking collections and utils
 var utils = require('../utils/utils')
@@ -20,14 +22,14 @@ function isAuthenticated(req, res, next) {
 //Helper
 function validateBetData(data){
 	var result = true;
-	var startDate = data.startDate;
-	var endDate = data.endDate;
+	var startDate = (new Date(data.startDate)).valueOf();
+	var endDate = (new Date(data.endDate)).valueOf();
 	var result = startDate<endDate;
 	return result;
 }
 
 //function that handles the logic of generating milestone JSONs
-//availabe frequencies:
+//availabe frequencies so far:
 /*
 1 - daily
 2 - every other day
@@ -36,7 +38,9 @@ function validateBetData(data){
 30 - monthly
 */
 function generate_milestones(startDate, endDate, frequency){
-	return [];
+	var array = []
+	
+	return array;
 }
 
 // POST /bets
@@ -69,9 +73,8 @@ router.put('/:bet_id', function(req, res) {
   var bet_id = req.params.bet_id;
   var new_status = req.body.status; //if null, assumes no status change
   var add_monitor = req.body.monitor; //if null, assumes no monitors should be added
-  Bet.findOne({_id:bet_id}, function(err, bet){
+  Bet.findOne({_id:bet_id}).populate('milestones').exec(function(err, bet){
   	if (err){
-  		console.log("error1");
   		utils.sendErrResponse(res, 500, err);
   	}
   	if (new_status){
@@ -80,15 +83,36 @@ router.put('/:bet_id', function(req, res) {
   	if (add_monitor){
   		//assumes for now that add_monitor is ObjectId
   		bet.monitors.push(add_monitor);
-  	}
+	}
 
   	bet.save(function(err){
   		if (err){
   			utils.sendErrResponse(res, 500, err);
   		}
-  		else{
-  			utils.sendSuccessResponse(res, bet);
-  		}
+
+  		else if (add_monitor){
+	  			//update milestones as well
+		  		Milestone.find({bet:bet_id}, function(err, milestones){
+		  			if (err){
+		  		 		utils.sendErrResponse(res, 500, err);
+		  		 	}
+		  		 	var l = milestones.length;
+		  		 	for (var i=0; i<l; i++){
+		  		 		milestones[i].monitors.push(add_monitor);
+		  		 		milestones.save(function (err){
+		  		 			if (err){
+		  		 				utils.sendErrResponse(res, 500, err);
+		  		 			}
+		  		 		});
+			 		}
+			 		utils.sendSuccessResponse(res, bet);
+			 	});
+	  		}
+
+	  	else{
+	  		utils.sendSuccessResponse(res, bet);
+	  	}
+
   	});
   });
 });
@@ -119,14 +143,11 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 			utils.sendErrResponse(res, 500, err);
 		}
 		Milestone.create(MilestonesArray, function(err){
-
 			if (err){
 				utils.sendErrResponse(res,500, "Cannot post milestones to database")
 			}
 			else{
-
 				for (var i=1; i< arguments.length; ++i){
-					console.log("HERE"+bet.milestones);
 					bet.milestones.push(arguments[i]._id);
 
 				}
@@ -146,16 +167,18 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 
 function makeBet(req,res){
 	//adding logic stuff TBD
-	//console.log("Once testing");
 	var milestones_JSONs = generate_milestones(req.body.startDate, req.body.endDate, req.body.frequency);
 	var data = req.body;
 
+	//check if in testing mode
 	if (data.test){
-		var userId = "545fff1a27e4ef0000dc7205";
+		var userId = "545fff1a27e4ef0000dc7205"; //will remove this line, don't worry Jonathan
+		milestones_JSONs = [{date: new Date()}, {date: new Date()}];
 	}
 	else{
 		var userId = req.user._id;
-	};
+	}
+
 	var status = "Action Required"
 	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
