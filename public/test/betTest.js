@@ -46,6 +46,7 @@ function memberCheckObjectId(list, el){
     url: urlString + "bets",
     type: "POST",
     dataType:"json",
+
     data: dummyData,
 
     async: false,

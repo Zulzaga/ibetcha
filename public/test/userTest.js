@@ -12,6 +12,28 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
+<<<<<<< HEAD
+$.ajax({
+    url: urlString + "users/signup",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "holes",
+      email:"ibetcha@mit.edu",
+      password:"holes"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("Create new user2", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new user2", false);
+    }
+});
+
+=======
+>>>>>>> 65f1783a781a1f9e3e0387532993442e9edd19a8
 // Logging in with wrong credentials
 $.ajax({
     url: urlString + "users/login",
@@ -19,7 +41,10 @@ $.ajax({
     dataType:"json",
     data: {
       username: "Zulaa",
+<<<<<<< HEAD
+=======
       email:"zulsar@mit.edu",
+>>>>>>> 65f1783a781a1f9e3e0387532993442e9edd19a8
       password:"113"
     },
     async: false,
@@ -51,25 +76,6 @@ $.ajax({
       QUnitTesting("User login", false);
     }
 });
-
-// $.ajax({
-//     url: urlString + "users/signup",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "holes",
-//       email:"ibetcha@mit.edu",
-//       password:"holes"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("Create new user2", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("Create new user2", false);
-//     }
-// });
 
 // $.ajax({
 //   url: urlString + "users/logout",
