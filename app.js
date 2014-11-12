@@ -38,6 +38,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({ secret: "top secret", saveUninitialized: true, resave: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -81,27 +82,23 @@ passport.use(new VenmoStrategy({
 passport.use('login', new LocalStrategy({
     passReqToCallback: true
     }, function(req, username, password, done) {
-        if (req.user) {
-            return done(null, req.user);
-        } else {
-            // find a user in Mongo with provided username
-            User.findOne({'username': username}, function(err, user) {
-                // In case of any error return
-                if (err){
-                    return done(err);
+        // find a user in Mongo with provided username
+        User.findOne({'username': username}, function(err, user) {
+            // In case of any error return
+            if (err){
+                return done(err);
+            }
+            // already exists
+            if (!user) {
+                return done(null, false, {error: 'User does not exist', success: false});
+            } else {
+                if (!passwordHash.verify(password, user.password)) {
+                    return done(null, false, {error: 'Wrong username and password combination!', success: false});
                 }
-                // already exists
-                if (!user) {
-                    return done(null, false, {error: 'User does not exist', success: false});
-                } else {
-                    if (!passwordHash.verify(password, user.password)) {
-                        return done(null, false, {error: 'Wrong username and password combination!', success: false});
-                    }
 
-                    return done(null, user);
-                }
-            });
-        }
+                return done(null, user);
+            }
+        });
     }
 ));
 
@@ -109,33 +106,29 @@ passport.use('signup', new LocalStrategy({
     passReqToCallback: true
     },
     function(req, username, password, done) {
-        if (req.user) {
-            return done(null, req.user);
-        } else {
-            // find a user in Mongo with provided username
-            User.findOne({'username': username}, function(err, user) {
-                // In case of any error return
-                if (err){
-                    return done(err);
-                }
-                // already exists
-                if (user) {
-                    return done(null, false, {error: 'User already exists', success: false});
-                } else {
-                    // if there is no user with that email
-                    // create the user
-                    User.create(req.body.username, req.body.password, req.body.email, function (err, user) {
-                        if (err) {
-                            return done(err);
-                        } else if (user === null){
-                            return done(null, false, { error: "Could not create a new user!", success: false });
-                        } else {
-                            return done(null, user);
-                        }
-                    })
-                }
-            });
-        }
+        // find a user in Mongo with provided username
+        User.findOne({'username': username}, function(err, user) {
+            // In case of any error return
+            if (err){
+                return done(err);
+            }
+            // already exists
+            if (user) {
+                return done(null, false, {error: 'User already exists', success: false});
+            } else {
+                // if there is no user with that email
+                // create the user
+                User.create(req.body.username, req.body.password, req.body.email, function (err, user) {
+                    if (err) {
+                        return done(err);
+                    } else if (user === null){
+                        return done(null, false, { error: "Could not create a new user!", success: false });
+                    } else {
+                        return done(null, user);
+                    }
+                })
+            }
+        });
     }
 ));
 

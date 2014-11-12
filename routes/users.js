@@ -126,25 +126,25 @@ router.post('/signup', function(req, res, next) {
     if (req.user) {
         console.log("rebound...");
         //res.redirect('/');
-        utils.sendErrResponse(res, 500, 'There was an error!');
-    } else {
-        passport.authenticate('signup', function(err, newUser, info){
-            if (err) {
-                utils.sendErrResponse(res, 500, 'There was an error!');
-            } else if (!newUser){
-                utils.sendErrResponse(res, 500, info);
-            } else {
+        utils.sendErrResponse(res, 401, 'There was an error!');
+    } 
+    
+    passport.authenticate('signup', function(err, newUser, info){
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error!');
+        } else if (!newUser){
+            utils.sendErrResponse(res, 500, info);
+        } else {
 
-                req.logIn(newUser, function(err) {
-                  if (err) { 
-                        utils.sendErrResponse(res, 500, 'There was an error!');
-                  } else {
-                        utils.sendSuccessResponse(res, {success:true});
-                  }
-                }); 
-            }
-        })(req, res, next);
-    }
+            req.logIn(newUser, function(err) {
+              if (err) { 
+                    utils.sendErrResponse(res, 500, 'There was an error!');
+              } else {
+                    utils.sendSuccessResponse(res, {success:true});
+              }
+            }); 
+        }
+    })(req, res, next);
 });
 
 
@@ -207,6 +207,10 @@ router.post('/askfriend', function(req, res) {
 // });
 
 router.post('/login', function(req, res, next) {
+    if (req.user) {
+        utils.sendErrResponse(res, 401, 'User already logged in!');
+    } 
+
     passport.authenticate('login', function(err, newUser, info){
         if (err) {
             console.log("1");
@@ -220,8 +224,7 @@ router.post('/login', function(req, res, next) {
                     console.log("3");
                     utils.sendErrResponse(res, 500, 'There was an error!');
                 } else {
-                    res.json({success:true});
-                    // utils.sendSuccessResponse(res, formatUser(newUser));
+                    utils.sendSuccessResponse(res, formatUser(newUser));
                 }
             }); 
         }

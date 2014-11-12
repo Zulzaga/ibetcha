@@ -12,59 +12,69 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
-<<<<<<< HEAD
+//Signing up a new user
 $.ajax({
     url: urlString + "users/signup",
     type: "POST",
     dataType:"json",
     data: {
-      username: "holes",
-      email:"ibetcha@mit.edu",
-      password:"holes"
+      username: "Zulaa",
+      email:"zulsar@mit.edu",
+      password:"11"
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
       console.log('dataaa');
-      QUnitTesting("Create new user2", data.success === true);
+      console.log(data);
+      QUnitTesting("Create new user1", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new user2", false);
+      QUnitTesting("Create new user1", false);
     }
 });
 
-=======
->>>>>>> 65f1783a781a1f9e3e0387532993442e9edd19a8
-// Logging in with wrong credentials
+// // Logging in with wrong credentials
+// $.ajax({
+//     url: urlString + "users/login",
+//     type: "POST",
+//     dataType:"json",
+//     data: {
+//       username: "Zulaa",
+//       email:"zulsar@mit.edu",
+//       password:"113"
+//     },
+//     async: false,
+//     success: function(data, textStatus, jqXHR) {
+//       QUnitTesting("User login", data.success === true);
+//     },
+//     error: function(jqXHR, textStatus, err) {
+//    	  console.log(jqXHR.responseText);
+//       QUnitTesting("User logging in with wrong credentials", false);
+//     }
+// });
+
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
+
+//Login
 $.ajax({
     url: urlString + "users/login",
     type: "POST",
     dataType:"json",
     data: {
       username: "Zulaa",
-<<<<<<< HEAD
-=======
-      email:"zulsar@mit.edu",
->>>>>>> 65f1783a781a1f9e3e0387532993442e9edd19a8
-      password:"113"
-    },
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
-      QUnitTesting("User login", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("User logging in with wrong credentials", false);
-    }
-});
-
-Login
-$.ajax({
-    url: urlString + "users/login",
-    type: "POST",
-    dataType:"json",
-    data: {
-      username: "Zulaa",
-      email:"zulsar@mit.edu",
       password:"11"
     },
     async: false,
@@ -77,17 +87,41 @@ $.ajax({
     }
 });
 
-// $.ajax({
-//   url: urlString + "users/logout",
-//   type: "GET", 
-//   async: false,
-//   success: function(data, textStatus, jqXHR) {
-//     QUnitTesting("Logout", data.success === true);
-//   }, 
-//   error: function(jqXHR, textStatus, err) {
-//     QUnitTesting("Logout", false);
-//   }
-// });
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
+
+
+// Creating another new user
+$.ajax({
+    url: urlString + "users/signup",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Dana",
+      email:"dmukusheva@mit.edu",
+      password:"18"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      QUnitTesting("Create new user2", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new user2", false);
+    }
+});
+
 
 // Email invite to join ibetcha
 $.ajax({
@@ -149,18 +183,18 @@ $.ajax({
   }
 });
 
-// Logout
-// $.ajax({
-//     url: urlString + "users/logout",
-//     type: "GET",
-//     dataType:"json",
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("User logout", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("User logout", false);
-//     }
-// });
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
 
