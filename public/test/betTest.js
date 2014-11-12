@@ -43,12 +43,12 @@ function memberCheckObjectId(list, el){
       endDate:end_date, 
       frequency:frequency, 
       amount: amount,
-      milestones:[{date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"},
-             {date:100000, author: "545fff1a27e4ef0000dc7205"}]
+      milestones:[{date:start_date, author: "545fff1a27e4ef0000dc7205"},
+             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
+             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
+             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
+             {date:start_date, author: "545fff1a27e4ef0000dc7205"},
+             {date:end_date, author: "545fff1a27e4ef0000dc7205"}]
     },
 
     async: false,
