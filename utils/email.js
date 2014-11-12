@@ -46,6 +46,6 @@ var transmitEmail = function(mail, res) {
             utils.sendSuccessResponse(res, "success");
         }
     });
-}
+};
 
 module.exports = emailNotifier;

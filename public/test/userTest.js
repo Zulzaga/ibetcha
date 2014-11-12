@@ -12,6 +12,7 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
+<<<<<<< HEAD
 $.ajax({
     url: urlString + "users/signup",
     type: "POST",
@@ -31,6 +32,8 @@ $.ajax({
     }
 });
 
+=======
+>>>>>>> 65f1783a781a1f9e3e0387532993442e9edd19a8
 // Logging in with wrong credentials
 $.ajax({
     url: urlString + "users/login",
@@ -38,6 +41,10 @@ $.ajax({
     dataType:"json",
     data: {
       username: "Zulaa",
+<<<<<<< HEAD
+=======
+      email:"zulsar@mit.edu",
+>>>>>>> 65f1783a781a1f9e3e0387532993442e9edd19a8
       password:"113"
     },
     async: false,
@@ -50,25 +57,25 @@ $.ajax({
     }
 });
 
-// Login
-// $.ajax({
-//     url: urlString + "users/login",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "Zulaa",
-//       email:"zulsar@mit.edu",
-//       password:"11"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("User successful login", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("User login", false);
-//     }
-// });
+Login
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Zulaa",
+      email:"zulsar@mit.edu",
+      password:"11"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User successful login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User login", false);
+    }
+});
 
 // $.ajax({
 //   url: urlString + "users/logout",
@@ -99,7 +106,7 @@ $.ajax({
   }
 });
 
-// ONLY WORKS AFTER MANUALLY PUTTING IN DATA INTO MONGODB
+// ONLY WORKS AFTER MANUALLY PUTTING IN TWO USERS INTO MONGODB
 
 // Email invite to be a friend
 $.ajax({

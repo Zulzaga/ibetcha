@@ -27,36 +27,16 @@ function validateBetData(data){
 }
 
 //function that handles the logic of generating milestone JSONs
+//availabe frequencies:
+/*
+1 - daily
+2 - every other day
+7 - weekly
+14 - every two weeks
+30 - monthly
+*/
 function generate_milestones(startDate, endDate, frequency){
 	return [];
-}
-
-//test function to give out test data
-function give_test_data(){
-	var testData = {
-		startDate:10000, 
-		endDate:1000000, 
-		frequency: 2, 
-		amount: 30,
-		author:"545fff1a27e4ef0000dc7205",
-		milestones:[{date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"},
-				   {date:100000, author: "545fff1a27e4ef0000dc7205"}]
-	};
-	return testData;
 }
 
 // POST /bets
@@ -79,12 +59,38 @@ router.post('/', function(req, res) {
 // PUT /bets/:bet_id
 // Request parameters/body: (note req.body for forms)
 //     - bet_id: a String representation of the MongoDB _id of the bet
+//	   - add_monitor: ObjectId of user who agrred to be monitor
+//	   - status: String, new status
 // Response:
 //     - success: true if the new bet is successfully edited
-//     - content: TBD
+//     - content: updated bet object
 //     - err: on failure, an error message
 router.put('/:bet_id', function(req, res) {
-  res.send('respond with a resource');
+  var bet_id = req.params.bet_id;
+  var new_status = req.body.status; //if null, assumes no status change
+  var add_monitor = req.body.monitor; //if null, assumes no monitors should be added
+  Bet.findOne({_id:bet_id}, function(err, bet){
+  	if (err){
+  		console.log("error1");
+  		utils.sendErrResponse(res, 500, err);
+  	}
+  	if (new_status){
+  		bet.status = new_status;
+  	}
+  	if (add_monitor){
+  		//assumes for now that add_monitor is ObjectId
+  		bet.monitors.push(add_monitor);
+  	}
+
+  	bet.save(function(err){
+  		if (err){
+  			utils.sendErrResponse(res, 500, err);
+  		}
+  		else{
+  			utils.sendSuccessResponse(res, bet);
+  		}
+  	});
+  });
 });
 
 /* GET a bet object. */
@@ -120,7 +126,9 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 			else{
 
 				for (var i=1; i< arguments.length; ++i){
+					console.log("HERE"+bet.milestones);
 					bet.milestones.push(arguments[i]._id);
+
 				}
 			}
 			bet.save(function(err){
@@ -128,7 +136,8 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 					utils.sendErrResponse(res,500, "Cannot post milestones to database");
 				}
 				else{
-					utils.sendSuccessResponse(res,"created Bet");
+
+					utils.sendSuccessResponse(res,bet);
 				}
 			});
 		});
@@ -146,17 +155,15 @@ function makeBet(req,res){
 	}
 	else{
 		var userId = req.user._id;
-	}
-	//var data = testData;
-	//var userId = testUser;
-	
+	};
+	var status = "Action Required"
 	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
 				  endDate:data.endDate,
 				  dropDate:data.dropData,
 				  frequency:data.frequency,
 				  description:data.description,
-				  status: "Action Required",
+				  status: status,
 				  milestones:[],
 				  amount: data.amount,
 				  monitors:[],

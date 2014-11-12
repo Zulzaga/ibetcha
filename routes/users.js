@@ -52,19 +52,19 @@ var friendEachOther = function(userid1, userid2, res) {
     User.findOne({_id:userid1}, function(error, user1) {
         if (error) {
           console.log("11");
-          utils.sendErrResponse(res, 500, "Internal Error1 has occurred"); 
+          utils.sendErrResponse(res, 500, "Internal Error has occurred"); 
         } else if (user1 && user1.friends && user1.friends.indexOf(userid2) == -1) {
           user1.update({$push: { 'friends' : userid2}}, {upsert: true}, function(error2, model1) {
             if(error2) {
               console.log("22");
-              utils.sendErrResponse(res, 500, "Internal Error2 has occurred"); 
+              utils.sendErrResponse(res, 500, "Internal Error has occurred"); 
             } else {
               User.findOne({_id:userid2}, function(error2, user2) {
                 if(user2 && user2.friends && user2.friends.indexOf(userid1) == -1) {
                   user2.update({$push: { 'friends' : userid1}}, {upsert: true}, function(error3, model2){
                     if(error3) {
                       console.log("33");
-                      utils.sendErrResponse(res, 500, "Internal Error3 has occurred"); 
+                      utils.sendErrResponse(res, 500, "Internal Error has occurred"); 
                     } else {
                       console.log("44");
                       utils.sendSuccessResponse(res, {success:true}); 
@@ -72,14 +72,14 @@ var friendEachOther = function(userid1, userid2, res) {
                   });
                 } else {
                   console.log("55");
-                  utils.sendErrResponse(res, 500, "You already have4 this friend"); 
+                  utils.sendErrResponse(res, 500, "You already have this friend"); 
                 }
               });
             }
           });
         } else {
           console.log("66");
-          utils.sendErrResponse(res, 500, "You already have5 this friend");
+          utils.sendErrResponse(res, 500, "You already have this friend");
         }
     });
 }; // end of the method
@@ -172,7 +172,8 @@ router.post('/acceptfriend/:friend/by/:me', function(req, res) {
 
 router.post('/askfriend', function(req, res) {
     console.log("********************");
-    req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
+    console.log("req.user is this crap: " + req.user);
+    //req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
     var msg = {
       body: "Please go the following link to confirm friendship:" + "<br><br>" 
           + "http://ibetcha-mit.herokuapp.com/acceptfriend/"+req.user.username
