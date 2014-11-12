@@ -12,25 +12,43 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
-// // Logging in with wrong credentials
-// $.ajax({
-//     url: urlString + "users/login",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "Zulaa",
-//       email:"zulsar@mit.edu",
-//       password:"113"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("User login", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("User logging in with wrong credentials", false);
-//     }
-// });
+$.ajax({
+    url: urlString + "users/signup",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "holes",
+      email:"ibetcha@mit.edu",
+      password:"holes"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("Create new user2", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new user2", false);
+    }
+});
+
+// Logging in with wrong credentials
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Zulaa",
+      password:"113"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logging in with wrong credentials", false);
+    }
+});
 
 // Login
 // $.ajax({
@@ -49,25 +67,6 @@ var compareResponseText = function(jqXHR, expectedString) {
 //     },
 //     error: function(jqXHR, textStatus, err) {
 //       QUnitTesting("User login", false);
-//     }
-// });
-
-// $.ajax({
-//     url: urlString + "users/signup",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "holes",
-//       email:"ibetcha@mit.edu",
-//       password:"holes"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       console.log('dataaa');
-//       QUnitTesting("Create new user2", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//       QUnitTesting("Create new user2", false);
 //     }
 // });
 
