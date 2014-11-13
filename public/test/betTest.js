@@ -11,6 +11,7 @@
   var numTestMilestonesInserted = 2; //will be removed once get logic to generate milestones
   var new_status = "Dropped";
   var new_bet_id;
+  var milestone_id_to_check;
   var dummyData = { 
       test: true,
       startDate:start_date,//those were milliseconds, not numbers.
@@ -57,6 +58,7 @@ function memberCheckObjectId(list, el){
       QUnitTesting("Create new Bet: check amount", data.content.amount=== amount);
       QUnitTesting("Create new Bet: check start date", (new Date(data.content.startDate)).toLocaleString()===start_date.toLocaleString());
       QUnitTesting("Create new Bet: check end date", (new Date(data.content.endDate)).toLocaleString()===end_date.toLocaleString());
+      milestone_id_to_check = data.content.milestones[0];
       QUnitTesting("Create new Bet: check milestones", data.content.milestones.length === numTestMilestonesInserted);
 
     },
@@ -72,6 +74,7 @@ $.ajax({
     dataType:"json",
     data: { 
       test: true,
+      monitor: true,
       status: new_status,
     },
 
@@ -79,12 +82,33 @@ $.ajax({
     success: function(data, textStatus, jqXHR) {
       QUnitTesting("Edit bet: success message", data.success);
       QUnitTesting("Edit bet: status change", data.content.status ===new_status);
-      //QUnitTesting("Edit bet: add monitor", memberCheckObjectId(data.content.monitors, new_monitor));
+      console.log("added a monitor: "+data.content.monitors.length);
+      QUnitTesting("Edit bet: add monitor", data.content.monitors.length===1);
 
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Edit bet: error", false);
     }
   });
+//milestone put method
+$.ajax({
+    url: urlString + "milestones/"+milestone_id_to_check,
+    type: "PUT",
+    dataType:"json",
+    data: { 
+      test: true,
+      monitor: true,
+      status: "Pending Action",
+    },
 
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      QUnitTesting("Edit milestone: success message", data.success);
+      QUnitTesting("Edit milestone: new status", data.content.status === "Pending Action");
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Edit bet: error", false);
+    }
+  });
 

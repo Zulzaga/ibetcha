@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var moment = require('moment');
+var mongoose = require('mongoose');
+
 moment().format();
 
 //linking collections and utils
 var utils = require('../utils/utils')
-
 var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
@@ -77,6 +78,9 @@ router.put('/:bet_id', function(req, res) {
   	if (err){
   		utils.sendErrResponse(res, 500, err);
   	}
+  	if (req.body.test){
+  		add_monitor = mongoose.Types.ObjectId(); //some dummy id
+  	}
   	if (new_status){
   		bet.status = new_status;
   	}
@@ -84,7 +88,7 @@ router.put('/:bet_id', function(req, res) {
   		//assumes for now that add_monitor is ObjectId
   		bet.monitors.push(add_monitor);
 	}
-
+  	
   	bet.save(function(err){
   		if (err){
   			utils.sendErrResponse(res, 500, err);
@@ -99,7 +103,7 @@ router.put('/:bet_id', function(req, res) {
 		  		 	var l = milestones.length;
 		  		 	for (var i=0; i<l; i++){
 		  		 		milestones[i].monitors.push(add_monitor);
-		  		 		milestones.save(function (err){
+		  		 		milestones[i].save(function (err){
 		  		 			if (err){
 		  		 				utils.sendErrResponse(res, 500, err);
 		  		 			}
@@ -133,6 +137,26 @@ router.get('/:bet_id', function(req, res) {
   	}
   	else{
   		utils.sendSuccessResponse(res, bet);
+  	}
+  });
+});
+
+/* GET bet objects  */
+// GET /bets/:user_id
+// Request parameters/body: (note req.body for forms)
+//     - user_id : a String representation of the MongoDB _id of the user
+// Response:
+//     - success: true if the user with ID user_id is successfully retrieved
+//     - content: a list of bets (Bet objects)
+//     - err: on failure, an error message
+router.get('/:user_id', function(req, res) {
+  var user_id = req.params.user_id;
+  User.findOne({_id:user_id}).populate('bets').exec(function(err, user){
+  	if (err){
+  		utils.sendErrResponse(res, 500, err);
+  	}
+  	else{
+  		utils.sendSuccessResponse(res, user.bets);
   	}
   });
 });
@@ -173,13 +197,13 @@ function makeBet(req,res){
 	//check if in testing mode
 	if (data.test){
 		var userId = "545fff1a27e4ef0000dc7205"; //will remove this line, don't worry Jonathan
-		milestones_JSONs = [{date: new Date()}, {date: new Date()}];
+		milestones_JSONs = [{date: new Date(), status: "Inactive"}, {date: new Date(),status: "Inactive"}];
 	}
 	else{
 		var userId = req.user._id;
 	}
 
-	var status = "Action Required"
+	var status = "Not Started";
 	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
 				  endDate:data.endDate,

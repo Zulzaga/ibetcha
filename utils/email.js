@@ -34,7 +34,19 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
     
 };
 
+emailNotifier.sendReminder = function(emailTo, msg){
+        var mailOptions = {
+            from: "ibetcha",
+            to: emailTo, // list of receivers
+            subject: msg.subject, // Subject line
+            text: msg.text, // plaintext body
+            html: "Hi " + msg.receiver /*user.venmo.name*/+ "," + "<br><br>" + msg.body /*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
+        };
+        transmitEmailAutomated(mailOptions);
+
+}
 // send mail with defined transport object
+//
 var transmitEmail = function(mail, res) {
     console.log("inside transmit");
     transporter.sendMail(mail, function(error, info){
@@ -45,6 +57,21 @@ var transmitEmail = function(mail, res) {
             console.log('Message sent: ' + info.response);
             utils.sendSuccessResponse(res, "success");
         }
+    });
+};
+//send mail in the automated mode
+var transmitEmailAutomated = function(mail) {
+    console.log("inside transmit");
+    var result = true;
+    transporter.sendMail(mail, function(error, info){
+        if(error){
+            console.log(error);
+            result = false;
+
+        } else {
+            console.log('Message sent: ' + info.response);
+        }
+        return result;
     });
 };
 
