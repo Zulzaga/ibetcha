@@ -63,7 +63,7 @@ router.post('/', function(req, res) {
 // PUT /bets/:bet_id
 // Request parameters/body: (note req.body for forms)
 //     - bet_id: a String representation of the MongoDB _id of the bet
-//	   - add_monitor: ObjectId of user who agrred to be monitor
+//	   - add_monitor: ObjectId of user who agreed to be monitor
 //	   - status: String, new status
 // Response:
 //     - success: true if the new bet is successfully edited
@@ -99,7 +99,7 @@ router.put('/:bet_id', function(req, res) {
 		  		 	var l = milestones.length;
 		  		 	for (var i=0; i<l; i++){
 		  		 		milestones[i].monitors.push(add_monitor);
-		  		 		milestones.save(function (err){
+		  		 		milestones[i].save(function (err){
 		  		 			if (err){
 		  		 				utils.sendErrResponse(res, 500, err);
 		  		 			}
