@@ -1,4 +1,5 @@
 var express = require('express');
+var mongoose = require('mongoose');
 var CronJob = require('cron').CronJob;
 var time = require('time');
 var moment = require('moment');
@@ -70,7 +71,7 @@ function makeMilestonePendingAndEmail(){
 	console.log('today: '+today.toString());
 	
 	Milestone
-		.update({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}}, {$set:{status: 'Penging Action'}}, {multi:true})
+		.update({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}}, {$set:{status: 'Pending Action'}}, {multi:true})
 		.populate('monitors')
 		.exec(function (err, milestones){
 			console.log("REMIND THEM: "+milestones);
@@ -89,8 +90,54 @@ function makeMilestonePendingAndEmail(){
 function changeBetStatus(){
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
 						//mongoose searches and converts staff to local
+	
 	cleanDates(today);
+	//not started --> Action Required
+	Bet
+		.update({status: "Not Started", startDate: {$gt: today}}, {$set:{status: 'Action Required'}})
+		.populate('author')
+		.exec(function(err, bets){
+			if (err){
+				console.log("Error while activating bet: "+err);
+			}
+			else{
+				var l = bets.length;
+				for (var i =0; i< l; i++){
+					var bet_id = bets[i]._id;
+					var author = bets[i].author;
+					sendEmailAuthor(author, bet_id, 'Open');
+				}
+			}
+		});
+
+	// after dropDate
+	Bet
+		.update({status: "Action Required", dropDate: {$gt: today}}, {$set:{status: 'Dropped'}})
+		.populate('author')
+		.exec(function(err, bets){
+			if (err){
+				console.log("Error while dropping bet: "+err);
+				return;
+			}
+			var l = bets.length;
+			for (var i=0; i<l; i++){
+				var bet_id = bets[i]._id;
+
+				Milestone
+					.update({bet: bet_id, $or:[{status: "Open"}, {status: "Inactive"}, {status: 'Pending Action'}]}, {$set:{status: 'Closed'}}, {multi:true})
+					.exec(function (err, milestones){
+						if (err){
+							console.log("Error closing milestones: "+err);
+						}
+					});
+				var author = bets[i].author;
+				sendEmailAuthor(author, bet_id, 'Dropped');
+			}
+		});
 }
+//Testing function:
+//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, mongoose.Types.ObjectId(), 'Dropped');
+
 
 // DESCRIPTION:
 //			function run inside the cron job
@@ -103,17 +150,50 @@ function overnightCheck(){
 }
 
 //======================== Emailing out =========================
+//DESCRIPTION:
+//		send emails to the author of the bet
+//INPUT: 
+//		author - User json object
+//		bet_id - ObjectId of the changed Bet
+//		status - String, specifies the email body
+
+//OUTPUT:
+//		nothing
+function sendEmailAuthor(author, bet_id, status){
+	var receiver = author.email;
+	if (status==="Dropped"){
+		var msg = {
+	      body: "This is a notification that your bet was dropped."+ "<br><br>" 
+	          + "You can find your dropped bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id+ " <br><br>"
+	          + ".You will not be charged for this bet.",
+	      subject: "Ibetcha notification for dropping Bet",
+	      text: "Your bet was dropped,"+author.username,
+	      receiver: receiver
+	    };
+	}
+	else if (status ==='Open'){
+		var msg = {
+	      body: "This is a notification that your bet is now up and running."+ "<br><br>" 
+	          + "You can find your active bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + "<br><br>"
+	          + ".Good luck with your resolution!",
+	      subject: "Ibetcha Notification for starting bet",
+	      text: "Your bet is up,"+author.username,
+	      receiver: receiver
+	    };
+
+	}
+    emailNotifier.sendReminder(receiver, msg);
+}
 
 //DESCRIPTION:
 //		send emails to the list of  monitors for each milestone
 //INPUT: 
 //		monitors - list of json User objects
-//		bet_id - bet_id the milestone belong to
+//		bet_id - ObjectId of the bet the milestone belongs to
 //		auhtor - User json object
 
 //OUTPUT:
 //		nothing
-
 function sendEmailReminder(monitors, bet_id, author){
 	var emailList = getMonitorEmails(monitors);
 	for (var i = 0; i<emailList.length; i++){
