@@ -164,8 +164,8 @@ function sendEmailAuthor(author, bet_id, status){
 	if (status==="Dropped"){
 		var msg = {
 	      body: "This is a notification that your bet was dropped."+ "<br><br>" 
-	          + "You can find your dropped bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id+ " <br><br>"
-	          + ".You will not be charged for this bet.",
+	          + "You can find your dropped bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id+ ". <br><br>"
+	          + "You will not be charged for this bet.",
 	      subject: "Ibetcha notification for dropping Bet",
 	      text: "Your bet was dropped,"+author.username,
 	      receiver: receiver
@@ -174,13 +174,37 @@ function sendEmailAuthor(author, bet_id, status){
 	else if (status ==='Open'){
 		var msg = {
 	      body: "This is a notification that your bet is now up and running."+ "<br><br>" 
-	          + "You can find your active bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + "<br><br>"
-	          + ".Good luck with your resolution!",
+	          + "You can find your active bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + ". <br><br>"
+	          + "Good luck with your resolution!",
 	      subject: "Ibetcha Notification for starting bet",
 	      text: "Your bet is up,"+author.username,
 	      receiver: receiver
 	    };
 
+	}
+	else if(status === 'Succeeded'){
+		var msg = {
+	      body: "This is a notification that your bet is now completed."+ "<br><br>" 
+	          + "Congratulations on following thorugh with your resolution!"
+	          + "You can still find your completed bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + ". <br><br>"
+	          + "Good Job!",
+	      subject: "Ibetcha Notification for bet success",
+	      text: "Your bet is successful,"+author.username,
+	      receiver: receiver
+	    };
+
+	}
+	else if(status === 'Failed'){
+		var msg = {
+	      body: "This is a notification that you have failed at your bet."+ "<br><br>" 
+	          + "You can find your closed bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + ". <br><br>"
+	          + "Your account will be charged shortly. :( <br><br>"
+	          + "Better luck next time!",
+	      subject: "Ibetcha Notification for failed bet",
+	      text: "Your bet is up,"+author.username,
+	      receiver: receiver
+	    };
+		
 	}
     emailNotifier.sendReminder(receiver, msg);
 }
@@ -279,20 +303,62 @@ router.get('/:bet_id', function(req, res) {
 //     - err: on failure, an error message
 router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
-	var new_status = req.body.status;
-	Milestone.findById(milestone_id, function(err, doc){
-		if (err){
-			utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
-		}else{
-			doc.status = new_status;
-			doc.save(function(err){
-				if (err){
-					utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
-				}
-				utils.sendSuccessResponse(res,doc);
-			});
-		}
-	})
+	var new_status = req.body.status; //success, failed
+	Milestone
+		.findById(milestone_id)
+		.populate('bet author')
+		.exec(function(err, milestone){
+			if (err){
+				utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
+			}else{
+				milestone.status = new_status;
+				milestone.save(function(err, savedmilestone){
+					if (err){
+						utils.sendErrResponse(res, 500, "Cannot save the milestone")
+					}
+					//new status = success
+					if (new_status === 'Success'){
+						Milestone
+							.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]})
+							.exec(function(err, milestones){
+								if (err){
+									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
+								}
+								if (milestones.length === 0){
+									milestone.bet.status = "Succeeded";
+									milestone.bet.save(function(err){
+										if (err){
+											utils.sendErrResponse(res, 500, "could not update bet status");
+										}
+										// send email to author
+										//sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
+										utils.sendSuccessResponse(res, savedmilestone);
+									})
+								}
+								else{
+									// user received checkoff but bet still ongoing
+									utils.sendSuccessResponse(res, savedmilestone);
+								}
+							});
+					}
+					//other status: failed
+					else{
+						Milestone
+							.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
+							.exec(function(err){
+								if(err){
+									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
+								}
+								//send email
+								//sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+								//charge money here
+								utils.sendSuccessResponse(res, savedmilestone);
+							});
+					}
+				});
+			}
+		});
 });
+
 
 module.exports = router;

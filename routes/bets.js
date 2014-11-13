@@ -251,24 +251,5 @@ router.get('/:bet_id', function(req, res) {
   });
 });
 
-/* GET bet objects  */
-// GET /bets/:user_id
-// Request parameters/body: (note req.body for forms)
-//     - user_id : a String representation of the MongoDB _id of the user
-// Response:
-//     - success: true if the user with ID user_id is successfully retrieved
-//     - content: a list of bets (Bet objects)
-//     - err: on failure, an error message
-router.get('/:user_id', function(req, res) {
-  var user_id = req.params.user_id;
-  User.findOne({_id:user_id}).populate('bets').exec(function(err, user){
-  	if (err){
-  		utils.sendErrResponse(res, 500, err);
-  	}
-  	else{
-  		utils.sendSuccessResponse(res, user.bets);
-  	}
-  });
-});
 
 module.exports = router;
