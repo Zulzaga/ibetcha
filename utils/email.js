@@ -34,6 +34,11 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
     
 };
 
+// DESCRIPTION:
+//         sends reminding emails about pending checkoffs to the list of monitors
+// INPUT:  emailTo - monitor
+//         msg - email details: text, subject, receiver
+// OUTPUT: none
 emailNotifier.sendReminder = function(emailTo, msg){
         var mailOptions = {
             from: "ibetcha",
@@ -59,9 +64,12 @@ var transmitEmail = function(mail, res) {
         }
     });
 };
-//send mail in the automated mode
+// DESCRIPTION:
+//         sends reminding emails inside the cron job, no need to interact with server
+// INPUT:  mail - email details
+// OUTPUT: result - true if success, false otherwise
 var transmitEmailAutomated = function(mail) {
-    console.log("inside transmit");
+    //console.log("inside transmit");
     var result = true;
     transporter.sendMail(mail, function(error, info){
         if(error){

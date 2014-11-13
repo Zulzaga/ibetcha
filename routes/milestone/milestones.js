@@ -1,6 +1,8 @@
 var express = require('express');
 var CronJob = require('cron').CronJob;
 var time = require('time');
+var moment = require('moment');
+moment().format();
 var router = express.Router();
 
 //linking collections and utils 
@@ -11,35 +13,96 @@ var User = require('../../models/User');
 var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
+// TODO:
+// - changeBetStatus 
+// - milestones/:milestone_id PUT method: run additional check on the corresponding
+// 		Bet object to see if the change in Milestone somehow affected the Bet status:
+//		e.g. to see if the Bet is succesfully completed or failed and
+//		send an email asking to confirm money transfer
 
-//AUTOMATED LOGIC
+//================== CRON JOB ==================
 var timezone = (new time.Date()).getTimezone();
 var job = new CronJob({
-  cronTime: '00 46 21 * * *',
+  cronTime: '00 01 00 * * *',
   onTick: function() {
-  	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});	
+  	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
+  	//overnightCheck();	
   },
   start: false,
   timeZone: timezone
 });
-job.start();
+//job.start();
 
-//====== function that run inside the cron job =========
+//================== cron job details =========
+
+// DESCRIPTION:
+//			changes status of the Milestone object from "Inactive"
+//			to "Open" if its effective day is today
+// INPUT: none
+// OUTPUT: none
 function makeMilestoneActive(){
-	var today = new Date();
+	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
+						//mongoose searches and converts staff to local
+	cleanDates(today);
+	var tomorrow = moment();
+	tomorrow.add(1, 'd');
+	cleanDates(tomorrow);
+	console.log('today: '+today.toString());
+	console.log('tmrw: '+tomorrow.toString());
+	
 	Milestone
-		.find({status:"Inactive", date:{$eq:today}})
-		.populate('bet')
+		.update({status:"Inactive", date:{$gte:today, $lt: tomorrow}}, {$set:{status: 'Open'}}, {multi:true})
 		.exec(function (err, milestones){
-			console.log("INACTIVE: "+milestones);
+			//console.log("INACTIVE: "+milestones);
 		});
 }
-makeMilestoneActive();
-function overnightCheck(){
 
+// DESCRIPTION:
+//			changes status of the Milestone object from "Open" or "Pending Action"
+//			to "Pending Action" if its effective date has passed
+// INPUT: none
+// OUTPUT: none
+function makeMilestonePendingAndEmail(){
+	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
+						//mongoose searches and converts staff to local
+	cleanDates(today);
+	//today.add(6,'d'); //for testing, try to see if stuff has changes
+	console.log('today: '+today.toString());
+	
+	Milestone
+		.update({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}}, {$set:{status: 'Penging Action'}}, {multi:true})
+		.populate('monitors')
+		.exec(function (err, milestones){
+			console.log("REMIND THEM: "+milestones);
+			var l = milestones.length;
+			for (var i=0; i<l; i++){
+				//comment out once we can add monitors
+				//sendEmailReminder(milestones[i].monitors, milestones[i].bet, milestones[i].author);
+			}
+		});
+}
+// TBD - need to think more about the transition logic!
+// DESCRIPTION:
+//			changes status of the Bet object based on the Milestones
+// INPUT: none
+// OUTPUT: none
+function changeBetStatus(){
+	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
+						//mongoose searches and converts staff to local
+	cleanDates(today);
 }
 
-//======================== Helpers =========================
+// DESCRIPTION:
+//			function run inside the cron job
+// INPUT: none
+// OUTPUT: none
+function overnightCheck(){
+	makeMilestoneActive();
+	makeMilestonePendingAndEmail();
+	changeBetStatus();
+}
+
+//======================== Emailing out =========================
 
 //DESCRIPTION:
 //		send emails to the list of  monitors for each milestone
@@ -66,6 +129,7 @@ function sendEmailReminder(monitors, bet_id, author){
 	}
 	}
 
+//======================== Helpers =========================
 //DESCRIPTION: 
 //		form a list of emails
 //INPUT: 
@@ -80,6 +144,15 @@ function getMonitorEmails(monitors){
 		emailList.push(monitors[i].email);
 	}
 	return emailList;
+
+}
+function cleanDates(someDate){
+	someDate.millisecond(0);
+	someDate.second(0);
+	someDate.minute(0);
+	someDate.hour(0);
+	//var timezone = (new Date()).getTimezoneOffset(); 
+	//someDate.zone(timezone);
 
 }
 

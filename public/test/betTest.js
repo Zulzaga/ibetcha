@@ -21,7 +21,7 @@
   var fourth_milestone_date = new Date(start_date.valueOf());
   fourth_milestone_date.setDate(fourth_milestone_date.getDate() +7);
 
-  //          Crucial bet data
+  //         Form new Bet data
   var amount = 30;
   var numTestMilestonesInserted = 4; //will be removed once get logic to generate milestones
   var new_status = "Dropped";
@@ -74,7 +74,7 @@
     }
   });
 
-//edit bet: change status
+// Edit bet: change status
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
     type: "PUT",
@@ -98,7 +98,7 @@ $.ajax({
     }
   });
 
-//milestone put method
+// Edit milestone
 $.ajax({
     url: urlString + "milestones/"+milestone_id_to_check,
     type: "PUT",
@@ -116,7 +116,7 @@ $.ajax({
     }
 });
 
-//check milestone dates
+// check Milestone dates (testing generate_milestones function)
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
     type: "GET",
