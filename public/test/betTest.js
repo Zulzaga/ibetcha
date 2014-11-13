@@ -1,11 +1,14 @@
   var urlString = $('#urlString').text();
   //form dummy bet attributes
+
+  //          Making milestone date objects and bet data
   var start_date = new Date();
   var test_date = new Date();
   start_date.setDate(start_date.getDate());
   var end_date = new Date(start_date);
   end_date.setDate(end_date.getDate() + 7);
   var frequency = 2; //every other day
+
   var first_milestone_date = new Date(start_date.valueOf());
   first_milestone_date.setDate(first_milestone_date.getDate() +2);
 
@@ -18,6 +21,7 @@
   var fourth_milestone_date = new Date(start_date.valueOf());
   fourth_milestone_date.setDate(fourth_milestone_date.getDate() +7);
 
+  //          Crucial bet data
   var amount = 30;
   var numTestMilestonesInserted = 4; //will be removed once get logic to generate milestones
   var new_status = "Dropped";
@@ -30,17 +34,7 @@
       frequency:frequency, 
       amount: amount
     }
-  //var new_monitor; need to somehow know someones _id and insert it
 
-function memberCheckObjectId(list, el){
-    var l = list.length;
-    for (var i = 0; i< l; i++){
-        if (el.toString()===list[i].toString()){
-            return true;
-        }
-    }
-    return false;
-}
   // QUnit Test functional
   var QUnitTesting = function(nameOfTest, conditional) {
     QUnit.test(nameOfTest, function(assert) {
@@ -79,8 +73,8 @@ function memberCheckObjectId(list, el){
       QUnitTesting("Create new Bet: error", false);
     }
   });
-//edit bet: change status
 
+//edit bet: change status
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
     type: "PUT",
@@ -103,6 +97,7 @@ $.ajax({
       QUnitTesting("Edit bet: error", false);
     }
   });
+
 //milestone put method
 $.ajax({
     url: urlString + "milestones/"+milestone_id_to_check,
@@ -121,6 +116,7 @@ $.ajax({
     }
 });
 
+//check milestone dates
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
     type: "GET",
@@ -130,13 +126,7 @@ $.ajax({
       status: new_status,
     },
     async: false,
-    success: function(data, textStatus, jqXHR) {
-      // console.log((new Date(data.content.milestones[0].date)).toLocaleString());
-      // console.log(first_milestone_date.toLocaleDateString());
-      // console.log("second");
-      // console.log((new Date(data.content.milestones[1].date)).toLocaleString());
-      // console.log((new Date(data.content.milestones[2].date)).toLocaleString());
-      // console.log((new Date(data.content.milestones[3].date)).toLocaleString());      
+    success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Create new Bet: check first milestone", (new Date(data.content.milestones[0].date)).toLocaleDateString()=== first_milestone_date.toLocaleDateString());
       QUnitTesting("Create new Bet: check second milestone", (new Date(data.content.milestones[1].date)).toLocaleDateString()=== second_milestone_date.toLocaleDateString());
       QUnitTesting("Create new Bet: check third milestone", (new Date(data.content.milestones[2].date)).toLocaleDateString()=== third_milestone_date.toLocaleDateString());

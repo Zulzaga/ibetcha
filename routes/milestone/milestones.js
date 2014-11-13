@@ -12,7 +12,6 @@ var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
 
-
 //AUTOMATED LOGIC
 var timezone = (new time.Date()).getTimezone();
 var job = new CronJob({
@@ -24,6 +23,67 @@ var job = new CronJob({
   timeZone: timezone
 });
 job.start();
+
+//====== function that run inside the cron job =========
+function makeMilestoneActive(){
+	var today = new Date();
+	Milestone
+		.find({status:"Inactive", date:{$eq:today}})
+		.populate('bet')
+		.exec(function (err, milestones){
+			console.log("INACTIVE: "+milestones);
+		});
+}
+makeMilestoneActive();
+function overnightCheck(){
+
+}
+
+//======================== Helpers =========================
+
+//DESCRIPTION:
+//		send emails to the list of  monitors for each milestone
+//INPUT: 
+//		monitors - list of json User objects
+//		bet_id - bet_id the milestone belong to
+//		auhtor - User json object
+
+//OUTPUT:
+//		nothing
+
+function sendEmailReminder(monitors, bet_id, author){
+	var emailList = getMonitorEmails(monitors);
+	for (var i = 0; i<emailList.length; i++){
+		var receiver = emailList[i];
+		var msg = {
+	      body: "There is a pending checkoff for "+author.username + "<br><br>" 
+	          + " follow the link http://ibetcha-mit.herokuapp.com/acceptfriend/",
+	      subject: "Ibetcha Reminder for pending checkoff",
+	      text: "You need to checkoff "+author.username,
+	      receiver: receiver
+	    };
+	    emailNotifier.sendReminder(receiver, msg);
+	}
+	}
+
+//DESCRIPTION: 
+//		form a list of emails
+//INPUT: 
+//		monitors - list of json User objects
+
+//OUTPUT:
+//		list of emails
+function getMonitorEmails(monitors){
+	var l = monitors.length;
+	var emailList = [];
+	for (var i = 0; i<l; i++){
+		emailList.push(monitors[i].email);
+	}
+	return emailList;
+
+}
+
+//======================== API route methods =========================
 
 //Test sending remainders
 //sendEmailReminder([{email:'d.mukusheva@gmail.com'}], 'dummy',{username: "test"});
@@ -81,61 +141,5 @@ router.put('/:milestone_id', function(req, res) {
 		}
 	})
 });
-//====== function that run inside the cron job =========
-function makeMilestoneActive(){
-	var today = new Date();
-	Milestone
-		.find({status:"Inactive", date:{$eq:today}})
-		.populate('bet')
-		.exec(function (err, milestones){
-			console.log("INACTIVE: "+milestones);
-		});
-}
-makeMilestoneActive();
-function overnightCheck(){
 
-}
-//====== helpers =======
-
-//DESCRIPTION:
-//		send emails to the list of  monitors for each milestone
-//INPUT: 
-//		monitors - list of json User objects
-//		bet_id - bet_id the milestone belong to
-//		auhtor - User json object
-
-//OUTPUT:
-//		nothing
-
-function sendEmailReminder(monitors, bet_id, author){
-	var emailList = getMonitorEmails(monitors);
-	for (var i = 0; i<emailList.length; i++){
-		var receiver = emailList[i];
-		var msg = {
-	      body: "There is a pending checkoff for "+author.username + "<br><br>" 
-	          + " follow the link http://ibetcha-mit.herokuapp.com/acceptfriend/",
-	      subject: "Ibetcha Reminder for pending checkoff",
-	      text: "You need to checkoff "+author.username,
-	      receiver: receiver
-	    };
-	    emailNotifier.sendReminder(receiver, msg);
-	}
-	}
-
-//DESCRIPTION: 
-//		form a list of emails
-//INPUT: 
-//		monitors - list of json User objects
-
-//OUTPUT:
-//		list of emails
-function getMonitorEmails(monitors){
-	var l = monitors.length;
-	var emailList = [];
-	for (var i = 0; i<l; i++){
-		emailList.push(monitors[i].email);
-	}
-	return emailList;
-
-}
 module.exports = router;
