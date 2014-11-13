@@ -282,7 +282,6 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 
 function makeBet(req,res){
 	//adding logic stuff TBD
-	var milestones_JSONs = generate_milestones(req.body.startDate, req.body.endDate, req.body.frequency);
 	var data = req.body;
 
 	//check if in testing mode
@@ -307,11 +306,12 @@ function makeBet(req,res){
 				  monitors:[],
 				  }
 	var newBet = new Bet(betJSON);
-	newBet.save(function(err){
+	newBet.save(function(err, bet){
 		if (err){
 			utils.sendErrResponse(res, 500, err);
 		}
 		else{
+			var milestones_JSONs = generate_milestones(userId, bet._id, req.body.startDate, req.body.endDate, req.body.frequency);
 			store_all_milestones(res, milestones_JSONs, newBet._id);
 		}
 	});

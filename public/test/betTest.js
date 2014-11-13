@@ -1,4 +1,3 @@
-
   var urlString = $('#urlString').text();
   //form dummy bet attributes
   var start_date = new Date();
@@ -74,6 +73,7 @@ function memberCheckObjectId(list, el){
       QUnitTesting("Create new Bet: check milestones", data.content.milestones.length === numTestMilestonesInserted);
 
       QUnitTesting("Create new Bet: check number of milestones", data.content.milestones.length === numTestMilestonesInserted);
+
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Create new Bet: error", false);
@@ -118,6 +118,8 @@ $.ajax({
     success: function(data, textStatus, jqXHR) {
       QUnitTesting("Edit milestone: success message", data.success);
       QUnitTesting("Edit milestone: new status", data.content.status === "Pending Action");
+    }
+});
 
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
