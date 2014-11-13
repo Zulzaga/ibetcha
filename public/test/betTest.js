@@ -8,8 +8,10 @@
   start_date.setDate(start_date.getDate());
   var end_date = new Date(start_date);
   end_date.setDate(end_date.getDate() + 7);
+  
   var tomorrow = new Date(start_date);
-  tomorrow.setDate(end_date.getDate() + 1);
+  tomorrow.setDate(start_date.getDate() + 1);
+
   var frequency = 2; //every other day
   var frequencyDaily = 1;
   var first_milestone_date = new Date(start_date.valueOf());
@@ -40,7 +42,7 @@
     }
     var dummyData2 = { 
       test: true,
-      startDate:start_date,//those were milliseconds, not numbers.
+      startDate:start_date,
       endDate:tomorrow, 
       frequency:frequencyDaily, 
       amount: amount
@@ -146,7 +148,7 @@ $.ajax({
   });
 
   // change milestone status to Failed and look at the bet status
-  .ajax({
+  $.ajax({
     url: urlString + "milestones/"+singleMilestoneId,
     type: "PUT",
     dataType:"json",
@@ -158,6 +160,7 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Fail milestone: success message", data.success);
+      console.log("bet status: "+data.content.bet.status);
       QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
 
     },
@@ -165,5 +168,6 @@ $.ajax({
       QUnitTesting("Fail milestone: error", false);
     }
   });
+
 
 

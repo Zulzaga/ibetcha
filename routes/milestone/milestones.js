@@ -15,11 +15,9 @@ var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
 // TODO:
-// - changeBetStatus 
-// - milestones/:milestone_id PUT method: run additional check on the corresponding
-// 		Bet object to see if the change in Milestone somehow affected the Bet status:
-//		e.g. to see if the Bet is succesfully completed or failed and
-//		send an email asking to confirm money transfer
+// -
+// Dummy money charging mechanishm (in PUT method when failed) 
+// using rating
 
 //================== CRON JOB ==================
 var timezone = (new time.Date()).getTimezone();
@@ -342,18 +340,32 @@ router.put('/:milestone_id', function(req, res) {
 							});
 					}
 					//other status: failed
-					else{
+					else if (new_status==="Failed"){
 						Milestone
 							.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
 							.exec(function(err){
 								if(err){
 									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
 								}
-								//send email
-								//sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-								//charge money here
-								utils.sendSuccessResponse(res, savedmilestone);
+								milestone.bet.status = "Failed";
+								milestone.bet.save(function (err){
+									if (err){
+										utils.sendErrResponse(res, 500, err);
+									}
+									//send email
+									//sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+									//console.log("EMAIL DANA");
+									//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
+									//charge money here
+									utils.sendSuccessResponse(res, savedmilestone);
+
+								});
+
+								
 							});
+					}
+					else{
+						utils.sendSuccessResponse(res, savedmilestone);
 					}
 				});
 			}
