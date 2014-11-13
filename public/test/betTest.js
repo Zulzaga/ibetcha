@@ -3,12 +3,15 @@
 
   //          Making milestone date objects and bet data
   var start_date = new Date();
+
   var test_date = new Date();
   start_date.setDate(start_date.getDate());
   var end_date = new Date(start_date);
   end_date.setDate(end_date.getDate() + 7);
+  var tomorrow = new Date(start_date);
+  tomorrow.setDate(end_date.getDate() + 1);
   var frequency = 2; //every other day
-
+  var frequencyDaily = 1;
   var first_milestone_date = new Date(start_date.valueOf());
   first_milestone_date.setDate(first_milestone_date.getDate() +2);
 
@@ -26,12 +29,20 @@
   var numTestMilestonesInserted = 4; //will be removed once get logic to generate milestones
   var new_status = "Dropped";
   var new_bet_id;
+  var singleMilestoneId;
   var milestone_id_to_check;
   var dummyData = { 
       test: true,
       startDate:start_date,//those were milliseconds, not numbers.
       endDate:end_date, 
       frequency:frequency, 
+      amount: amount
+    }
+    var dummyData2 = { 
+      test: true,
+      startDate:start_date,//those were milliseconds, not numbers.
+      endDate:tomorrow, 
+      frequency:frequencyDaily, 
       amount: amount
     }
 
@@ -118,23 +129,41 @@ $.ajax({
 
 // check Milestone dates (testing generate_milestones function)
 $.ajax({
-    url: urlString + "bets/"+new_bet_id,
-    type: "GET",
+    url: urlString + "bets/",
+    type: "POST",
     dataType:"json",
-    data: { 
-      test: true,
-      status: new_status,
-    },
+    data: dummyData2,
     async: false,
     success: function(data, textStatus, jqXHR) {   
-      QUnitTesting("Create new Bet: check first milestone", (new Date(data.content.milestones[0].date)).toLocaleDateString()=== first_milestone_date.toLocaleDateString());
-      QUnitTesting("Create new Bet: check second milestone", (new Date(data.content.milestones[1].date)).toLocaleDateString()=== second_milestone_date.toLocaleDateString());
-      QUnitTesting("Create new Bet: check third milestone", (new Date(data.content.milestones[2].date)).toLocaleDateString()=== third_milestone_date.toLocaleDateString());
-      QUnitTesting("Create new Bet: check fourth milestone", (new Date(data.content.milestones[3].date)).toLocaleDateString()=== fourth_milestone_date.toLocaleDateString());
+      QUnitTesting("Create new Bet: success message", data.success);
+      QUnitTesting("Create new Bet: one milestone", data.content.milestones.length===1);
+      singleMilestoneId = data.content.milestones[0];
 
     },
     error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Edit bet: error", false);
+      QUnitTesting("Make bet with single milestone: error", false);
     }
   });
+
+  // change milestone status to Failed and look at the bet status
+  .ajax({
+    url: urlString + "milestones/"+singleMilestoneId,
+    type: "PUT",
+    dataType:"json",
+    data: { 
+      test: true,
+      monitor: true,
+      status: "Failed",
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {   
+      QUnitTesting("Fail milestone: success message", data.success);
+      QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Fail milestone: error", false);
+    }
+  });
+
 
