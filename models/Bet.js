@@ -4,11 +4,15 @@ var mongoose = require("mongoose"),
 
 // Checks for model statuses
 var betStatus = [
-	'Succeeded', // contributes 5 points to rating
-	'Not Started',
-	'Failed', // contributed 1 point to rating
-	'Dropped', // failed to get required action within time period, does not count towards rating
-	'Action Required', //requires action from monitors, does not count towards rating
+	'Not Started', //before startDate
+	'Action Required', // (btw startDate and dropDate)requires action from monitors, does not count towards rating
+	'Succeeded', // anytime between endDate and dropDate; contributes 5 points to rating
+
+	'Failed',  // anytime between startDate and dropDate; contributed 1 point to rating
+	'Dropped', // until startDate (not enough mentors),
+			   // after dropDate (if still "Action Required")
+			   //failed to get required action within time period, does not count towards rating
+	
 ];
 
 //Bets schema
