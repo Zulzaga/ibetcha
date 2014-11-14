@@ -10,6 +10,7 @@ var passport = require('passport');
 var passwordHash = require('password-hash');
 var LocalStrategy = require('passport-local').Strategy;
 var VenmoStrategy = require('passport-venmo').Strategy;
+var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -51,8 +52,8 @@ app.use('/test', test);
 
 // strategy for authentication
 passport.use(new VenmoStrategy({
-    clientID: "2088",
-    clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
+    clientID: "2096",
+    clientSecret: "Z7DRXSntgmUse9xFBTHTZXrDGrQzh8AQ",
     callbackURL: "http://paybackfriends.herokuapp.com/"
     },
 
@@ -78,6 +79,23 @@ passport.use(new VenmoStrategy({
   }
 ));
 
+// passport.use('venmo', new OAuth2Strategy({
+//     authorizationURL: 'https://api.venmo.com/v1/oauth/authorize',
+//     tokenURL: 'https://api.venmo.com/v1/oauth/access_token',
+//     clientID: "2096",
+//     clientSecret: secrets.venmo.clientSecret,
+//     callbackURL: secrets.venmo.redirectUrl,
+//     passReqToCallback: true
+//   },
+//   function(req, accessToken, refreshToken, profile, done) {
+//     User.findById(req.user._id, function(err, user) {
+//       user.tokens.push({ kind: 'venmo', accessToken: accessToken });
+//       user.save(function(err) {
+//         done(err, user);
+//       });
+//     });
+//   }
+// ));
 
 passport.use('login', new LocalStrategy({
     passReqToCallback: true
