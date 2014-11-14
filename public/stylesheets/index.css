@@ -25,8 +25,19 @@ button {
 	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
-
 }
+
+#intro-text {
+	margin-top: 100px;
+	padding-top: 160px;
+	margin-right: 100px;
+	margin-left: 100px;
+	display: inline-block;
+}
+
+/*.main-blocks{
+	float:left;
+}*/
 
 .form-panel {
 	width: 300px;

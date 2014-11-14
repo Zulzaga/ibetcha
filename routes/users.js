@@ -29,20 +29,24 @@ var findFriendIds = function(username1, username2, res) {
 
     User.findOne({username:username1}, function(error, user1) {
         if(error) {
-          return false;
+          utils.sendErrResponse(res, 500, error);
         } else if(user1) {
           userId1 = user1._id;
           User.findOne({username:username2}, function(error, user2) {
               if(error) {
-                return false;
+                utils.sendErrResponse(res, 500, error);
               } else if(user2) {
                 userId2 = user2._id;
                 console.log("userids", userId1, userId2);
                 console.log("users", user1,'\n', user2, typeof(user1), typeof(user2));
                 console.log("users and hsit", user1._id, user2._id);
                 friendEachOther(userId1, userId2, res);
+              } else {
+                utils.sendErrResponse(res, 500, "One of the users is not a member"); 
               }
           });
+        } else {
+          utils.sendErrResponse(res, 500, "One of the users is not a member"); 
         }
     });    
 };

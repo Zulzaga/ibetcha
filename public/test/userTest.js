@@ -161,8 +161,8 @@ $.ajax({
   }
 });
 
-var friend = "butts";
-var me = "holes";
+var friend = "Zulaa";
+var me = "Dana";
 
 // Email invite to accept a friend
 $.ajax({
