@@ -7,6 +7,7 @@
 ibetcha.controller('LoginPageController',
     function($scope, $http, $location, $cookieStore) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
+        console.log("cookiestore session: " + $cookieStore.get('session'));
         if ($cookieStore.get('session')) {
             //$location.path('/'); // REPLACE WITH THE LINE BELOW AFTER FIXING LOGIN
             $location.path('/home');

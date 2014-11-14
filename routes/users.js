@@ -223,7 +223,7 @@ router.post('/login', function(req, res, next) {
             console.log("1");
             utils.sendErrResponse(res, 500, 'There was an error!');
         } else if (!newUser){
-            console.log("2");
+            console.log("2:" +newUser);
             utils.sendErrResponse(res, 401, info);
         } else {
             req.logIn(newUser, function(err) {
