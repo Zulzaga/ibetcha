@@ -53,7 +53,7 @@ app.use('/test', test);
 passport.use(new VenmoStrategy({
     clientID: "2088",
     clientSecret: "dTTE2gMV9NUQPD3sK6J9qa4UWJkEaEJ7",
-    callbackURL: "http://localhost:5000/users/"
+    callbackURL: "http://paybackfriends.herokuapp.com/"
     },
 
     function(accessToken, refreshToken, venmo, done) {
