@@ -128,7 +128,7 @@ router.post('/signup', function(req, res, next) {
         //res.redirect('/');
         utils.sendErrResponse(res, 401, 'There was an error!');
     } 
-    
+
     passport.authenticate('signup', function(err, newUser, info){
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error!');
@@ -146,7 +146,6 @@ router.post('/signup', function(req, res, next) {
         }
     })(req, res, next);
 });
-
 
 router.post('/emailinvite', function(req, res) {
 
@@ -168,7 +167,6 @@ router.post('/acceptfriend/:friend/by/:me', function(req, res) {
     
     findFriendIds(asker, accepted, res);
 });
-
 
 router.post('/askfriend', function(req, res) {
     console.log("********************");
