@@ -26,7 +26,8 @@ ibetcha.controller('LoginPageController',
                     //data.content = the entire user object
                 }).
                 error(function(data, status, headers, config) {
-                    alert(data.err);
+                    console.log(data.err);
+                    alert("Login information is incorrect");
                 });
         }
 

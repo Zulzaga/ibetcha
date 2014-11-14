@@ -7,7 +7,7 @@ var User = require('../models/User');
 
 // Routing for the testing page
 router.get('/', function(req, res) {
-	//cleanCollections();
+	cleanCollections();
 
 	var urlString = "http://localhost:5000/";
 	// if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
