@@ -3,13 +3,13 @@ body {
 	font-family: "Noto Sans", sans-serif;
 }
 
-html {
+/*html {
   background: url(../images/loginbg.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-}
+}*/
 
 h1 {
 	font-size: 60px;
@@ -40,4 +40,22 @@ button {
 	border-radius: 2px;
 	background-color: rgba(255, 255, 255, .8);
 	padding: 20px;
+}
+
+.experiment {
+	background-color: #FF0066;
+	width:50%;
+	float:left;
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.experiment2 {
+	background-color: #CC99FF;
+	width:50%;
+	float:left;
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
 }

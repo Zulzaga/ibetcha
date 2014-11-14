@@ -26,7 +26,7 @@ ibetcha.config(['$routeProvider', '$locationProvider',
         controller: 'HomePageController'
       }).
       otherwise({
-        templateUrl: 'partials/home.html',
-        controller: 'HomePageController'
+        templateUrl: 'partials/loginPage.html',
+        controller: 'LoginPageController'
       });
   }]);

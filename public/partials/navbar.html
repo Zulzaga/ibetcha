@@ -1,0 +1,17 @@
+<div class="ibetcha-navbar" ng-controller="NavbarController">
+    <div class="m-navbar-button" id="m-navbar-home-button" ng-click="home()">
+        <i class="m-navbar-icon fa fa-home"></i>
+        <div class="m-navbar-text">Home</div>
+        <i class="m-navbar-arrow fa fa-caret-down"></i>
+    </div>
+    <div class="m-navbar-button" ng-hide="loggedIn" id="m-navbar-login-button" ng-click="login()">
+        <i class="m-navbar-icon fa fa-sign-in"></i>
+        <div class="m-navbar-text">Login</div>
+        <i class="m-navbar-arrow fa fa-caret-down"></i>
+    </div>
+    <div class="m-navbar-button" ng-show="loggedIn" id="m-navbar-logout-button" ng-click="logout()">
+        <i class="m-navbar-icon fa fa-sign-out"></i>
+        <div class="m-navbar-text">Logout</div>
+        <i class="m-navbar-arrow fa fa-caret-down"></i>
+    </div>
+</div>

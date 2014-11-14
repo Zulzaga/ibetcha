@@ -51,34 +51,28 @@ var friendEachOther = function(userid1, userid2, res) {
     console.log("inside friendEachOther");
     User.findOne({_id:userid1}, function(error, user1) {
         if (error) {
-          console.log("11");
           utils.sendErrResponse(res, 500, "Internal Error has occurred"); 
         } else if (user1 && user1.friends && user1.friends.indexOf(userid2) == -1) {
           user1.update({$push: { 'friends' : userid2}}, {upsert: true}, function(error2, model1) {
             if(error2) {
-              console.log("22");
               utils.sendErrResponse(res, 500, "Internal Error has occurred"); 
             } else {
               User.findOne({_id:userid2}, function(error2, user2) {
                 if(user2 && user2.friends && user2.friends.indexOf(userid1) == -1) {
                   user2.update({$push: { 'friends' : userid1}}, {upsert: true}, function(error3, model2){
                     if(error3) {
-                      console.log("33");
                       utils.sendErrResponse(res, 500, "Internal Error has occurred"); 
                     } else {
-                      console.log("44");
                       utils.sendSuccessResponse(res, {success:true}); 
                     }
                   });
                 } else {
-                  console.log("55");
                   utils.sendErrResponse(res, 500, "You already have this friend"); 
                 }
               });
             }
           });
         } else {
-          console.log("66");
           utils.sendErrResponse(res, 500, "You already have this friend");
         }
     });
@@ -122,10 +116,14 @@ router.get('/', function(req, res) {
 //     - content: TBD
 //     - err: on failure, an error message
 router.get('/logout', function(req, res) {
+    console.log('inside serverside logout');
     if (req.user) {
+        console.log('loggingout');
         req.logout();
+        console.log("is req.user still here? " + req.user);
         utils.sendSuccessResponse(res, "Successfully logged out!.");
     } else {
+        console.log("something is wrong");
         utils.sendErrResponse(res, 401, 'No user logged in.');
     }
     
