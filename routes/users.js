@@ -29,20 +29,24 @@ var findFriendIds = function(username1, username2, res) {
 
     User.findOne({username:username1}, function(error, user1) {
         if(error) {
-          return false;
+          utils.sendErrResponse(res, 500, error);
         } else if(user1) {
           userId1 = user1._id;
           User.findOne({username:username2}, function(error, user2) {
               if(error) {
-                return false;
+                utils.sendErrResponse(res, 500, error);
               } else if(user2) {
                 userId2 = user2._id;
                 console.log("userids", userId1, userId2);
                 console.log("users", user1,'\n', user2, typeof(user1), typeof(user2));
                 console.log("users and hsit", user1._id, user2._id);
                 friendEachOther(userId1, userId2, res);
+              } else {
+                utils.sendErrResponse(res, 500, "One of the users is not a member"); 
               }
           });
+        } else {
+          utils.sendErrResponse(res, 500, "One of the users is not a member"); 
         }
     });    
 };
@@ -107,6 +111,25 @@ router.get('/', function(req, res) {
     });
 });
 
+/*
+    GET /users/current
+    Request parameters: empty
+    Response:
+        - success: true if there's a user logged in
+        - user: on success, contains formatted user info
+        - error: on failure, an error message
+*/
+router.get('/current', isAuthenticated, function(req, res) {
+    User.findById(req.user._id, function (err, user) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error');
+        } else if (user !== null){
+            utils.sendSuccessResponse(res, formatUser(user));
+        } else {
+            utils.sendErrResponse(res, 401, 'No user logged in.');
+        }
+    });
+});
 
 // GET /users/logout
 // Request parameters/body: (note req.body for forms)
@@ -131,30 +154,30 @@ router.get('/logout', function(req, res) {
 });
 
 
-router.post('/signup', function(req, res, next) {
+router.post('/new', function(req, res, next) {
     console.log("inside signup function");
     if (req.user) {
         console.log("rebound...");
         //res.redirect('/');
         utils.sendErrResponse(res, 401, 'There was an error!');
-    } 
+    } else {
+        passport.authenticate('signup', function(err, newUser, info){
+            if (err) {
+                utils.sendErrResponse(res, 500, 'There was an error!');
+            } else if (!newUser){
+                utils.sendErrResponse(res, 500, info);
+            } else {
 
-    passport.authenticate('signup', function(err, newUser, info){
-        if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error!');
-        } else if (!newUser){
-            utils.sendErrResponse(res, 500, info);
-        } else {
-
-            req.logIn(newUser, function(err) {
-              if (err) { 
-                    utils.sendErrResponse(res, 500, 'There was an error!');
-              } else {
-                    utils.sendSuccessResponse(res, {success:true});
-              }
-            }); 
-        }
-    })(req, res, next);
+                req.logIn(newUser, function(err) {
+                  if (err) { 
+                        utils.sendErrResponse(res, 500, 'There was an error!');
+                  } else {
+                        utils.sendSuccessResponse(res, {success:true});
+                  }
+                }); 
+            }
+        })(req, res, next);
+    }
 });
 
 router.post('/emailinvite', function(req, res) {
@@ -216,26 +239,26 @@ router.post('/askfriend', function(req, res) {
 router.post('/login', function(req, res, next) {
     if (req.user) {
         utils.sendErrResponse(res, 401, 'User already logged in!');
-    } 
-
-    passport.authenticate('login', function(err, newUser, info){
-        if (err) {
-            console.log("1");
-            utils.sendErrResponse(res, 500, 'There was an error!');
-        } else if (!newUser){
-            console.log("2:" +newUser);
-            utils.sendErrResponse(res, 401, info);
-        } else {
-            req.logIn(newUser, function(err) {
-                if (err) { 
-                    console.log("3");
-                    utils.sendErrResponse(res, 500, 'There was an error!');
-                } else {
-                    utils.sendSuccessResponse(res, formatUser(newUser));
-                }
-            }); 
-        }
-    })(req, res, next);
+    } else {
+        passport.authenticate('login', function(err, newUser, info){
+            if (err) {
+                console.log("1");
+                utils.sendErrResponse(res, 500, 'There was an error!');
+            } else if (!newUser){
+                console.log("2");
+                utils.sendErrResponse(res, 401, info);
+            } else {
+                req.logIn(newUser, function(err) {
+                    if (err) { 
+                        console.log("3");
+                        utils.sendErrResponse(res, 500, 'There was an error!');
+                    } else {
+                        utils.sendSuccessResponse(res, formatUser(newUser));
+                    }
+                }); 
+            }
+        })(req, res, next);
+    }
 });
 
 // GET /users/:user_id

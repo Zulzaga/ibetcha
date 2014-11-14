@@ -1,8 +1,9 @@
 <!-- Welcome page with login and signup forms -->
 
 <div ng-controller="LoginPageController" class="welcome-container">
-    <div id="intro-text" class="main-blocks">
-        <h2><b> You are in Ibetcha.</b></h2>
+
+    <div id="intro-text">
+        <h2><b> You are in Payback friends.</b></h2>
         <h2><b> You are welcome here.</b></h2>
     </div>
     <div id="loginpage-forms" class="form-panel main-blocks">
@@ -36,6 +37,7 @@
                     <input name="email" ng-model="signupForm.email" class="form-control" id="email" placeholder="Email">
                 </div>
                 <button type="submit" class="btn btn-default">Sign up</button>
+                <button type="submit" class="btn btn-default" name="venmoSignUp">Sign up with Venmo</button>
             </form>
         </div>
 

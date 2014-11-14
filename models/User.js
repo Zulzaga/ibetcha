@@ -6,15 +6,14 @@ var mongoose = require("mongoose"),
 // Users Schema
 var userSchema = new Schema({
 	//login related information:
-	// venmo:{
-	// 	id: Number,
-	// 	name: String,
-	// 	email: String
-	// },
+	venmo:{
+		id: Number,
+		name: String
+	},
 
 	username: {type: String, required: true},
 	email: {type: String, required: true},
-	password: {type: String, required: true},
+	password: {type: String},
 
 	//Other information (independent of login):
 	rating:{ //reflects the history of bets of the user
