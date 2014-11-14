@@ -10,7 +10,6 @@ var passport = require('passport');
 var passwordHash = require('password-hash');
 var LocalStrategy = require('passport-local').Strategy;
 var VenmoStrategy = require('passport-venmo').Strategy;
-var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -53,30 +52,39 @@ app.use('/test', test);
 // strategy for authentication
 passport.use(new VenmoStrategy({
     clientID: "2096",
-    clientSecret: "Z7DRXSntgmUse9xFBTHTZXrDGrQzh8AQ",
-    callbackURL: "http://paybackfriends.herokuapp.com/"
+    clientSecret: "3pm76Jsh2tqdV2TcmRxAyBn9C6uNu2rq",
+    callbackURL: "http://localhost:5000/auth/venmo/callback",
+    passReqToCallback: true
     },
 
-    function(accessToken, refreshToken, venmo, done) {
+    function(req, accessToken, refreshToken, venmo, done) {
         User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
+            console.log(venmo);
             if (err) { 
                 return done(err); 
             } else if (user) {
-                return done(null, user);
+                return done(err, user);
             } else {
-                // if there is no user found with that facebook id, create them
-                User.create({'id': venmo.id, 'name': venmo.displayName, 'email': venmo.email}, venmo.displayName, function (err, user) {
-                    if (err) {
-                        return done(err);
-                    } else if (user === null){
-                        return done(null, false, { error: "Could not create a new user!", success: false });
-                    } else {
-                        return done(null, user);
+                user = new User({
+                    username: venmo.displayName,
+                    email: venmo.email,
+                    access_token: accessToken,
+                    friends: [],
+                    bets: [],
+                    rating: 2,
+                    venmo: {
+                        id: venmo.id,
+                        name: venmo.displayName,
                     }
+                });
+
+                user.save(function(err) {
+                    if (err) console.log(err);
+                    return done(err, user);
                 })
             }
-    });
-  }
+        });
+    }
 ));
 
 // passport.use('venmo', new OAuth2Strategy({

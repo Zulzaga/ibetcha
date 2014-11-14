@@ -23,13 +23,14 @@ router.get('/auth/venmo', passport.authenticate('venmo', {
     scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
     failureRedirect: '/'
 }), function(req, res) {
+	console.log(req.user);
 });
 
-
 router.get('/auth/venmo/callback', passport.authenticate('venmo', {
-    failureRedirect: '/'
+    failureRedirect: '/users'
 }), function(req, res) {
-	res.send("hello" + req.user.username);
+	console.log(req.user);
+	res.redirect('/users');
 });
 
 module.exports = router;

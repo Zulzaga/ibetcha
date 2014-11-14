@@ -113,6 +113,25 @@ router.get('/', function(req, res) {
     });
 });
 
+/*
+    GET /users/current
+    Request parameters: empty
+    Response:
+        - success: true if there's a user logged in
+        - user: on success, contains formatted user info
+        - error: on failure, an error message
+*/
+router.get('/current', isAuthenticated, function(req, res) {
+    User.findById(req.user._id, function (err, user) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error');
+        } else if (user !== null){
+            utils.sendSuccessResponse(res, formatUser(user));
+        } else {
+            utils.sendErrResponse(res, 401, 'No user logged in.');
+        }
+    });
+});
 
 // GET /users/logout
 // Request parameters/body: (note req.body for forms)
@@ -133,30 +152,30 @@ router.get('/logout', function(req, res) {
 });
 
 
-router.post('/signup', function(req, res, next) {
+router.post('/new', function(req, res, next) {
     console.log("inside signup function");
     if (req.user) {
         console.log("rebound...");
         //res.redirect('/');
         utils.sendErrResponse(res, 401, 'There was an error!');
-    } 
+    } else {
+        passport.authenticate('signup', function(err, newUser, info){
+            if (err) {
+                utils.sendErrResponse(res, 500, 'There was an error!');
+            } else if (!newUser){
+                utils.sendErrResponse(res, 500, info);
+            } else {
 
-    passport.authenticate('signup', function(err, newUser, info){
-        if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error!');
-        } else if (!newUser){
-            utils.sendErrResponse(res, 500, info);
-        } else {
-
-            req.logIn(newUser, function(err) {
-              if (err) { 
-                    utils.sendErrResponse(res, 500, 'There was an error!');
-              } else {
-                    utils.sendSuccessResponse(res, {success:true});
-              }
-            }); 
-        }
-    })(req, res, next);
+                req.logIn(newUser, function(err) {
+                  if (err) { 
+                        utils.sendErrResponse(res, 500, 'There was an error!');
+                  } else {
+                        utils.sendSuccessResponse(res, {success:true});
+                  }
+                }); 
+            }
+        })(req, res, next);
+    }
 });
 
 router.post('/emailinvite', function(req, res) {
@@ -218,26 +237,26 @@ router.post('/askfriend', function(req, res) {
 router.post('/login', function(req, res, next) {
     if (req.user) {
         utils.sendErrResponse(res, 401, 'User already logged in!');
-    } 
-
-    passport.authenticate('login', function(err, newUser, info){
-        if (err) {
-            console.log("1");
-            utils.sendErrResponse(res, 500, 'There was an error!');
-        } else if (!newUser){
-            console.log("2");
-            utils.sendErrResponse(res, 401, info);
-        } else {
-            req.logIn(newUser, function(err) {
-                if (err) { 
-                    console.log("3");
-                    utils.sendErrResponse(res, 500, 'There was an error!');
-                } else {
-                    utils.sendSuccessResponse(res, formatUser(newUser));
-                }
-            }); 
-        }
-    })(req, res, next);
+    } else {
+        passport.authenticate('login', function(err, newUser, info){
+            if (err) {
+                console.log("1");
+                utils.sendErrResponse(res, 500, 'There was an error!');
+            } else if (!newUser){
+                console.log("2");
+                utils.sendErrResponse(res, 401, info);
+            } else {
+                req.logIn(newUser, function(err) {
+                    if (err) { 
+                        console.log("3");
+                        utils.sendErrResponse(res, 500, 'There was an error!');
+                    } else {
+                        utils.sendSuccessResponse(res, formatUser(newUser));
+                    }
+                }); 
+            }
+        })(req, res, next);
+    }
 });
 
 // GET /users/:user_id
