@@ -1,0 +1,90 @@
+
+.ibetcha-navbar {
+    z-index: 50;
+    background-color: #1D1D1D;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 110px;
+    width: 100%;
+    color: transparent;
+    font-size: 12px;
+    text-align: center;
+    box-shadow: 1px 0px 1px #888;
+}
+/*---------------------------------------------------*/
+.m-navbar-button {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    float:left;
+    margin-top: auto;
+    margin-bottom: auto;
+    transition: 1s ease;
+    -webkit-transition: 1s ease;
+
+}
+
+.m-navbar-button:hover {
+    background-color: #3F3F3F;
+    color: #CDCDCD;
+    cursor: pointer;
+}
+/*---------------------------------------------------*/
+.m-navbar-arrow {
+    position: absolute;
+    top: 50px;
+    right: 5px;
+    font-size: 20px;
+}
+
+.m-navbar-arrow:hover {
+}
+/*---------------------------------------------------*/
+
+.m-navbar-text {
+    width: 100%;
+    padding: 5px;
+}
+
+.m-navbar-text:hover {
+}
+/*---------------------------------------------------*/
+
+.m-navbar-icon {
+    font-size: 50px;
+    width: 60px;
+    height: 60px;
+    padding: 5px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: 1s ease;
+    -webkit-transition: 1s ease;
+}
+
+.m-navbar-icon:hover {
+    color: #C5C5C5;
+}
+
+/*---------------------------------------------------*/
+
+#m-navbar-home-button .m-navbar-icon{
+    color: #379EAB;
+}
+
+#m-navbar-login-button .m-navbar-icon{
+    color: #287094;
+}
+
+#m-navbar-logout-button .m-navbar-icon{
+    color: #A35133;
+}
+
+#m-navbar-favs-button .m-navbar-icon{
+    color: #A9863B;
+}
+
+#m-navbar-edit-button .m-navbar-icon{
+    color: #7286A5;
+}

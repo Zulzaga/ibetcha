@@ -14,7 +14,7 @@ var compareResponseText = function(jqXHR, expectedString) {
 
 //Signing up a new user
 $.ajax({
-    url: urlString + "users/signup",
+    url: urlString + "users/new",
     type: "POST",
     dataType:"json",
     data: {
@@ -105,7 +105,7 @@ $.ajax({
 
 // Creating another new user
 $.ajax({
-    url: urlString + "users/signup",
+    url: urlString + "users/new",
     type: "POST",
     dataType:"json",
     data: {
@@ -142,24 +142,24 @@ $.ajax({
 
 // ONLY WORKS AFTER MANUALLY PUTTING IN TWO USERS INTO MONGODB
 
-// Email invite to be a friend
-$.ajax({
-  url: urlString + "users/askfriend",
-  type: "POST",
-  //dataType: "script",
-  data: {
-    friendEmail: '"Future friend" <hyuglim@gmail.com>',
-    friendName: 'holes'
-  },
-  //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
-  async: false,
-  success: function(data, textStatus, jqXHR) {
-    QUnitTesting("Ask friend request", data.success === true);
-  },
-  error: function(jqXHR, textStatus, err) {
-    QUnitTesting("Ask friend request", false);
-  }
-});
+// // Email invite to be a friend
+// $.ajax({
+//   url: urlString + "users/askfriend",
+//   type: "POST",
+//   //dataType: "script",
+//   data: {
+//     friendEmail: '"Future friend" <hyuglim@gmail.com>',
+//     friendName: 'holes'
+//   },
+//   //data: JSON.stringify({friend: '"Ibetcha Receiver" <ibetcha.mit@gmail.com>'}),
+//   async: false,
+//   success: function(data, textStatus, jqXHR) {
+//     QUnitTesting("Ask friend request", data.success === true);
+//   },
+//   error: function(jqXHR, textStatus, err) {
+//     QUnitTesting("Ask friend request", false);
+//   }
+// });
 
 var friend = "butts";
 var me = "holes";

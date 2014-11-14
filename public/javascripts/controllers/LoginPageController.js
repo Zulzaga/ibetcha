@@ -7,7 +7,9 @@
 ibetcha.controller('LoginPageController',
     function($scope, $http, $location, $cookieStore) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
+        console.log("cookiestore session: " + $cookieStore.get('session'));
         if ($cookieStore.get('session')) {
+            //$location.path('/'); // REPLACE WITH THE LINE BELOW AFTER FIXING LOGIN
             $location.path('/home');
         }
 
@@ -38,9 +40,10 @@ ibetcha.controller('LoginPageController',
 
             $http({
                 method: "POST",
-                url: "users/new",
+                url: "users/signup",
                 data: $scope.signupForm,
                 }).success(function(data, status, headers, config) {
+                    console.log("singup successful");
                     $location.path('/home');
                     $cookieStore.put('user', $scope.signupForm.username);
                     $cookieStore.put('type', data.content._type);
