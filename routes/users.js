@@ -84,6 +84,18 @@ var friendEachOther = function(userid1, userid2, res) {
     });
 }; // end of the method
 
+var formatUser = function (user) {
+    return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        friends: user.friends,
+        bets: user.bets,
+        rating: user.rating
+    };
+}
+
+
 // GET /users
 // Request parameters:
 //     - none
@@ -205,7 +217,6 @@ router.post('/askfriend', function(req, res) {
 //     failureRedirect: '/'
 //     }), function(req, res) {
 // });
-
 router.post('/login', function(req, res, next) {
     if (req.user) {
         utils.sendErrResponse(res, 401, 'User already logged in!');
@@ -273,17 +284,6 @@ router.get('/friends/:user_id', isAuthenticated, function(req, res) {
 
 router.post('/invite', isAuthenticated, function(req, res) {
 
-})
-
-var formatUser = function (user) {
-    return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        friends: user.friends,
-        bets: user.bets,
-        rating: user.rating
-    };
-}
+});
 
 module.exports = router;

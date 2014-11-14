@@ -1,0 +1,43 @@
+body {
+	background: none;
+	font-family: "Noto Sans", sans-serif;
+}
+
+html {
+  background: url(../images/loginbg.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+h1 {
+	font-size: 60px;
+	color: #ffffff; 
+}
+
+button {
+	border-radius: 2px !important;
+}
+
+.welcome-container {
+	position: relative;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+
+}
+
+.form-panel {
+	width: 300px;
+	position: absolute;
+	top: 100px;
+	right: 100px;
+	margin-bottom: 100px;
+}
+
+.loginpage-panel {
+	border-radius: 2px;
+	background-color: rgba(255, 255, 255, .8);
+	padding: 20px;
+}
