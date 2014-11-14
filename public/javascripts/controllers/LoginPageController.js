@@ -40,10 +40,10 @@ ibetcha.controller('LoginPageController',
 
             $http({
                 method: "POST",
-                url: "users/signup",
+                url: "users/new",
                 data: $scope.signupForm,
                 }).success(function(data, status, headers, config) {
-                    console.log("singup successful");
+                    console.log("signup successful");
                     $location.path('/home');
                     $cookieStore.put('user', $scope.signupForm.username);
                     $cookieStore.put('type', data.content._type);
