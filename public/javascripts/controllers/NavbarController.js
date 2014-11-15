@@ -16,36 +16,48 @@ ibetcha.controller('NavbarController',
         // Logs out current user
         $scope.logout = function() {
             console.log("inside logout function");
-             
-            $http({
-                method: "GET",
-                url: "users/logout",
-                }).success(function(data, status, headers, config) {
-                    alert("successfully logged out");
-                    $cookieStore.remove('user');
-                    $cookieStore.remove('session');
-                    $location.path('/');
-                    console.log("inside logout: cookiestore session is: " + $cookieStore.get('session'));
-                }).
-                error(function(data, status, headers, config) {
-                    alert(data.err);
-                });
+
+            if($cookieStore.get('session')) {
+                $http({
+                    method: "GET",
+                    url: "users/logout",
+                    }).success(function(data, status, headers, config) {
+                        $cookieStore.remove('user');
+                        $cookieStore.remove('session');
+                        alert("successfully logged out");
+                        $location.path('/');
+                        
+                        console.log("inside logout: cookiestore session is: " + $cookieStore.get('session'));
+                    }).
+                    error(function(data, status, headers, config) {
+                        alert(data.err);
+                    });
+            } else {
+                $location.path("/");
+            }            
         }
 
         // When the favorite button is clicked, broadcasts the homeClicked event to all the controllers.
         $scope.home = function() {
-            console.log("home");
-            $location.path("/home");
-            //$scope.$root.$broadcast("homeClicked");
+
+            if($cookieStore.get('session')) {
+                $location.path("/home");
+            }  else {
+                $location.path("/");
+            }
         }
 
         $scope.invite = function() {
-            $location.path("/invite");
+            if($cookieStore.get('session')) {
+                $location.path("/invite");
+            }            
         }
 
         $scope.edit = function() {
             console.log("inside edit bet client side function");
-            $location.path("/edit");
+            if($cookieStore.get('session')) {
+                $location.path("/edit");
+            }            
         }
 
         // Redirects to login page.

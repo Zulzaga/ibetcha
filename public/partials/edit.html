@@ -1,51 +1,37 @@
 <div ng-controller="EditBetPageController" id="edit-container" >
+    
+  <script src="javascripts/ui/datepicker.js"></script>
     <ng-include src="'partials/navbar.html'"></ng-include>
-    <h2>Edit My Roadmap</h2>
-
-    <form class="edit-form" novalidate ng-submit="editSubmit()" >
-    <!-- add clear button -->
-        <div class="form-group">
-            <label>Roadmap Name</label>
-            <input type="text" class="form-control edit-name" ng-model="editForm.name" ></input>
-        </div>
-        <div class="form-group">
-            <label>Comments</label> 
-            <textarea class="form-control edit-comments" ng-model="editForm.comments"></textarea>
-        </div>
-        <label class="edit-semesters-label">Semesters </label> <button class="form-control btn btn-default" id="add-semester" ng-click="addSemester()">Add New Semester</button>
-        
-        <div class="edit-semesters">
-            <div class="edit-single-semester" ng-repeat="semester in editForm.semesters" ng-init="semester.index = $index">
-                <div class="edit-semester-info">
-                    <select class="form-control edit-semester-term" ng-model="semester.term" value="{{semester.term}}" placeholder="Semester Term">
-                        <option>Fall</option>
-                        <option>Spring</option>
-                        <option>IAP</option>
-                        <option>Summer</option>
-                    </select>
-                    <input class="form-control edit-semester-year" ng-model="semester.year" value="{{semester.term}}" placeholder="Semester Year"></input>
-                </div>
-                <div class="edit-single-course" ng-repeat="course in semester.courses">
-                    <input class="form-control edit-course-number" ng-model="course.number" placeholder="Course number" value="{{course.number}}"></input>
-                    <input class="form-control edit-course-name" ng-model="course.name" placeholder="Course name" value="{{course.name}}"></input>
-                </div>
-                <div class="add-course-wrapper">
-                    <button class="add-course form-control btn btn-default" ng-click="addCourse(semester.index)">Add Course</button>
-                    <br>(Leave blank to delete)
-                </div>
-                
+    
+    <div id="edit-page">
+        <h2>Make a New Bet</h2>
+        <form class="edit-form" novalidate ng-submit="editSubmit()" >
+            <!-- add clear button -->
+            
+            <div class="form-group">
+                <label class="edit-label">I resolve to </label>
+                <input type="text" class="edit form-control edit-resolve" ng-model="editForm.name" placeholder="go to gym everyday"></input>
             </div>
-        </div>
-
-        <label class="edit-tags-label">Tags</label> <button class="form-control btn btn-default" id="add-tag" ng-click="addTag()">Add New Tag</button> (Leave blank to delete)
-        
-        <div class="edit-tags">
-        <label>Major: </label><input class="edit-single-tag form-control" ng-model="editForm.major" value="{{semester.major}}" placeholder="Major"></input>
-        <label>Career:</label><input class="edit-single-tag form-control" ng-model="editForm.career" value="{{semester.career}}" placeholder="Career" value></input><br>
-        <label>General tags: </label><input class="edit-single-tag form-control" ng-repeat="(i, tag) in editForm.tags track by $index" ng-model="editForm.tags[i]" placeholder="Tag content"></input>
-        </div>
-        <div id="submit-button-wrapper">
-            <button id="submit-button" ng-click="submit()" class="btn btn-primary" >Update My Roadmap</button>
-        </div>
-    </form>
+            <div class="form-group">
+                <label class="edit-label">Starting </label>
+                <input type="text" class="edit form-control edit-date datepicker" ng-model="editForm.startdate"></input>
+            </div>
+            <div class="form-group">
+                <label class="edit-label">Ending </label>
+                <input type="text" class="edit form-control edit-date datepicker" ng-model="editForm.enddate"></input>
+            </div>
+            <div class="form-group">
+                <label class="edit edit-label">Every</label>
+                <input type="number" min="1" step="1" class="edit form-control edit-freq" ng-model="editForm.freq"></input> Days
+            </div>
+            <div class="form-group">
+                <label class="edit edit-label">and I am willing to bet </label>
+                <input type="number" min="3" step="1" class="edit form-control edit-dollar" ng-model="editForm.dollar"></input> Dollars
+            </div>
+            <div id="submit-button-wrapper">
+                <button id="submit-button" ng-click="submit()" class="btn btn-primary" >Make My Bet</button>
+            </div>
+        </form>
+    </div>
+    
 </div>

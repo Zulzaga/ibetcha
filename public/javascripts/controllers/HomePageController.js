@@ -5,7 +5,8 @@ ibetcha.controller('HomePageController',
         
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
-        console.log($cookieStore.get('session'));
+
+
         if (!$cookieStore.get('session')) {
             $location.path('/');
         } else {
@@ -14,14 +15,12 @@ ibetcha.controller('HomePageController',
 	            url: "users/current"
 	            }).success(function(data, status, headers, config) {
 	                $scope.userInfo = data.content;
-
-	                //data.content = the entire user object
-	                //check if it has roadmap field, if it does, save the objectid as a cookie
 	            }).
 	        error(function(data, status, headers, config) {
 	            alert(data.err);
 	        });
         }
+
     }
 
 
