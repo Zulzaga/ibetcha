@@ -22,9 +22,9 @@ ibetcha.controller('NavbarController',
                 url: "users/logout",
                 }).success(function(data, status, headers, config) {
                     alert("successfully logged out");
-                    $location.path('/');
                     $cookieStore.remove('user');
                     $cookieStore.remove('session');
+                    $location.path('/');
                     console.log("inside logout: cookiestore session is: " + $cookieStore.get('session'));
                 }).
                 error(function(data, status, headers, config) {
