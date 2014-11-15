@@ -7,19 +7,20 @@ a {
   color: #00B7FF;
 }
 
-#bet-container {
-    min-height: 900px;
-    background: white;
-    margin-left: 120px;
-    padding: 20px;
-}
-
-.bets-container {
+.userInfo-container {
     padding: 30px;
-    margin-top: 10px;
+    margin-top: 40px;
 }
 
-.bet-box {
+.bet-cat-title {
+	height: 30px;
+	font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.userInfo-box {
     margin-top: 30px;
     padding-bottom: 30px;
     display: inline-block;
@@ -28,67 +29,34 @@ a {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.bet-info, .single-bet {
-    width: 300px;
+.single-bet {
+    width: 250px;
     height: 230px;
     margin-right: 20px;
     display: inline-block;
-}
-
-.bet-info {
-    margin-right: 50px;
-    float: left;
-}
-/*
-.bet-name {
-    font-weight: 700;
-    font-size: 22px;
-}*/
-
-.bet-description, .bet-amount, .bet-status, .bet-monitors{
-    margin-bottom: 10px;
-}
-
-.bets {
-    width: auto;
-    height: 100%;
-    white-space: nowrap;
-}
-
-.single-bet {
     background-color: #F5F5F5;
     padding: 20px;
     border-radius: 2px;
 }
 
-.bet-info {
+.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author{
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.bets {
+    width: auto;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.bet-info, .bet-monitoring-info {
     font-size: 18px;
     font-weight: 700;
+    width: 100%;
     text-align: center;
     margin-bottom: 10px;
-}
-/*
-.bet-milestone-monitors {
-    overflow: hidden;
-}*/
-
-
-/*---------------------------------------------------------------------------------------*/
-
-#bet-container .bet-box {
-    border-bottom: none;
-}
-
-#bet-container .bet-info {
     height: 100%;
 }
 
-#bet-container .bets{
-    height: auto;
-    width: auto;
-    white-space: normal;
-}
-
-#bet-container .single-bet {
-    margin-bottom: 20px;
-}

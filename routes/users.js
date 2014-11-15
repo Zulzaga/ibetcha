@@ -108,11 +108,18 @@ router.get('/', function(req, res) {
         - error: on failure, an error message
 */
 router.get('/current', isAuthenticated, function(req, res) {
-    User.findById(req.user._id).populate('bets').exec(function (err, user) {
+    User.findById(req.user._id).populate('bets monitoring').exec(function (err, user) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error');
         } else if (user !== null){
-            utils.sendSuccessResponse(res, user);
+            Bet.populate([user.bets], {"path": "milestones" }, function (err, output) {
+                if (err) {
+                    utils.sendErrResponse(res, 500, 'There was an error');
+                } else {
+                    user.bets = output;
+                    utils.sendSuccessResponse(res, user);
+                }
+            });
         } else {
             utils.sendErrResponse(res, 401, 'No user logged in.');
         }

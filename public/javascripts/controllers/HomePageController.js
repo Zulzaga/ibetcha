@@ -3,27 +3,25 @@
 ibetcha.controller('HomePageController',
     function($scope, $http, $location, $cookieStore) {
         
-
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
-
-        $scope.favorite = function(id) {
-        	$http({
-	            method: "POST",
-	            url: "roadmaps/" + id + "/favorite",
-	            }).success(function(data, status, headers, config) {
-	                var roadmap = findRoadmap(id);
-	                roadmap.isFavorite = true;
-	            }).
-	            error(function(data, status, headers, config) {
-	                // alert(data.err);
-	            });
+        console.log($cookieStore.get('session'));
+        if (!$cookieStore.get('session')) {
+            $location.path('/');
         }
 
-        $scope.$on("homeClicked", function (event, args) {
-        	console.log("home has been clicked")
-        	$location.path("/");
-		});
+        $http({
+            method: "GET",
+            url: "users/current"
+            }).success(function(data, status, headers, config) {
+                $scope.userInfo = data.content;
+
+                //data.content = the entire user object
+                //check if it has roadmap field, if it does, save the objectid as a cookie
+            }).
+        error(function(data, status, headers, config) {
+            alert(data.err);
+        });
 
     }
 

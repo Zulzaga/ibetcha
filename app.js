@@ -59,7 +59,6 @@ passport.use(new VenmoStrategy({
 
     function(req, accessToken, refreshToken, venmo, done) {
         User.findOne({ 'venmo.id' : venmo.id }, function(err, user) {
-            console.log(venmo);
             if (err) { 
                 return done(err); 
             } else if (user) {
