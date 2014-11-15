@@ -9,13 +9,14 @@ ibetcha.controller('NavbarController',
         $scope.loggedIn = $cookieStore.get('session');
 
         // Determines if somebody is logged in.
-        $scope.checkSession = function() {a
+        $scope.checkSession = function() {
             return $cookieStore.get('session');
         };
 
         // Logs out current user
         $scope.logout = function() {
             console.log("inside logout function");
+             
             $http({
                 method: "GET",
                 url: "users/logout",
@@ -33,8 +34,18 @@ ibetcha.controller('NavbarController',
 
         // When the favorite button is clicked, broadcasts the homeClicked event to all the controllers.
         $scope.home = function() {
-            $location.path("/home");
-            $scope.$root.$broadcast("homeClicked");
+            console.log("home");
+            $location.path("/");
+            //$scope.$root.$broadcast("homeClicked");
+        }
+
+        $scope.invite = function() {
+            $location.path("/invite");
+        }
+
+        $scope.edit = function() {
+            console.log("inside edit bet client side function");
+            $location.path("/edit");
         }
 
         // Redirects to login page.

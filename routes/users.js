@@ -278,20 +278,6 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
 router.post('/:user_id', isAuthenticated, function(req, res) {
 });
 
-/*// GET /users/friends/:user_id
-// Request parameters:
-//     - user_id: a String representation of the MongoDB _id of the user
-// Response:
-//     - success: true if the user's friends successfully retrieved
-//     - content: TBD
-//     - err: on failure, an error message
-router.get('/friends/:user_id', isAuthenticated, function(req, res) {
-  res.send('respond with a resource');
-});*/
-
-router.post('/invite', isAuthenticated, function(req, res) {
-
-});
 
 var formatUser = function (user) {
     return {

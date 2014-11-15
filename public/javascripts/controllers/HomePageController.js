@@ -20,6 +20,11 @@ ibetcha.controller('HomePageController',
 	            });
         }
 
+        $scope.$on("homeClicked", function (event, args) {
+        	console.log("home has been clicked")
+        	$location.path("/");
+		});
+
     }
 
 

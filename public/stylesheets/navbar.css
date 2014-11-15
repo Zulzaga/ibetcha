@@ -85,6 +85,10 @@
     color: #00A300;
 }
 
+#m-navbar-invite-button .m-navbar-icon{
+    color: #00CC99;
+}
+
 #m-navbar-favs-button .m-navbar-icon{
     color: #A9863B;
 }

@@ -28,6 +28,13 @@ ibetcha.config(['$routeProvider', '$locationProvider',
       when('/profile', {
         templateUrl: 'partials/profile.html',
         controller: 'ProfileController'
+      when('/invite', {
+        templateUrl: 'partials/invite.html',
+        controller: 'InvitePageController'
+      }).
+      when('/edit', {
+        templateUrl: 'partials/edit.html',
+        controller: 'EditBetPageController'
       }).
       otherwise({
         templateUrl: 'partials/loginPage.html',
