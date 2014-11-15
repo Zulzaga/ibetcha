@@ -11,8 +11,8 @@ ibetcha.controller('LoginPageController',
         console.log("cookiestore session: " + $cookieStore.get('session'));
         if ($cookieStore.get('session')) {
             $location.path('/home');
-        }
-
+        } 
+        
         $scope.login = function() {
             $http({
                 method: "POST",
