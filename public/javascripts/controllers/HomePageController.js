@@ -7,22 +7,19 @@ ibetcha.controller('HomePageController',
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
 
-        $scope.favorite = function(id) {
-        	$http({
-	            method: "POST",
-	            url: "roadmaps/" + id + "/favorite",
-	            }).success(function(data, status, headers, config) {
-	                var roadmap = findRoadmap(id);
-	                roadmap.isFavorite = true;
-	            }).
-	            error(function(data, status, headers, config) {
-	                // alert(data.err);
-	            });
-        }
 
         $scope.$on("homeClicked", function (event, args) {
-        	console.log("home has been clicked")
+        	console.log("HHHH has been clicked")
         	$location.path("/");
+		    // $http({
+	     //        method: "GET",
+	     //        url: "roadmaps",
+	     //        }).success(function(data, status, headers, config) {
+	     //            $scope.roadmaps = data.content;
+	     //        }).
+	     //        error(function(data, status, headers, config) {
+	     //            // alert(data.err);
+	     //        });
 		});
 
     }
