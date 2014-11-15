@@ -21,6 +21,11 @@ ibetcha.controller('HomePageController',
 	        error(function(data, status, headers, config) {
 	            alert(data.err);
 	        });
+
+	        $scope.detail = function(id){
+	        	console.log("showing detail!");
+	        	$location.path('/bets/' + id);
+	        }
         }
 
     }

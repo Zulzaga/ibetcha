@@ -28,10 +28,9 @@ button {
 }
 
 .invite-container {
+	top: 0px;
 	position: relative;
 	width: 100%;
-	margin-left: 20px;
-	margin-right: auto;
 }
 
 #intro-text {
@@ -59,10 +58,9 @@ button {
 .invite-panel {
 	width: 300px;
 	position: absolute;
-	top: 100px;
-	right: 100px;
+	top: 60px;
+	left: 20px;
 	margin-bottom: 100px;
-
 }
 
 .experiment {

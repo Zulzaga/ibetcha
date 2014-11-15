@@ -16,6 +16,8 @@ ibetcha.controller('NavbarController',
         // Logs out current user
         $scope.logout = function() {
             console.log("inside logout function");
+            $cookieStore.remove('user');
+            $cookieStore.remove('session');
             if($cookieStore.get('session')) {
                 $http({
                     method: "GET",
@@ -34,7 +36,6 @@ ibetcha.controller('NavbarController',
             } else {
                 $location.path("/");
             }            
-            
         }
 
         // When the favorite button is clicked, broadcasts the homeClicked event to all the controllers.
