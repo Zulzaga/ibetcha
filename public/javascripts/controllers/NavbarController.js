@@ -41,8 +41,10 @@ ibetcha.controller('NavbarController',
         $scope.home = function() {
 
             if($cookieStore.get('session')) {
+                console.log("@@");
                 $location.path("/home");
             }  else {
+                console.log("$$");
                 $location.path("/");
             }
         }

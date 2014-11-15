@@ -23,6 +23,7 @@ function isAuthenticated(req, res, next) {
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
+// Finds the objectIds of users given two usernames
 var findFriendIds = function(username1, username2, res) {
     var userId1 = null;
     var userId2 = null;
@@ -51,6 +52,7 @@ var findFriendIds = function(username1, username2, res) {
     });    
 };
 
+// Given two user ObjectIds, put them in each other's friend array
 var friendEachOther = function(userid1, userid2, res) {
     console.log("inside friendEachOther");
     User.findOne({_id:userid1}, function(error, user1) {
@@ -80,15 +82,10 @@ var friendEachOther = function(userid1, userid2, res) {
           utils.sendErrResponse(res, 500, "You already have this friend");
         }
     });
-}; // end of the method
+};
 
-// GET /users
-// Request parameters:
-//     - none
-// Response:
-//     - success: true if all users were successfully retrieved
-//     - content: TDB
-//     - err: on failure, an error message
+
+// gets all users
 router.get('/', function(req, res) {
     User.find({}, function (err, users) {
         if (err) {
@@ -99,14 +96,7 @@ router.get('/', function(req, res) {
     });
 });
 
-/*
-    GET /users/current
-    Request parameters: empty
-    Response:
-        - success: true if there's a user logged in
-        - user: on success, contains formatted user info
-        - error: on failure, an error message
-*/
+// gets the user that is currently logged in
 router.get('/current', isAuthenticated, function(req, res) {
     User.findById(req.user._id).populate('bets monitoring').exec(function (err, user) {
         if (err) {
@@ -126,13 +116,7 @@ router.get('/current', isAuthenticated, function(req, res) {
     });
 });
 
-// GET /users/logout
-// Request parameters/body: (note req.body for forms)
-//     - TBD 
-// Response:
-//     - success: true if the user is successfully logged out
-//     - content: TBD
-//     - err: on failure, an error message
+// logs out the user
 router.get('/logout', function(req, res) {
     console.log('inside serverside logout');
     if (req.user) {
@@ -144,8 +128,6 @@ router.get('/logout', function(req, res) {
         console.log("something is wrong");
         utils.sendErrResponse(res, 401, 'No user logged in.');
     }
-    
-    //res.redirect('/users/');
 });
 
 
@@ -175,6 +157,7 @@ router.post('/new', function(req, res, next) {
     }
 });
 
+
 router.post('/emailinvite', function(req, res) {
 
     var msg = {
@@ -185,6 +168,20 @@ router.post('/emailinvite', function(req, res) {
     };
     console.log("req.user is this", req.user, req.body.friendName);
     emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
+});
+
+router.get('/friends/:username', function(req, res) {
+    console.log("inside get friends");
+    User.findOne({username:req.params.username})
+        .populate("friends")
+        .exec(function(error, user) {
+            console.log("999999999"+user);
+            if(error) {
+                utils.sendErrResponse(res, 500, error);
+            } else if(user) {
+                utils.sendSuccessResponse( res, user.friends);
+            }
+        });
 });
 
 router.post('/acceptfriend/:friend/by/:me', function(req, res) {
@@ -212,11 +209,6 @@ router.post('/askfriend', function(req, res) {
     
     emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
-
-// router.post('/askfriend/:username', function(req, res) {
-//     console.log('inside askfriend');
-//     var msg = "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login";
-// })
 
 
 // GET /users/login

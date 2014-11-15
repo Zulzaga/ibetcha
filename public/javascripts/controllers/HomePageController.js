@@ -7,6 +7,8 @@ ibetcha.controller('HomePageController',
         $scope.loggedIn = $cookieStore.get('session');
 
 
+        // $location.path('/');
+        
         if (!$cookieStore.get('session')) {
             $location.path('/');
         } else {

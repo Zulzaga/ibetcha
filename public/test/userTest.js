@@ -183,6 +183,23 @@ $.ajax({
   }
 });
 
+// Get friends
+$.ajax({
+  url: urlString + "users/friends/" + "Zulaa",
+  type: "GET",
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    console.log("8888888888888888");
+    console.log(data.content);
+    console.log("8888888888888888");
+    QUnitTesting("Get friends", data.content.length === 1);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Get friends", false);
+  }
+});
+
+
 //Logout
 $.ajax({
     url: urlString + "users/logout",

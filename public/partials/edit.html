@@ -1,6 +1,7 @@
 <div ng-controller="EditBetPageController" id="edit-container" >
     
   <script src="javascripts/ui/datepicker.js"></script>
+  
     <ng-include src="'partials/navbar.html'"></ng-include>
     
     <div id="edit-page">
@@ -22,11 +23,22 @@
             </div>
             <div class="form-group">
                 <label class="edit edit-label">Every</label>
-                <input type="number" min="1" step="1" class="edit form-control edit-freq" ng-model="editForm.freq"></input> Days
+                <input type="number" min="1" step="1" class="edit edit-freq" ng-model="editForm.freq"></input> Days
             </div>
             <div class="form-group">
                 <label class="edit edit-label">and I am willing to bet </label>
-                <input type="number" min="3" step="1" class="edit form-control edit-dollar" ng-model="editForm.dollar"></input> Dollars
+                <input type="number" min="3" step="1" class="edit edit-dollar" ng-model="editForm.dollar"></input> Dollars
+            </div>
+            <div class="form-group">
+                <label class="edit edit-label">and I am willing to bet </label>
+                <input type="number" min="3" step="1" class="edit edit-dollar" ng-model="editForm.dollar"></input> Dollars
+            </div>
+            <div class="form-group" >
+                <label class="edit-label">Add Friends to Monitor You</label>
+                <select multiple size="5" name="editForm.friends" ng-model="editForm.monitors" ng-repeat="friend in editForm.friends">
+                  <option selected="Select a friend">Select a friend</option>
+                  <option value="{{editForm.friend}}">{{friend}}</option>
+                </select>
             </div>
             <div id="submit-button-wrapper">
                 <button id="submit-button" ng-click="submit()" class="btn btn-primary" >Make My Bet</button>
