@@ -29,6 +29,10 @@ var userSchema = new Schema({
 		type: ObjectId,
 		ref: 'User',
 		unique: true
+	}],
+	monitoring: [{
+		type: ObjectId,
+		ref: 'Bet'
 	}]
 });
 
@@ -40,7 +44,8 @@ userSchema.statics.create = function(username, password, email, callback) {
         'email': email,
         'bets': [],
         'friends': [],
-        'rating': 3
+        'rating': 3,
+        'monitoring': []
     });
 
     newUser.save(callback);

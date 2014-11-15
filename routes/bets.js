@@ -29,7 +29,7 @@ function validateBetData(data){
 	var startDate = (new Date(data.startDate)).valueOf();
 	var endDate = (new Date(data.endDate)).valueOf();
 	var result = startDate<endDate;
-	return result;
+	return true;
 }
 
 //======================== Helpers =========================
@@ -141,19 +141,56 @@ function makeBet(req,res){
 				  monitors:[],
 				  }
 	var newBet = new Bet(betJSON);
+	
 	newBet.save(function(err, bet){
 		if (err){
 			utils.sendErrResponse(res, 500, err);
 		}
 		else{
-			var milestones_JSONs = generate_milestones(userId, bet._id, req.body.startDate, req.body.endDate, req.body.frequency);
-			store_all_milestones(res, milestones_JSONs, newBet._id);
+			User.findById( req.user._id, function (err, user) {
+		        if (err){
+		            utils.sendErrResponse(res, 500, 'There was an error!');
+		        } else if (user === null){
+		            utils.sendErrResponse(res, 401, 'No user found!');
+		        } else {
+		            user.bets.push(newBet._id);
+		            user.save(function(err, newUser) {
+		            	if (err) {
+		            		utils.sendErrResponse(res, 500, 'There was an error!');
+		            	} else {
+		            		var milestones_JSONs = generate_milestones(userId, bet._id, req.body.startDate, req.body.endDate, req.body.frequency);
+							store_all_milestones(res, milestones_JSONs, newBet._id);
+		            	}
+		            })
+		        }
+		    });
 		}
 	});
 
 }
 
 //======================== API route methods =========================
+
+
+/* GET all the users bets. */
+// GET /bets
+// Request parameters/body: (note req.body for forms)
+//     - bet_id : a String representation of the MongoDB _id of the bet
+// Response:
+//     - success: true if the bet with ID bet_id is successfully retrieved
+//     - content: bet (Bet object)
+//     - err: on failure, an error message
+router.get('/', isAuthenticated, function(req, res) {
+	console.log("heloo");
+  Bet.find({ author: req.user._id }).populate('author monitors milestones').exec(function(err, bets){
+  	if (err){
+  		utils.sendErrResponse(res, 500, err);
+  	}
+  	else{
+  		utils.sendSuccessResponse(res, bets);
+  	}
+  });
+});
 
 // POST /bets
 // Request parameters/body: (note req.body for forms)
@@ -163,6 +200,7 @@ function makeBet(req,res){
 //     - content: new bet object
 //     - err: on failure, an error message
 router.post('/', function(req, res) {
+	console.log(req.body);
   if (validateBetData(req.body)){
   	makeBet(req, res);
   }
@@ -232,7 +270,7 @@ router.put('/:bet_id', function(req, res) {
 });
 
 /* GET a bet object. */
-// POST /bets
+// GET /:bet_id
 // Request parameters/body: (note req.body for forms)
 //     - bet_id : a String representation of the MongoDB _id of the bet
 // Response:
@@ -250,6 +288,5 @@ router.get('/:bet_id', function(req, res) {
   	}
   });
 });
-
 
 module.exports = router;

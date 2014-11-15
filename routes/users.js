@@ -82,18 +82,6 @@ var friendEachOther = function(userid1, userid2, res) {
     });
 }; // end of the method
 
-var formatUser = function (user) {
-    return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        friends: user.friends,
-        bets: user.bets,
-        rating: user.rating
-    };
-}
-
-
 // GET /users
 // Request parameters:
 //     - none
@@ -120,11 +108,18 @@ router.get('/', function(req, res) {
         - error: on failure, an error message
 */
 router.get('/current', isAuthenticated, function(req, res) {
-    User.findById(req.user._id, function (err, user) {
+    User.findById(req.user._id).populate('bets monitoring').exec(function (err, user) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error');
         } else if (user !== null){
-            utils.sendSuccessResponse(res, formatUser(user));
+            Bet.populate([user.bets], {"path": "milestones" }, function (err, output) {
+                if (err) {
+                    utils.sendErrResponse(res, 500, 'There was an error');
+                } else {
+                    user.bets = output;
+                    utils.sendSuccessResponse(res, user);
+                }
+            });
         } else {
             utils.sendErrResponse(res, 401, 'No user logged in.');
         }
@@ -290,5 +285,16 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
 router.post('/:user_id', isAuthenticated, function(req, res) {
 });
 
+
+var formatUser = function (user) {
+    return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        friends: user.friends,
+        bets: user.bets,
+        rating: user.rating
+    };
+}
 
 module.exports = router;

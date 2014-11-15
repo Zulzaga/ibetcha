@@ -39,12 +39,12 @@ ibetcha.controller('NavbarController',
 
         // When the favorite button is clicked, broadcasts the homeClicked event to all the controllers.
         $scope.home = function() {
-            // if($cookieStore.get('session')) {
-            //     $location.path("/");
-            // }  else {
-            //     $location.path("/");
-            // }
-            $scope.$root.$broadcast("homeClicked");
+
+            if($cookieStore.get('session')) {
+                $location.path("/home");
+            }  else {
+                $location.path("/");
+            }
         }
 
         $scope.invite = function() {

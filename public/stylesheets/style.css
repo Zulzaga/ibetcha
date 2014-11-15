@@ -6,3 +6,57 @@ body {
 a {
   color: #00B7FF;
 }
+
+.userInfo-container {
+    padding: 30px;
+    margin-top: 40px;
+}
+
+.bet-cat-title {
+	height: 30px;
+	font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.userInfo-box {
+    margin-top: 30px;
+    padding-bottom: 30px;
+    display: inline-block;
+    width: 100%;
+    min-height: 320px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.single-bet {
+    width: 250px;
+    height: 230px;
+    margin-right: 20px;
+    display: inline-block;
+    background-color: #F5F5F5;
+    padding: 20px;
+    border-radius: 2px;
+}
+
+.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author{
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.bets {
+    width: auto;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.bet-info, .bet-monitoring-info {
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    height: 100%;
+}
+

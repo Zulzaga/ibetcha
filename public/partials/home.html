@@ -1,12 +1,35 @@
-<!-- Home page -->
-
+<!-- page -->
 
 <div ng-controller="HomePageController" id="home-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
-<!--     <div class="experiment">dsadsa</div>
-    <div class="experiment2">2121</div> -->
-    <p>moved on from pre-login page</p>
-
-
-
+        <div class="userInfo-container">
+            <!-- Div that contains all the profiles -->
+            <div class="userInfo-box">
+                <div class="bet-cat-title">My Current Bets</div>
+                    <!-- Div containing all the semesters for this -->
+                <div class="bets">
+                    <div class="single-bet" ng-repeat="bet in userInfo.bets">
+                        <div class="bet-info">
+                            <div class="bet-description">description: {{bet.description}}</div>
+                            <div class="bet-status">status: {{bet.status}}</div>
+                            <div class="bet-amount">amount: ${{bet.amount}}</div>
+                            <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
+                        </div>
+<!--                         <div class="bet-monitoring" ng-repeat="">
+                            <div class="bet-milestone-monitors">monitors: {{milestone.monitors}}</div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="bet-cat-title">Monitoring Bets</div>
+                <div class="bets">
+                    <div class="single-bet" ng-repeat="bet in userInfo.monitors">
+                        <div class="bet-monitoring-info">
+                            <div class="bet-description">description: {{bet.description}}</div>
+                            <div class="bet-status">status: {{bet.status}}</div>
+                            <div class="bet-author">by: {{bet.author.username}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
