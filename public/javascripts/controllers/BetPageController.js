@@ -13,7 +13,6 @@ ibetcha.controller('BetPageController',
                 method: "GET",
                 url: "bets/" +  $routeParams.id,
                 }).success(function(data, status, headers, config) {
-                    console.log(data);
                     $scope.bet = data.content;
                 }).
             error(function(data, status, headers, config) {

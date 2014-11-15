@@ -14,6 +14,7 @@
                             <div class="bet-status">status: {{bet.status}}</div>
                             <div class="bet-amount">amount: ${{bet.amount}}</div>
                             <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id)">Detail</div>
                         </div>
 <!--                         <div class="bet-monitoring" ng-repeat="">
                             <div class="bet-milestone-monitors">monitors: {{milestone.monitors}}</div>
@@ -27,6 +28,7 @@
                             <div class="bet-description">description: {{bet.description}}</div>
                             <div class="bet-status">status: {{bet.status}}</div>
                             <div class="bet-author">by: {{bet.author.username}}</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id)"><i class="fa fa-star">Detail</i></div>
                         </div>
                     </div>
                 </div>
