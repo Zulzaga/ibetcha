@@ -1,0 +1,17 @@
+<div ng-controller="InvitePageController" class="invite-container">
+    <ng-include src="'partials/navbar.html'"></ng-include>
+    <div id="invite-forms" class="form-panel">
+
+        <!-- Signup form -->
+        <div class="invite-panel" id="signup-container">
+            <form novalidate ng-submit="invite()">
+            <h4>Invite a friend to join ibetcha.</h4>
+                <div class="form-group">
+                    <input name="friendEmail" ng-model="inviteForm.friendEmail" class="form-control" id="friendEmail" placeholder="Email">
+                </div>
+                <button type="submit" class="btn btn-default">Invite</button>
+            </form>
+        </div>
+
+    </div>
+</div>
