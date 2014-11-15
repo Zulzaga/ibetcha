@@ -43,6 +43,11 @@ ibetcha.controller('NavbarController',
             $location.path("/invite");
         }
 
+        $scope.edit = function() {
+            console.log("inside edit bet client side function");
+            $location.path("/edit");
+        }
+
         // Redirects to login page.
         $scope.login = function() {
             $location.path('/');

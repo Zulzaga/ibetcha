@@ -29,6 +29,10 @@ ibetcha.config(['$routeProvider', '$locationProvider',
         templateUrl: 'partials/invite.html',
         controller: 'InvitePageController'
       }).
+      when('/edit', {
+        templateUrl: 'partials/edit.html',
+        controller: 'EditBetPageController'
+      }).
       otherwise({
         templateUrl: 'partials/loginPage.html',
         controller: 'LoginPageController'
