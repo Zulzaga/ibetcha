@@ -16,7 +16,6 @@ ibetcha.controller('NavbarController',
         // Logs out current user
         $scope.logout = function() {
             console.log("inside logout function");
-
             if($cookieStore.get('session')) {
                 $http({
                     method: "GET",
