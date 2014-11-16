@@ -14,6 +14,7 @@ var compareResponseText = function(jqXHR, expectedString) {
 
 var new_bet_id;
 var friend_id;
+var friend_request_id;
 
   //form dummy bet attributes
 
@@ -172,7 +173,6 @@ $.ajax({
     }
   });
 
-console.log("booppoooo", friend_id, new_bet_id);
 // Create new monitor request
   $.ajax({
     url: urlString + "monitorRequests",
@@ -190,6 +190,110 @@ console.log("booppoooo", friend_id, new_bet_id);
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Create new monitor request: error", false);
+    }
+  });
+
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
+
+//Login
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Zulaa",
+      password:"11"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User successful login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User login", false);
+    }
+});
+
+// Create friend request
+  $.ajax({
+    url: urlString + "friendRequests/byUsername",
+    type: "POST",
+    dataType:"json",
+
+    data: { to: "Dana" },
+
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      friend_request_id = data.content._id;
+      console.log(data.content);
+      QUnitTesting("Creating a new friend request", true );
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new friend request: error", false);
+    }
+  });
+
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
+
+//Login
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Dana",
+      password:"18"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User successful login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User login", false);
+    }
+});
+
+// Accept friend request
+  $.ajax({
+    url: urlString + "friendRequests/" + friend_request_id + "/accept",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log(data.content);
+      QUnitTesting("Accepting a friend request", true );
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Accept friend request: error", false);
     }
   });
 

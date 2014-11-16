@@ -45,7 +45,7 @@ var betSchema = new Schema({
 		min: 5,
 		max: 100
 	},
-	
+
 	milestones:[{
 		type: ObjectId,
 		ref: 'Milestone'
