@@ -91,7 +91,17 @@ a {
     color: steelBlue;
 }
 
-.single-bet-container {
+.single-bet-container{
+    margin-top: 110px;
+    top :300px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.single-checkoff-container{
     margin-top: 110px;
     top :300px;
     width: 100%;
@@ -107,4 +117,14 @@ a {
     font-size: 20px;
     font-weight: 700;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.no-pending {
+    min-width: 150px;
+    margin-bottom: 40px;
+}
+
+.today-milestone .pending-milestone {
+    min-width: 120px;
+    margin-bottom: 30px;
 }

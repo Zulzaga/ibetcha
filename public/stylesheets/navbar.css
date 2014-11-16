@@ -22,8 +22,9 @@
     margin-bottom: auto;
     transition: 1s ease;
     -webkit-transition: 1s ease;
-
 }
+
+
 
 .m-navbar-button:hover {
     background-color: #3F3F3F;

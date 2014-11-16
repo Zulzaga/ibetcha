@@ -57,7 +57,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
 			date: current_date,
 			bet: betID,
 			author: userID,
-			status: "Inactive", 
+			status: "Pending Action",//"Inactive", 
 			monitors:[]
 		};
 		milestones_array.push(my_milestone);
@@ -68,7 +68,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
 			date: end_date,
 			bet: betID,
 			author: userID,
-			status: "Inactive", 
+			status: "Pending Action",//"Inactive", 
 			monitors:[]
 		};
 		milestones_array.push(my_milestone);
@@ -90,16 +90,17 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 					bet.milestones.push(arguments[i]._id);
 
 				}
-			}
-			bet.save(function(err){
-				if (err){
-					utils.sendErrResponse(res,500, "Cannot post milestones to database");
-				}
-				else{
+				bet.save(function(err){
+					if (err){
+						utils.sendErrResponse(res,500, "Cannot post milestones to database");
+					}
+					else{
 
-					utils.sendSuccessResponse(res,bet);
-				}
-			});
+						utils.sendSuccessResponse(res,bet);
+					}
+				});
+			}
+			
 		});
 	});
 }

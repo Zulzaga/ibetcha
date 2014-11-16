@@ -121,4 +121,21 @@ router.get('/:bet_id', function(req, res) {
   });
 });
 
+// get all pending milestones
+router.get('/pending/:bet_id', function(req, res) {
+  console.log("inside pending milestones");
+  var bet_id = req.params.bet_id;
+  Milestone.find({bet:bet_id, $or:[{status:'Pending Action'}, {status:'Open'}]})
+           .populate('author monitors')
+           .sort({date:-1})
+           .exec(function(error, milestones) {
+              if(error) {
+                utils.sendErrResponse(res, 500, error);
+              } else {
+                console.log("milestones: " + milestones, milestones.length);
+                utils.sendSuccessResponse(res, milestones);
+              }
+  });
+});
+
 module.exports = router;
