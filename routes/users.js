@@ -156,7 +156,7 @@ router.post('/new', function(req, res, next) {
                   if (err) { 
                         utils.sendErrResponse(res, 500, 'There was an error!');
                   } else {
-                        utils.sendSuccessResponse(res, {success:true});
+                        utils.sendSuccessResponse(res, newUser);
                   }
                 }); 
             }

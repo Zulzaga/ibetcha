@@ -87,6 +87,7 @@
     }
   });
 
+
 // Edit bet: change status
 $.ajax({
     url: urlString + "bets/"+new_bet_id,
