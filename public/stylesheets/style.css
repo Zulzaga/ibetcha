@@ -7,16 +7,12 @@ a {
   color: #00B7FF;
 }
 
-#invite-container {
-
-}
-
 .userInfo-container {
     padding: 30px;
     margin-top: 40px;
 }
 
-.bet-cat-title, .request-title {
+.bet-cat-title, .request-monitor-title, .request-friend-title {
 	height: 30px;
 	font-weight: 700;
     font-size: 24px;
@@ -24,7 +20,7 @@ a {
     margin-top: 20px;
 }
 
-.request-title{
+.request-monitor-title, .request-friend-title{
     color: steelBlue;
     text-decoration: underline;
     font-weight: 700;
@@ -53,7 +49,7 @@ a {
     border-radius: 2px;
 }
 
-.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author, .bet-endDate, .bet-frequency, .bet-startDate, .request-author{
+.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author, .bet-endDate, .bet-frequency, .bet-startDate, .request-from{
     margin-bottom: 10px;
     width: 100%;
 }
@@ -111,7 +107,7 @@ a {
     font-weight: 700;
 }
 
-.single-monitor-request {
+.single-monitor-request,  .single-friend-request{
     width: 100%;
     margin-top: 110px;
     font-size: 20px;

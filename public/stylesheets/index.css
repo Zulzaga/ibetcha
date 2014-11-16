@@ -63,6 +63,13 @@ button {
 	margin-bottom: 100px;
 }
 
+.request-panel {
+	width: 300px;
+	position: absolute;
+	top: 120px;
+	left: 40px;
+	margin-bottom: 100px;
+}
 .experiment {
 	background-color: #FF0066;
 	width:50%;

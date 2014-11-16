@@ -61,6 +61,13 @@ ibetcha.controller('NavbarController',
             }            
         }
 
+        $scope.request = function() {
+            console.log("inside send friend request client side function");
+            if($cookieStore.get('session')) {
+                $location.path("/request");
+            }            
+        }
+
         // Redirects to login page.
         $scope.login = function() {
             $location.path('/');

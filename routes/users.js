@@ -11,6 +11,7 @@ var emailNotifier = require('../utils/email');
 var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
+var FriendRequest = require('../models/FriendRequest');
 var MonitorRequest = require('../models/MonitorRequest');
 
 
@@ -96,6 +97,17 @@ router.get('/', function(req, res) {
         }
     });
 });
+
+// // gets all users
+// router.get('/friends', function(req, res) {
+//     User.findById(req.user._id, function (err, user) {
+//         if (err) {
+//             utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
+//         } else {
+//             utils.sendSuccessResponse(res, user.friends);
+//         }
+//     });
+// });
 
 // gets the user that is currently logged in
 router.get('/current', isAuthenticated, function(req, res) {
