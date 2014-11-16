@@ -12,6 +12,35 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
+var new_bet_id;
+var friend_id;
+
+  //form dummy bet attributes
+
+  //          Making milestone date objects and bet data
+  var start_date = new Date();
+
+  var test_date = new Date();
+  start_date.setDate(start_date.getDate());
+  var end_date = new Date(start_date);
+  end_date.setDate(end_date.getDate() + 7);
+  
+  var tomorrow = new Date(start_date);
+  tomorrow.setDate(start_date.getDate() + 1);
+
+  var frequency = 2; //every other day
+  var frequencyDaily = 1;
+
+  //         Form new Bet data
+  var amount = 30;
+  var dummyData = { 
+      test: true,
+      startDate:start_date,//those were milliseconds, not numbers.
+      endDate:end_date, 
+      frequency:frequency, 
+      amount: amount
+    }
+
 //Signing up a new user
 $.ajax({
     url: urlString + "users/new",
@@ -27,6 +56,7 @@ $.ajax({
       console.log('dataaa');
       console.log(data);
       QUnitTesting("Create new user1", data.success === true);
+      friend_id = data.content._id;
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Create new user1", false);
@@ -122,6 +152,46 @@ $.ajax({
     }
 });
 
+//Create new bet
+  $.ajax({
+    url: urlString + "bets",
+    type: "POST",
+    dataType:"json",
+    data: dummyData,
+
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log("998938493894", data.content._id);
+      new_bet_id = data.content._id;
+      QUnitTesting("Create new Bet: success message", data.success);
+      QUnitTesting("Create new Bet: check frequency", data.content.frequency = frequency);
+      QUnitTesting("Create new Bet: check amount", data.content.amount=== amount);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new Bet: error", false);
+    }
+  });
+
+console.log("booppoooo", friend_id, new_bet_id);
+// Create new monitor request
+  $.ajax({
+    url: urlString + "monitorRequests",
+    type: "POST",
+    dataType:"json",
+
+    data: { to: friend_id, bet: new_bet_id },
+
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log("boop");
+      console.log(data.content);
+      QUnitTesting("Creating a new monitor request", true );
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new monitor request: error", false);
+    }
+  });
 
 // // Email invite to join ibetcha
 // $.ajax({

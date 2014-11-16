@@ -27,13 +27,18 @@ a {
 .request-title{
     color: steelBlue;
     text-decoration: underline;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.requests-box {
 }
 
 .userInfo-box {
-    margin-top: 30px;
-    padding-bottom: 30px;
     display: inline-block;
-    width: 100%;
+    padding-bottom: 30px;
     min-height: 320px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
