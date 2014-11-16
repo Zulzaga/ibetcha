@@ -13,7 +13,7 @@
   tomorrow.setDate(start_date.getDate() + 1);
 
   var frequency = 2; //every other day
-  var frequencyDaily = 1;
+  var frequencyDaily = 1;//daily
   var first_milestone_date = new Date(start_date.valueOf());
   first_milestone_date.setDate(first_milestone_date.getDate() +2);
 
@@ -184,3 +184,4 @@ $.ajax({
       QUnitTesting("User logout", false);
     }
 });
+
