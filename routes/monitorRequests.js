@@ -52,11 +52,11 @@ router.get('/', isAuthenticated, function(req, res) {
 router.post('/', isAuthenticated, function(req, res) {
     var requestTo = req.body.to;
     var betId = req.body.bet;
-    MonitorRequest.create(req.user._id, requestTo, betId, function(err, requests) {
+    MonitorRequest.create(req.user._id, requestTo, betId, function(err, request) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error');
         } else {
-            utils.sendSuccessResponse(res, requests);
+            utils.sendSuccessResponse(res, request);
         }
     })
 })

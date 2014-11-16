@@ -31,6 +31,11 @@ ibetcha.controller('HomePageController',
 	        	console.log("get Mon requests");
 	        	$location.path('/monitorRequests');
 	        }
+
+	        $scope.friendRequests = function(){
+	        	console.log("get Friend requests");
+	        	$location.path('/friendRequests');
+	        }
         }
 
     }

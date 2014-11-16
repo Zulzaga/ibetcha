@@ -1,0 +1,10 @@
+<!-- page -->
+
+<div ng-controller="FriendRequestPageController" id="friendPage-container">
+    <ng-include src="'partials/navbar.html'"></ng-include>
+        <div class="single-friend-request" ng-repeat="request in requests">
+            <div class="request-from">Request From: {{request.from.username}}</div>
+            <button id="submit-button" ng-click="accept(request._id)" class="btn btn-primary" >Accept</button>
+            <button id="submit-button" ng-click="reject(request._id)" class="btn btn-primary" >Reject</button>
+        </div>
+</div>

@@ -2,7 +2,7 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 
-//Milestones Schema
+//Monitor Requests Schema
 var monitorRequestSchema = new Schema({
 	// date: Date,
 
