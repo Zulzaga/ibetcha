@@ -198,7 +198,8 @@ router.get('/friends/:username', function(req, res) {
             if(error) {
                 utils.sendErrResponse(res, 500, error);
             } else if(user) {
-                utils.sendSuccessResponse( res, user.friends);
+                console.log(user.friends.map(formatFriend));
+                utils.sendSuccessResponse( res, user.friends.map(formatFriend));
             }
         });
 });
@@ -306,6 +307,12 @@ var formatUser = function (user) {
         bets: user.bets,
         rating: user.rating
     };
+}
+
+var formatFriend = function(friend) {
+    return {
+        username: friend.username
+    }
 }
 
 module.exports = router;

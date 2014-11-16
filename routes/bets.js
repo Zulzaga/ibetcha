@@ -31,7 +31,7 @@ function isAuthenticated(req, res, next) {
 
 //get the bet's of the logged in user
 router.get('/', isAuthenticated, function(req, res) {
-  Bet.find({ author: req.user._id }).populate('author monitors milestones').exec(function(err, bets){
+  Bet.find({ }).populate('author monitors milestones').exec(function(err, bets){
   	if (err){
   		utils.sendErrResponse(res, 500, err);
   	}

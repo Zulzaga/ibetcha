@@ -32,3 +32,8 @@
 	width: 200px; 
 	text-align: left;
 }
+
+.edit-friends-label{
+	min-width: 100px;
+	text-align: center;
+}

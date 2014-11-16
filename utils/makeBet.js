@@ -108,10 +108,11 @@ var store_all_milestones = function(res, MilestonesArray, betId){
 // create bet object
 makeBet.makeBet=function(req,res){
 	var data = req.body;
+	console.log("body", req.body);
 
 	//check if in testing mode
 	if (data.test){
-		var userId = "545fff1a27e4ef0000dc7205"; //will remove this line, don't worry Jonathan
+		var userId = req.user._id; //will remove this line, don't worry Jonathan
 		milestones_JSONs = [{date: new Date()}, {date: new Date()}];
 	}
 	else{
@@ -122,7 +123,7 @@ makeBet.makeBet=function(req,res){
 	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
 				  endDate:data.endDate,
-				  dropDate:data.dropData,
+				  dropDate:data.endData,
 				  frequency:data.frequency,
 				  description:data.description,
 				  status: status,
