@@ -195,7 +195,7 @@ router.post('/acceptfriend/:friend/by/:me', function(req, res) {
 
 router.post('/askfriend', function(req, res) {
     console.log("********************");
-    console.log("req.user is this crap: " + req.user);
+    console.log("req.user is this : " + req.user);
     //req.user = {username:'butts'}; // TODO: TAKE OUT AFTER ZULSAR FIXES LOGIN
     var msg = {
       body: "Please go the following link to confirm friendship:" + "<br><br>" 

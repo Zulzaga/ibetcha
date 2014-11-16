@@ -34,10 +34,9 @@
                 <input type="number" min="3" step="1" class="edit edit-dollar" ng-model="editForm.dollar"></input> Dollars
             </div>
             <div class="form-group" >
-                <label class="edit-label">Add Friends to Monitor You</label>
-                <select multiple size="5" name="editForm.friends" ng-model="editForm.monitors" ng-repeat="friend in editForm.friends">
-                  <option selected="Select a friend">Select a friend</option>
-                  <option value="{{editForm.friend}}">{{friend}}</option>
+                <label class="edit-label">Add 3 to 5 Friends to Monitor You</label>
+                <select multiple size="3" name="editForm.friends" ng-model="editForm.monitors" ng-repeat="friend in editForm.friends">
+                  <option value="{{editForm.friend}}">{{friend.username}}</option>
                 </select>
             </div>
             <div id="submit-button-wrapper">

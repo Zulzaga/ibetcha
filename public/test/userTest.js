@@ -189,9 +189,7 @@ $.ajax({
   type: "GET",
   async: false,
   success: function(data, textStatus, jqXHR) {
-    console.log("8888888888888888");
     console.log(data.content);
-    console.log("8888888888888888");
     QUnitTesting("Get friends", data.content.length === 1);
   },
   error: function(jqXHR, textStatus, err) {
