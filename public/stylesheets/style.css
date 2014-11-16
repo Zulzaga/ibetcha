@@ -16,12 +16,17 @@ a {
     margin-top: 40px;
 }
 
-.bet-cat-title {
+.bet-cat-title, .request-title {
 	height: 30px;
 	font-weight: 700;
     font-size: 24px;
     margin-bottom: 20px;
     margin-top: 20px;
+}
+
+.request-title{
+    color: steelBlue;
+    text-decoration: underline;
 }
 
 .userInfo-box {
@@ -43,7 +48,7 @@ a {
     border-radius: 2px;
 }
 
-.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author, .bet-endDate, .bet-frequency, .bet-startDate{
+.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author, .bet-endDate, .bet-frequency, .bet-startDate, .request-author{
     margin-bottom: 10px;
     width: 100%;
 }
@@ -89,4 +94,12 @@ a {
     height: 100%;
     font-size: 20px;
     font-weight: 700;
+}
+
+.single-monitor-request {
+    width: 100%;
+    margin-top: 110px;
+    font-size: 20px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }

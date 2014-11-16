@@ -15,6 +15,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var bets = require('./routes/bets');
 var milestones = require('./routes/milestone/milestones');
+var monitorRequests = require('./routes/monitorRequests');
 var test = require('./routes/test');
 
 var app = express();
@@ -47,6 +48,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/bets', bets);
 app.use('/milestones', milestones);
+app.use('/monitorRequests', monitorRequests);
 app.use('/test', test);
 
 // strategy for authentication

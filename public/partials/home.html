@@ -5,6 +5,7 @@
         <div class="userInfo-container">
             <!-- Div that contains all the profiles -->
             <div class="userInfo-box">
+                <div class="request-title" ng-click="monitorRequests()">Monitor Requests</div>
                 <div class="bet-cat-title">My Current Bets</div>
                     <!-- Div containing all the semesters for this -->
                 <div class="bets">
@@ -14,7 +15,7 @@
                             <div class="bet-status">status: {{bet.status}}</div>
                             <div class="bet-amount">amount: ${{bet.amount}}</div>
                             <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
-                            <div class="bet-detail-link" ng-click="detail(bet._id)">Detail</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id)"><i class="fa fa-star">Detail</i></div>
                         </div>
 <!--                         <div class="bet-monitoring" ng-repeat="">
                             <div class="bet-milestone-monitors">monitors: {{milestone.monitors}}</div>
@@ -23,7 +24,7 @@
                 </div>
                 <div class="bet-cat-title">Monitoring Bets</div>
                 <div class="bets">
-                    <div class="single-bet" ng-repeat="bet in userInfo.monitors">
+                    <div class="single-bet" ng-repeat="bet in userInfo.monitoring">
                         <div class="bet-monitoring-info">
                             <div class="bet-description">description: {{bet.description}}</div>
                             <div class="bet-status">status: {{bet.status}}</div>

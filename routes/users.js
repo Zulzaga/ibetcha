@@ -11,6 +11,7 @@ var emailNotifier = require('../utils/email');
 var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
+var MonitorRequest = require('../models/MonitorRequest');
 
 
 // Authenticates the user and redirects to the users login page if necessary.
@@ -107,7 +108,13 @@ router.get('/current', isAuthenticated, function(req, res) {
                     utils.sendErrResponse(res, 500, 'There was an error');
                 } else {
                     user.bets = output;
-                    utils.sendSuccessResponse(res, user);
+                    MonitorRequest.find({ to: req.user._id }).populate('to from bet').exec(function (err, requests) {
+                        if (err) {
+                            utils.sendErrResponse(res, 500, 'There was an error');
+                        } else {
+                            utils.sendSuccessResponse(res, { 'user': user, 'requests': requests });
+                        }
+                    })
                 }
             });
         } else {
