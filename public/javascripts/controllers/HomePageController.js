@@ -16,7 +16,7 @@ ibetcha.controller('HomePageController',
 	            method: "GET",
 	            url: "users/current"
 	            }).success(function(data, status, headers, config) {
-	                $scope.userInfo = data.content;
+	                $scope.userInfo = data.content.user;
 	            }).
 	        error(function(data, status, headers, config) {
 	            alert(data.err);
@@ -25,6 +25,11 @@ ibetcha.controller('HomePageController',
 	        $scope.detail = function(id){
 	        	console.log("showing detail!");
 	        	$location.path('/bets/' + id);
+	        }
+
+	        $scope.monitorRequests = function(){
+	        	console.log("get Mon requests");
+	        	$location.path('/monitorRequests');
 	        }
         }
 

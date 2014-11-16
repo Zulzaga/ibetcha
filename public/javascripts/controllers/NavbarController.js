@@ -17,12 +17,12 @@ ibetcha.controller('NavbarController',
         $scope.logout = function() {
             console.log("inside logout function");
             if($cookieStore.get('session')) {
+                $cookieStore.remove('user');
+                $cookieStore.remove('session');
                 $http({
                     method: "GET",
                     url: "users/logout",
                     }).success(function(data, status, headers, config) {
-                        $cookieStore.remove('user');
-                        $cookieStore.remove('session');
                         alert("successfully logged out");
                         $location.path('/');
                         
