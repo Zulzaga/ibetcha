@@ -1,7 +1,7 @@
 
 
 ibetcha.controller('HomePageController',
-    function($scope, $http, $location, $cookieStore) {
+    function($scope, $http, $location, $cookieStore, $rootScope) {
         
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
@@ -22,9 +22,9 @@ ibetcha.controller('HomePageController',
 	            alert(data.err);
 	        });
 
-	        $scope.detail = function(id){
-	        	console.log("showing detail!");
-	        	$location.path('/bets/' + id);
+	        $scope.detail = function(id, type){
+	        	console.log("showing detail!", type);	        	
+	        	$location.path('/bets/' + id + '/' + type);
 	        }
 
 	        $scope.monitorRequests = function(){

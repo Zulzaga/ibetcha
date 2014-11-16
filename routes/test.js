@@ -4,6 +4,9 @@ var router = express.Router();
 var mongoose = require('mongoose');
 
 var User = require('../models/User');
+var Bet = require('../models/Bet');
+var Milestone = require('../models/Milestone');
+var MonitorRequest = require('../models/MonitorRequest');
 
 // Routing for the testing page
 router.get('/', function(req, res) {
@@ -21,6 +24,15 @@ router.get('/', function(req, res) {
 var cleanCollections = function() {
 	User.remove({}, function(err) { 
 	   console.log('users removed') 
+	});
+	Bet.remove({}, function(err) { 
+	   console.log('bets removed') 
+	});
+	Milestone.remove({}, function(err) { 
+	   console.log('milestones removed') 
+	});
+	MonitorRequest.remove({}, function(err) { 
+	   console.log('monitor requests removed') 
 	});
 }
 

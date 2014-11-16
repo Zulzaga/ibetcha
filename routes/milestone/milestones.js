@@ -63,6 +63,8 @@ router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
 	var new_status = req.body.status; //Success or Failed
 	var test = req.body.test;
+
+	console.log("here is the milestone id", milestone_id);
 	
 	Milestone
 		.findById(milestone_id)

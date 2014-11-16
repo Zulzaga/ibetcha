@@ -253,20 +253,20 @@ console.log("booppoooo", friend_id, new_bet_id);
 //   }
 // });
 
-// // Get friends
-// $.ajax({
-//   url: urlString + "users/friends/" + "Zulaa",
-//   type: "GET",
-//   async: false,
-//   success: function(data, textStatus, jqXHR) {
-//     console.log("8888888888888888");
-//     console.log(data.content);
-//     console.log("8888888888888888");
-//     QUnitTesting("Get friends", data.content.length === 1);
-//   },
-//   error: function(jqXHR, textStatus, err) {
-//     QUnitTesting("Get friends", false);
-//   }
-// });
+
+// Get friends
+$.ajax({
+  url: urlString + "users/friends/" + "Zulaa",
+  type: "GET",
+  async: false,
+  success: function(data, textStatus, jqXHR) {
+    console.log(data.content);
+    QUnitTesting("Get friends", data.content.length === 1);
+  },
+  error: function(jqXHR, textStatus, err) {
+    QUnitTesting("Get friends", false);
+  }
+});
+
 
 
