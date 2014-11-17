@@ -53,6 +53,9 @@ function makeMilestonePendingAndEmail(){
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
 						//mongoose searches and converts staff to local
 	cleanDates(today);
+	var tomorrow = moment();
+	tomorrow.add(1, 'd');
+	cleanDates(tomorrow);
 	//today.add(6,'d'); //for testing, try to see if stuff has changed
 	console.log('today: '+today.toString());
 	
@@ -78,9 +81,12 @@ function changeBetStatus(){
 						//mongoose searches and converts staff to local
 	
 	cleanDates(today);
-	//Not started --> Action Required
+	var tomorrow = moment();
+	tomorrow.add(1, 'd');
+	cleanDates(tomorrow);
+	//Not started --> Action Required, DROPPED
 	Bet
-		.update({status: "Not Started", startDate: {$gt: today}}, {$set:{status: 'Action Required'}})
+		.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, monitors: {$not: {$size: {$lt: 3}}}} ,{$set:{status: 'Action Required'}})
 		.populate('author')
 		.exec(function(err, bets){
 			if (err){
@@ -93,6 +99,24 @@ function changeBetStatus(){
 					var author = bets[i].author;
 					changeStatus.sendEmailAuthor(author, bet_id, 'Open');
 				}
+				//handle bets with number of monitors < 3:
+				// inactive ----> Dropped
+				Bet
+					.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, monitors: {$size: {$lt: 3}}} ,{$set:{status: 'Dropped'}})
+					.populate('author')
+					.exec(function(err, bets){
+						if (err){
+							console.log("Error while activating bet: "+err);
+						}
+						else{
+							var l = bets.length;
+							for (var i =0; i< l; i++){
+								var bet_id = bets[i]._id;
+								var author = bets[i].author;
+								changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
+							}
+						}
+					});
 			}
 		});
 
