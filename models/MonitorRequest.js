@@ -20,15 +20,15 @@ var monitorRequestSchema = new Schema({
 	}
 });
 
-monitorRequestSchema.statics.create = function(from, to, bet, callback) {
-    var newRequest = new MonitorRequest({
-        'from': from,
-        'to': to,
-        'bet': bet
-    });
+// monitorRequestSchema.statics.create = function(from, to, bet, callback) {
+//     var newRequest = new MonitorRequest({
+//         'from': from,
+//         'to': to,
+//         'bet': bet
+//     });
 
-    newRequest.save(callback);
-}
+//     newRequest.save(callback);
+// }
 
 
 //Bindings

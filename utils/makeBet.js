@@ -10,6 +10,7 @@ var utils = require('../utils/utils');
 var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
+var MonitorRequest = require('../models/MonitorRequest');
 var MILLIS_IN_A_DAY = 86400000;
 
 var makeBet = {};
@@ -149,8 +150,29 @@ makeBet.makeBet=function(req,res){
 		            	if (err) {
 		            		utils.sendErrResponse(res, 500, 'There was an error!');
 		            	} else {
-		            		var milestones_JSONs = generate_milestones(userId, bet._id, req.body.startDate, req.body.endDate, req.body.frequency);
-							store_all_milestones(res, milestones_JSONs, newBet._id);
+	            		    var monitors = data.monitors || [];
+						    var betId = bet._id;
+						    var monitorRequestArray = [];
+
+						    for (i=0; i< monitors.length; i++){ //note we start at i=1
+						        var my_request = {
+						            //change date here
+						            from: req.user._id,
+						            to: monitors[i],
+						            bet: betId
+						        };
+						        monitorRequestArray.push(my_request);
+						    }
+
+						    MonitorRequest.create(monitorRequestArray, function(err, requests) {
+						        if (err) {
+						            utils.sendErrResponse(res, 500, 'There was an error');
+						        } else {
+						        	console.log("Created monitor request!");
+						            var milestones_JSONs = generate_milestones(userId, bet._id, req.body.startDate, req.body.endDate, req.body.frequency);
+						            store_all_milestones(res, milestones_JSONs, newBet._id);
+						        }
+						    })
 		            	}
 		            })
 		        }

@@ -173,25 +173,25 @@ $.ajax({
     }
   });
 
-// Create new monitor request
-  $.ajax({
-    url: urlString + "monitorRequests",
-    type: "POST",
-    dataType:"json",
+// // Create new monitor request
+//   $.ajax({
+//     url: urlString + "monitorRequests",
+//     type: "POST",
+//     dataType:"json",
 
-    data: { to: friend_id, bet: new_bet_id },
+//     data: { to: friend_id, bet: new_bet_id },
 
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log("boop");
-      console.log(data.content);
-      QUnitTesting("Creating a new monitor request", true );
+//     async: false,
+//     success: function(data, textStatus, jqXHR) {
+//       console.log("boop");
+//       console.log(data.content);
+//       QUnitTesting("Creating a new monitor request", true );
 
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new monitor request: error", false);
-    }
-  });
+//     },
+//     error: function(jqXHR, textStatus, err) {
+//       QUnitTesting("Create new monitor request: error", false);
+//     }
+//   });
 
 //Logout
 $.ajax({

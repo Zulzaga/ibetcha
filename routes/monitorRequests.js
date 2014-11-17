@@ -61,6 +61,32 @@ router.post('/', isAuthenticated, function(req, res) {
     })
 })
 
+// Creates new monitor requests.
+router.post('/monitors', isAuthenticated, function(req, res) {
+    var monitors = JSON.parse(req.body.monitors);
+    console.log("length", monitors[0]);
+    var betId = req.body.bet;
+    var monitorRequestArray = [];
+
+    for (i=0; i< monitors.length; i++){ //note we start at i=1
+        var my_request = {
+            //change date here
+            from: req.user._id,
+            to: monitors[i],
+            bet: betId
+        };
+        monitorRequestArray.push(my_request);
+    }
+
+    MonitorRequest.create(monitorRequestArray, function(err, requests) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error');
+        } else {
+            utils.sendSuccessResponse(res, requests);
+        }
+    })
+})
+
 // Accepts a monitor request.
 // Adds the user to monitors list of the request bet and deletes the monitor request.
 router.get('/:requestId/accept', isAuthenticated, function(req, res) {

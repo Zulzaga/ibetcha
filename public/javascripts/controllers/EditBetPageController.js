@@ -16,6 +16,13 @@ ibetcha.controller('EditBetPageController',
 
             $scope.submit = function(){
                 console.log($scope.editForm);
+                var monitorsArray = [];
+                var monitors = $scope.editForm.monitors;
+                for (i =0; i< monitors.length; i++) {
+                    monitorsArray.push(monitors[i]._id);
+                }
+                $scope.editForm.monitors = monitorsArray;
+                console.log($scope.editForm.monitors);
                 $http({
                     method: "POST",
                     url: "bets",
