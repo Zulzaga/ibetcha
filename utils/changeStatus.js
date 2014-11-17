@@ -79,7 +79,6 @@ function makeMilestonePendingAndEmail(){
 function changeBetStatus(){
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
 						//mongoose searches and converts staff to local
-	
 	cleanDates(today);
 	var tomorrow = moment();
 	tomorrow.add(1, 'd');
