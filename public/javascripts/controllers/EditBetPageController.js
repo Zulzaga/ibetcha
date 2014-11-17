@@ -22,7 +22,7 @@ ibetcha.controller('EditBetPageController',
                     monitorsArray.push(monitors[i]._id);
                 }
                 $scope.editForm.monitors = monitorsArray;
-                console.log($scope.editForm.monitors);
+                console.log($scope.editForm.startDate );
                 $http({
                     method: "POST",
                     url: "bets",
