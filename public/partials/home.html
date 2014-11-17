@@ -3,15 +3,17 @@
 <div ng-controller="HomePageController" id="home-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
         <div class="userInfo-container">
+            <div class="user-username">Hi {{userInfo.username}}</div>
             <!-- Div that contains all the profiles -->
             <div class="requests-box">
                 <div class="request-monitor-title" ng-click="monitorRequests()">Monitor Requests</div>
                 <div class="request-friend-title" ng-click="friendRequests()">Friend Requests</div>
             </div>
             <div class="userInfo-box">
-                <div class="bet-cat-title">My Current Bets</div>
+                <div class="bet-cat-title">My Bets</div>
                     <!-- Div containing all the semesters for this -->
-                <div class="bets">
+                <div class="no-bets" ng-if="userInfo.bets.length == 0">You don't have any bets. Make a new bet.</div>
+                <div class="bets" ng-if="userInfo.bets.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.bets">
                         <div class="bet-info">
                             <div class="bet-description">description: {{bet.description}}</div>
@@ -26,7 +28,8 @@
                     </div>
                 </div>
                 <div class="bet-cat-title">Monitoring Bets</div>
-                <div class="bets">
+                <div class="no-bets" ng-if="userInfo.monitoring.length == 0">You don't have any bets to monitor.</div>
+                <div class="bets" ng-if="userInfo.monitoring.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.monitoring">
                         <div class="bet-monitoring-info">
                             <div class="bet-description">description: {{bet.description}}</div>

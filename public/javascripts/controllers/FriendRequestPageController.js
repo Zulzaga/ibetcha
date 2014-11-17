@@ -12,6 +12,8 @@ ibetcha.controller('FriendRequestPageController',
                 url: "friendRequests/",
                 }).success(function(data, status, headers, config) {
                 	console.log(data.content);
+                	$scope.reqEmpty = (data.content.length == 0);
+                	console.log($scope.reqEmpty);
                     $scope.requests = data.content;
                 }).
             error(function(data, status, headers, config) {

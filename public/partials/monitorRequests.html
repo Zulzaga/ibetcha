@@ -2,6 +2,9 @@
 
 <div ng-controller="MonitorRequestPageController" id="monitorPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
+    	<div class="no-requests" ng-if="requests.length == 0">You don't have any monitor requests</div>
+    	<div class="requests-title" ng-if="requests.length != 0">Monitor Requests:
+    	</div>
         <div class="single-monitor-request" ng-repeat="request in requests">
             <div class="request-author">Request Author: {{request.from.username}}</div>
             <div class="bet-description">Bet Description: {{request.bet.description}}</div>
