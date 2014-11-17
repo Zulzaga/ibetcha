@@ -122,7 +122,7 @@ router.get('/:bet_id', function(req, res) {
 });
 
 // get all pending milestones
-router.get('/pending/:bet_id', function(req, res) {
+router.get('/:bet_id/milestones/pending', function(req, res) {
   console.log("inside pending milestones");
   var bet_id = req.params.bet_id;
   Milestone.find({bet:bet_id, $or:[{status:'Pending Action'}, {status:'Open'}]})

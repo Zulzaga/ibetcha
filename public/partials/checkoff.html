@@ -1,0 +1,25 @@
+<!-- page -->
+
+<div ng-controller="CheckoffPageController" id="betPage-container">
+    <ng-include src="'partials/navbar.html'"></ng-include>
+    <div class="single-checkoff-container">
+        
+        Today's checkoff <br>
+        <div class="today-milestone" ng-if="!empty">
+            {{today.date}}
+            <button type="Checkoff" class="btn btn-default" ng-click="check(today._id)">Check</button>
+        </div>
+        <div class="no-pending" ng-if="empty">No milestones to checkoff</div>
+
+        Pending checkoffs <br> 
+        <div ng-if="numpending >= '1'" >
+            <div class="pending-milestone" ng-repeat="milestone in pending">
+                {{milestone.date}}
+                <button type="Checkoff" class="btn btn-default" ng-click="check(milestone._id)">Check</button>
+            </div>
+            
+        </div>
+        <div class="no-pending" ng-if="numpending < '1'">No milestones to checkoff</div>
+
+    </div>
+</div>
