@@ -311,7 +311,8 @@ var formatUser = function (user) {
 
 var formatFriend = function(friend) {
     return {
-        username: friend.username
+        username: friend.username,
+        _id: friend._id
     }
 }
 
