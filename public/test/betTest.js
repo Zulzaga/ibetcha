@@ -24,6 +24,7 @@
   third_milestone_date.setDate(third_milestone_date.getDate() +6);
 
   var fourth_milestone_date = new Date(start_date.valueOf());
+
   fourth_milestone_date.setDate(fourth_milestone_date.getDate() +7);
 
   //         Form new Bet data

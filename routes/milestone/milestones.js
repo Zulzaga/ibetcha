@@ -71,11 +71,13 @@ router.put('/:milestone_id', function(req, res) {
 		.populate('bet author')
 		.exec(function(err, milestone){
 			if (err){
+				console.log("1");
 				utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
 			}else{
 				milestone.status = new_status;
 				milestone.save(function(err, savedmilestone){
 					if (err){
+						console.log("2");
 						utils.sendErrResponse(res, 500, "Cannot save the milestone")
 					}
 					//new status = success
@@ -84,23 +86,28 @@ router.put('/:milestone_id', function(req, res) {
 							.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]})
 							.exec(function(err, milestones){
 								if (err){
+									console.log("3");
 									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
 								}
 								if (milestones.length === 0){ //means all other milestones got checked
 									milestone.bet.status = "Succeeded";
 									milestone.bet.save(function(err){
 										if (err){
+											console.log("4");
 											utils.sendErrResponse(res, 500, "could not update bet status");
 										}
 										// send email to author
 										if (!test){
+											console.log("5");
 											changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 										}
+										console.log("6");
 										utils.sendSuccessResponse(res, savedmilestone);
 									})
 								}
 								else{
 									// user received checkoff but bet still ongoing
+									console.log("7");
 									utils.sendSuccessResponse(res, savedmilestone);
 								}
 							});
@@ -111,21 +118,25 @@ router.put('/:milestone_id', function(req, res) {
 							.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
 							.exec(function(err){
 								if(err){
+									console.log("8");
 									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
 								}
 								milestone.bet.status = "Failed";
 								milestone.bet.save(function (err){
 									if (err){
+										console.log("9");
 										utils.sendErrResponse(res, 500, err);
 									}
 									//send email
 									if (!test){
+										console.log("10");
 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 									}
 
 									//console.log("EMAIL DANA");
 									//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
 									//charge money here
+									console.log("11");
 									utils.sendSuccessResponse(res, savedmilestone);
 
 								});
@@ -135,12 +146,15 @@ router.put('/:milestone_id', function(req, res) {
 					}
 					else{
 						//should never get here
+						console.log("12");
 						utils.sendSuccessResponse(res, savedmilestone);
 					}
 				});
 			}
 		});
 });
+
+
 
 
 

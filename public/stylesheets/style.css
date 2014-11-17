@@ -120,7 +120,12 @@ a {
     margin-bottom: 40px;
 }
 
-.today-milestone .pending-milestone {
+.today-milestone  {
+    min-width: 120px;
+    margin-bottom: 30px;
+}
+
+.pending-milestone {
     min-width: 120px;
     margin-bottom: 30px;
 }
