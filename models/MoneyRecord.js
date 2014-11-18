@@ -4,8 +4,8 @@ var mongoose = require("mongoose"),
 
 // Schema for keeping track of who owes what
 var MoneyRecordSchema = new Schema({
-	from : {type: ObjectId, required: true},
-	to : {type: ObjectId, required: true},
+	from : {type: ObjectId, ref: 'User', required: true},
+	to : {type: ObjectId, ref: 'User', required: true},
 	amount: {type: Number, required:true}
 });
 

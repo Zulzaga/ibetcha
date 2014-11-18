@@ -145,15 +145,15 @@ router.get('/payments', isAuthenticated, function(req, res) {
         } else if (user === null) {
             utils.sendErrResponse(res, 401, 'No such user found!');
         } else {
-            MoneyRecord.find({ 'from': req.user._id }, function(err, froms) {
+            MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
                 if (err) {
                     utils.sendErrResponse(res, 500, 'There was an error');
                 } else {
-                    MoneyRecord.find({ 'to': req.user._id}, function(err, tos) {
+                    MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
                         if (err) {
                             utils.sendErrResponse(res, 500, 'There was an error');
                         } else {
-                            utils.sendSuccessResponse({ 'froms': froms, 'tos': tos });
+                            utils.sendSuccessResponse(res, { 'froms': froms, 'tos': tos });
                         }
                     })
                 }

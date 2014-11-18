@@ -5,12 +5,18 @@
         <div class="friends-box">
     		<div class="requests-title">People to whom you owe money:</div>
     		<div class="request-empty" ng-if="friends.length==0">You don't owe any money.</div>
-        	<div class="request-empty" ng-repeat="friend in froms">{{friend.username}}</div>
+    		<div class="money-track" ng-repeat="friend in froms">
+    			<div class="request-empty">To: {{friend.to.username}}</div>
+    			<div class="request-empty">Amount: ${{friend.amount}}</div>
+    		</div>
     	</div>
     	<div class="req-box">
     		<div class="requests-title">People who owe you money:</div>
     		<div class="request-empty" ng-if="reqEmpty">No one owes you.</div>
-	        <div class="request-empty" ng-repeat="friend in tos">{{friend.username}}</div>
+    		<div class="money-track" ng-repeat="friend in tos">
+    			<div class="request-empty">From: {{friend.from.username}}</div>
+    			<div class="request-empty">Amount: ${{friend.amount}}</div>
+    		</div>
 	        </div>
     	</div>
 </div>

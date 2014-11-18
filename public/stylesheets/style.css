@@ -17,6 +17,9 @@ a {
     font-weight: 700;
 }
 
+.money-track {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
 
 .no-pending {
     min-width: 150px;

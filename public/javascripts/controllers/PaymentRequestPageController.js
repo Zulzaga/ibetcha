@@ -10,6 +10,7 @@ ibetcha.controller('PaymentRequestPageController',
                     console.log("payment data received", data.content);
                     $scope.tos = data.content.tos;
                     $scope.froms = data.content.froms;   
+                    console.log($scope.tos, $scope.froms);
                 }).error(function(data, status, headers, config) {
                     console.log("epic failed");
                     alert(data.err);
