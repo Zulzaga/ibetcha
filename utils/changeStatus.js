@@ -73,8 +73,8 @@ function makeMilestonePendingAndEmail(){
 
 // changes bets statuses according to their start, end and drop dates
 // not started -> action required (if today is start date) + sends email
-
 // any status  -> dropped (if today is drop date) + sends email
+// the function also marks any milestone left in that bet to be "dropped"
 
 function changeBetStatus(){
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
@@ -113,7 +113,8 @@ function changeBetStatus(){
 								var bet_id = bets[i]._id;
 								var author = bets[i].author;
 								changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
-								//now handle the checkoffs, everything must be inactive/ open so we do not need to filter by those
+								//now handle the checkoffs, everything must be inactive
+								//open so we do not need to filter by those
 								Milestones
 									.update({_id: bet_id}, {$set:{status: 'Closed'}}, { multi: true })
 									.exec(function(e){
