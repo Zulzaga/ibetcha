@@ -174,7 +174,6 @@ var dummyData = {
     }
   });
 
-console.log("boopooo" + friend_id, new_bet_id);
 // Create new monitor request
   $.ajax({
     url: urlString + "monitorRequests",

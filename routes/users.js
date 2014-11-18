@@ -189,6 +189,34 @@ router.post('/new', function(req, res, next) {
     }
 });
 
+// Logs in a user.
+// If wrong password/username combination, responds back with an appropriate
+// message.
+router.post('/login', function(req, res, next) {
+    if (req.user) {
+        utils.sendErrResponse(res, 401, 'User already logged in!');
+    } else {
+        passport.authenticate('login', function(err, newUser, info){
+            if (err) {
+                console.log("1");
+                utils.sendErrResponse(res, 500, 'There was an error!');
+            } else if (!newUser){
+                console.log("2");
+                utils.sendErrResponse(res, 401, info);
+            } else {
+                req.logIn(newUser, function(err) {
+                    if (err) { 
+                        console.log("3");
+                        utils.sendErrResponse(res, 500, 'There was an error!');
+                    } else {
+                        utils.sendSuccessResponse(res, formatUser(newUser));
+                    }
+                }); 
+            }
+        })(req, res, next);
+    }
+});
+
 // Sends email invites.
 router.post('/emailinvite', function(req, res) {
     var msg = {
