@@ -50,24 +50,32 @@ var friendEachOther = function(userid1, userid2, res, callback) {
 };
 
 function sendFriendRequest(to, req, res) {
-    FriendRequest.findOne({ 'to': to._id, 'from': req.user._id }, function (err1, request) {
+    FriendRequest.findOne({ 'to': to._id, 'from': req.user._id }, function (err1, request1) {
         if (err1) {
             utils.sendErrResponse(res, 500, 'There was an error! Could not get requests.');
-        } else if (request === null) {
-            if (to.friends && to.friends.indexOf(req.user._id) == -1) {
-                FriendRequest.create(req.user._id, to._id, function(err2, request) {
-                    if (err2) {
-                        utils.sendErrResponse(res, 500, 'There was an error');
+        } else if (request1 === null) {
+            FriendRequest.findOne({ 'from': to._id, 'to': req.user._id }, function (err1, request2) {
+                if (err1) {
+                    utils.sendErrResponse(res, 500, 'There was an error! Could not get requests.');
+                } else if (request2 == null) {
+                    if (to.friends && to.friends.indexOf(req.user._id) == -1) {
+                        FriendRequest.create(req.user._id, to._id, function(err2, request3) {
+                            if (err2) {
+                                utils.sendErrResponse(res, 500, 'There was an error');
+                            } else {
+                                console.log("created friend request!");
+                                utils.sendSuccessResponse(res, request3);
+                            }
+                        })
                     } else {
-                        console.log("created friend request!");
-                        utils.sendSuccessResponse(res, request);
+                        utils.sendErrResponse(res, 500, "You already have this friend.");
                     }
-                })
-            } else {
-                utils.sendErrResponse(res, 500, "You already have this friend.");
-            }
+                } else {
+                    utils.sendErrResponse(res, 500, 'The user already sent a friend request to you. Go to your Home Page and click on Friends/FriendRequests page to accept.');
+                }
+            });
         } else {
-            utils.sendErrResponse(res, 500, 'Already sent a friend request! Cannot send again!.');
+            utils.sendErrResponse(res, 500, 'Already sent a friend request. Cannot send a request again. Wait for your friend to accept!');
         }
     });
 }

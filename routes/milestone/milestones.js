@@ -5,7 +5,7 @@ var time = require('time');
 var moment = require('moment');
 moment().format();
 var router = express.Router();
-var ObjectId = mongoose.Schema.ObjectId;
+var ObjectId = require('mongoose').Types.ObjectId;
 
 //linking collections and utils 
 var utils = require('../../utils/utils')
@@ -55,7 +55,6 @@ router.get('/', function(req, res) {
 
 var updatePayments = function(author_id, bet_id, res) {
 	Bet.findOne({_id:bet_id})
-	   .populate("monitors")
 	   .exec(function(err, bet) {
 	   		if (err) {
 				utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
@@ -66,9 +65,9 @@ var updatePayments = function(author_id, bet_id, res) {
 				var recordRequests = [];
 
 				for (var i = 0; i <bet.monitors.length; i++) {
-					console.log("bet monitor id type", bet.monitors[i]._id);
-					request = {
-						friend: ObjectId.fromString(bet.monitors[i]._id),
+					console.log("bet monitor id type", bet.monitors[i], typeof(bet.monitors[i]));
+					var request = {
+						friend: bet.monitors[i],
 						amount: amount
 					};
 					recordRequests.push(request);
@@ -79,7 +78,11 @@ var updatePayments = function(author_id, bet_id, res) {
 						console.log("err is this: " + err);
 						utils.sendErrResponse(res, 500, 'An error occurred while creating MoneyRecord');
 					} else {
-						User.findOne({_id:author_id})
+						console.log("55555555555555555555555555555555555");
+						console.log(records, Object.prototype.toString.call(records));
+						console.log(author_id, author_id instanceof ObjectId);
+						console.log("55555555555555555555555555555555555");
+						User.findOne({_id: new ObjectId(author_id)})
 							.populate("payments")
 							.exec(function(err, user) {
 								if(err) {
@@ -88,17 +91,31 @@ var updatePayments = function(author_id, bet_id, res) {
 									utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
 								} else {
 									if (user) {
-										user.payments = user.payments + records;
-										user.save(function(err) {
-											if(err) {
-												console.log("err is that: "+err);
-												//return;
-												utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
-											} else {
-												console.log("wooo hoooo");
-												utils.sendSuccessResponse(res, 500, user);
-											}
-										})
+										for(var i = 1; i < arguments.length; ++i) {
+											var record = arguments[i];
+											user.update(									
+												{
+													$push:{
+														payments: record//{$each: records}
+													}
+												},
+												{upsert: true}, 
+												function(err, model) {
+													if(err) {
+														console.log(err);
+														utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
+													} else {
+														console.log("ahhhhhhhhhhhhhhhh");
+														console.log(model);
+														utils.sendSuccessResponse(res, 500, model);
+													}
+												}
+											);
+										}
+										
+									} 
+									else {
+										utils.sendErrResponse(res, 500, 'There is no such user');
 									}
 								}
 							});
@@ -193,7 +210,8 @@ router.put('/:milestone_id', function(req, res) {
 									if (!test){
 										console.log("10");
 										// UPDATE PAYMENT STUFF
-										updatePayments(milestone.author, milestone.bet, res);
+										console.log("milestone.author", milestone.author);
+										updatePayments(milestone.author._id, milestone.bet, res);
 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 									}
 
@@ -201,7 +219,7 @@ router.put('/:milestone_id', function(req, res) {
 									//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
 									//charge money here
 									console.log("11");
-									utils.sendSuccessResponse(res, savedmilestone);
+									//utils.sendSuccessResponse(res, savedmilestone);
 
 								});
 

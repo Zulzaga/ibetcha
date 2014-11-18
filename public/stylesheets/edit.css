@@ -7,6 +7,22 @@
 	margin-top:110px;
 }
 
+#edit-instruction{
+	margin-top: 180px;
+	display: inline-block;
+	width: 500px;
+	font-size: 22px;
+	font-weight: 700;
+	color: steelBlue;
+	vertical-align: top;
+	text-align: center;
+}
+
+#edit-page{
+	margin-left: 100px;
+	display: inline-block;
+}
+
 .edit {
 	display: inline-block;
 }

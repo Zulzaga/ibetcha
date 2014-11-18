@@ -53,6 +53,10 @@ ibetcha.config(['$routeProvider', '$locationProvider',
         templateUrl: 'partials/friendRequests.html',
         controller: 'FriendRequestPageController'
       }).
+      when('/paymentRequests', {
+        templateUrl:'partials/paymentRequests.html',
+        controller: 'PaymentRequestPageController'
+      }).
       otherwise({
         templateUrl: 'partials/loginPage.html',
         controller: 'LoginPageController'

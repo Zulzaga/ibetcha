@@ -5,8 +5,6 @@ ibetcha.controller('CheckoffPageController',
     function($scope, $http, $location, $cookieStore, $routeParams) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
 
-        
-
         var init = function() {
             $http({
                 method: "GET",
@@ -36,7 +34,6 @@ ibetcha.controller('CheckoffPageController',
         } 
         else {
             // get the check off details
-            console.log("hello I am called lol");
             init();
         };
 

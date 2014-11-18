@@ -13,7 +13,7 @@ ibetcha.controller('SendFriendRequestPageController',
                     data: { to: $scope.requestForm.friendUsername },
                     }).success(function(data, status, headers, config) {
                         console.log(data.content);
-                        alert("Successfully sent the request!");
+                        alert("Successfully sent a friend request to " + $scope.requestForm.friendUsername + "!");
                         $location.path('/home');
                     }).
                 error(function(data, status, headers, config) {

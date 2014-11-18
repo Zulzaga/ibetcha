@@ -8,16 +8,6 @@ var MoneyRecordSchema = new Schema({
 	amount: {type: Number, required:true}
 });
 
-// MoneyRecordSchema.statics.create = function(friend, amount, callback) {
-//     var newRequest = new MoneyRecord({
-//         'friend': friend,
-//         'amount': amount
-//     });
-
-//     newRequest.save(callback);
-// }
-
-
 //Bindings
 var MoneyRecord = mongoose.model('MoneyRecord', MoneyRecordSchema);
 

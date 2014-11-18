@@ -13,6 +13,7 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var FriendRequest = require('../models/FriendRequest');
 var MonitorRequest = require('../models/MonitorRequest');
+var MoneyRecord = require('../models/MoneyRecord');
 
 
 // Authenticates the user and redirects to the users login page if necessary.
@@ -87,6 +88,7 @@ var friendEachOther = function(userid1, userid2, res) {
 };
 
 
+
 // gets all users
 router.get('/', function(req, res) {
     User.find({}, function (err, users) {
@@ -134,6 +136,27 @@ router.get('/current', isAuthenticated, function(req, res) {
         }
     });
 });
+
+// gets all the payments that the current user owes other people
+router.get('/payments', isAuthenticated, function(req, res) {
+    User.findById(req.user._id)
+        .populate("payments")
+        .exec(function (err, user) {
+            if(err) {
+                utils.sendErrResponse(res, 500, 'There was an error');
+            } else if (user) {
+                console.log("user is this kid: ", user);
+                MoneyRecord.populate([user.payments], {"path": "friend"}, function(err, output) {
+                    if(err) {
+                        utils.sendErrResponse(res, 500, 'There was an error');
+                    } else {
+                        console.log("output", output);
+                        utils.sendSuccessResponse(res, output);
+                    }
+                })
+            }
+        });
+}); 
 
 // logs out the user
 router.get('/logout', function(req, res) {

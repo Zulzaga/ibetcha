@@ -1,0 +1,11 @@
+<!-- page -->
+
+<div ng-controller="PaymentRequestPageController" id="monitorPage-container">
+    <ng-include src="'partials/navbar.html'"></ng-include>
+    	<div class="requests-title">People to whom you owe money:
+    	</div>
+    	<div class="request-empty" ng-if="requests.length == 0">You don't have any monitor requests.</div>
+        <div class="single-monitor-request" ng-repeat="request in requests">
+            
+        </div>
+</div>

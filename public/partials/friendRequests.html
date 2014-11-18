@@ -2,11 +2,20 @@
 
 <div ng-controller="FriendRequestPageController" id="friendPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
-    	<div class="no-requests" ng-if="reqEmpty">You don't have any friend requests</div>
-    	<div class="requests-title" ng-if="!reqEmpty">Friend Requests:</div>
-        <div class="single-friend-request" ng-if="!reqEmpty" ng-repeat="request in requests">
-            <div class="request-from">Request From: {{request.from.username}}</div>
-            <button id="submit-button" ng-click="accept(request._id)" class="btn btn-primary" >Accept</button>
-            <button id="submit-button" ng-click="reject(request._id)" class="btn btn-primary" >Reject</button>
-        </div>
+ 		<div class="big-box">
+	    	<div class="friends-box">
+	    		<div class="requests-title">Friends:</div>
+	    		<div class="request-empty" ng-if="friends.length==0">You don't have any friends. Invite your friends :).</div>
+	        	<div class="request-empty" ng-repeat="friend in friends">{{friend.username}}</div>
+	    	</div>
+	    	<div class="req-box">
+	    		<div class="requests-title">Friend Requests:</div>
+	    		<div class="request-empty" ng-if="reqEmpty">You don't have any friend requests.</div>
+		        <div class="single-friend-request" ng-repeat="request in requests">
+		            <div class="request-from">Request From: {{request.from.username}}</div>
+		            <button id="submit-button" ng-click="accept(request._id)" class="btn btn-primary" >Accept</button>
+		            <button id="submit-button" ng-click="reject(request._id)" class="btn btn-primary" >Reject</button>
+		        </div>
+	    	</div>
+	    </div>
 </div>
