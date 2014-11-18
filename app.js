@@ -21,7 +21,7 @@ var test = require('./routes/test');
 
 var app = express();
 
-var connection_string = 'localhost/ibetcha';
+var connection_string = process.env.MONGOLAB_URI || 'localhost/ibetcha';;
 var User = require('./models/User');
 
 mongoose.connect(connection_string);
