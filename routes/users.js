@@ -139,23 +139,27 @@ router.get('/current', isAuthenticated, function(req, res) {
 
 // gets all the payments that the current user owes other people
 router.get('/payments', isAuthenticated, function(req, res) {
-    User.findById(req.user._id)
-        .populate("payments")
-        .exec(function (err, user) {
-            if(err) {
-                utils.sendErrResponse(res, 500, 'There was an error');
-            } else if (user) {
-                console.log("user is this kid: ", user);
-                MoneyRecord.populate([user.payments], {"path": "friend"}, function(err, output) {
-                    if(err) {
-                        utils.sendErrResponse(res, 500, 'There was an error');
-                    } else {
-                        console.log("output", output);
-                        utils.sendSuccessResponse(res, output);
-                    }
-                })
-            }
-        });
+    User.findById(req.user._id, function(err, user){
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error');
+        } else if (user === null) {
+            utils.sendErrResponse(res, 401, 'No such user found!');
+        } else {
+            MoneyRecord.find({ 'from': req.user._id }, function(err, froms) {
+                if (err) {
+                    utils.sendErrResponse(res, 500, 'There was an error');
+                } else {
+                    MoneyRecord.find({ 'to': req.user._id}, function(err, tos) {
+                        if (err) {
+                            utils.sendErrResponse(res, 500, 'There was an error');
+                        } else {
+                            utils.sendSuccessResponse({ 'froms': froms, 'tos': tos });
+                        }
+                    })
+                }
+            })
+        }
+    });
 }); 
 
 // logs out the user

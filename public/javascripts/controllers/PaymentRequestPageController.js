@@ -8,12 +8,12 @@ ibetcha.controller('PaymentRequestPageController',
                 url: "users/payments",
                 }).success(function(data, status, headers, config) {
                     console.log("payment data received", data.content);
-                    $scope.payments = data.content;        
+                    $scope.tos = data.content.tos;
+                    $scope.froms = data.content.froms;   
                 }).error(function(data, status, headers, config) {
                     console.log("epic failed");
                     alert(data.err);
                 });
-            
         }
 
         if (!$cookieStore.get('session')) {

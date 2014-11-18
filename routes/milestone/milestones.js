@@ -91,6 +91,7 @@ var updatePayments = function(author_id, bet_id, res) {
 									utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
 								} else {
 									if (user) {
+										console.log("arg11111:", arguments);
 										for(var i = 1; i < arguments.length; ++i) {
 											var record = arguments[i];
 											user.update(									

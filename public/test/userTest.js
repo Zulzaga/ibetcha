@@ -148,7 +148,7 @@ $.ajax({
 
 var dummyData = { 
     test: true,
-    startDate:start_date,//those were milliseconds, not numbers.
+    startDate:tomorrow,//those were milliseconds, not numbers.
     endDate:end_date, 
     frequency:frequency, 
     amount: amount
@@ -171,6 +171,27 @@ var dummyData = {
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Create new Bet: error", false);
+    }
+  });
+
+console.log("boopooo" + friend_id, new_bet_id);
+// Create new monitor request
+  $.ajax({
+    url: urlString + "monitorRequests",
+    type: "POST",
+    dataType:"json",
+
+    data: { to: friend_id, bet: new_bet_id },
+
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log("boop");
+      console.log(data.content);
+      QUnitTesting("Creating a new monitor request", true );
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Create new monitor request: error", false);
     }
   });
 
