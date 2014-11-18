@@ -13,6 +13,7 @@ ibetcha.controller('CheckoffPageController',
                     console.log("pending data received", data.content);
                     if (data.content.length === 0) {
                         $scope.empty = true;
+                        $scope.pending = [];
                     } else {
                         $scope.today = data.content[0];
                         $scope.pending = data.content.slice(1, data.content.length);
@@ -63,7 +64,7 @@ ibetcha.controller('CheckoffPageController',
                     console.log("inside check", data.content, $routeParams.id);
                     alert("Checkoff successful");
                     $location.path('/checkoff/' + $routeParams.id);
-                    init();   
+                    init();
                 })
                 .error(function(data, status, headers, config) {
                     alert(data.err+ " Checkoff failed");
