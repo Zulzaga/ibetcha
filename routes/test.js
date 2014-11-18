@@ -14,9 +14,9 @@ router.get('/', function(req, res) {
 	cleanCollections();
 
 	var urlString = "http://localhost:5000/";
-	// if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
-	//     urlString = "http://mitmap-dhlim.rhcloud.com/";
-	// }
+	if (process.env.MONGOLAB_URI) {
+	     urlString = "http://paybackfriends.herokuapp.com/";
+	}
 	res.render('test.ejs', {urlString: urlString});
 });
 
