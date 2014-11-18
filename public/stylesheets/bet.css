@@ -61,7 +61,7 @@
 }
 
 .bets {
-    width: auto;
+    width: 1000px;
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
@@ -71,6 +71,7 @@
     font-size: 22px;
     text-decoration: underline;
     color: steelBlue;
+    margin-top: 20px;
 }
 
 .bet-info, .bet-monitoring-info {
@@ -80,6 +81,7 @@
     text-align: center;
     margin-bottom: 10px;
     height: 100%;
+    overflow-x: auto;
 }
 
 .bet-single-box {
