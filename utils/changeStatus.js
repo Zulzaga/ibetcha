@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var CronJob = require('cron').CronJob;
 var time = require('time');
 var moment = require('moment');
+var async = require('async');
 moment().format();
 var router = express.Router();
 
@@ -17,29 +18,56 @@ var Milestone = require('../models/Milestone');
 var changeStatus = {};
 
 //================== cron job details =========
+function makeMilestoneClosed(callback){
+	Milestone
+		.find({$or:[{status:"Open"}, {status:"Pending Action"}, {status:"Inactive"}]})
+		.populate('bet')
+		.exec(function (err, milestones){
+			var l = milestones.length;
+			for (var i=0; i<l; i++){
+				if (milestones[i].bet.status==="Dropped"){
+					milestones[i].status = "Closed";
+					milestones[i].save(function(err){
+						if (err){
+							console.log("Error while closing milestone: "+err);
+							return;
+						}
+					});
+				}
+				else{
+					//do nothing
+				}
+			}
+			console.log("exited makeMilestoneClosed");
+			callback();
+			return;
+		});
+}
 
 // for those milestones whose effective date is today,
 // change status from "Inactive" to "Open"
 
-function makeMilestoneActive(){
+function makeMilestoneActive(callback){
+	console.log("entered makeMilestoneActive");
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
 						//mongoose searches and converts staff to local
 	cleanDates(today);
 	var tomorrow = moment();
 	tomorrow.add(1, 'd');
 	cleanDates(tomorrow);
-	//console.log('today: '+today.toString());
-	//console.log('tmrw: '+tomorrow.toString());
-	
 	Milestone
 		.update({status:"Inactive", date:{$gte:today, $lt: tomorrow}}, {$set:{status: 'Open'}}, {multi:true})
 		.exec(function (err, milestones){
 			if (err){
 				console.log("Error activating the milestone: "+ err);
+				return;
 			}
 			else{
 			//nothing should happen
 			//console.log("INACTIVE: "+milestones);
+			console.log("exited makeMilestoneActive");
+			callback();
+			return;
 			}
 		});
 }
@@ -49,25 +77,34 @@ function makeMilestoneActive(){
 //changes status of the Milestone object from "Open" or "Pending Action"
 //to "Pending Action" if its effective date passed
 
-function makeMilestonePendingAndEmail(){
+//NOTE: currently even with dropped bet, milestone get get active, but when it transitions 
+//to pending, it changes to "closed"
+function makeMilestonePendingAndEmail(callback){
+	console.log("entered makeMilestonePendingAndEmail");
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
-						//mongoose searches and converts staff to local
+					//mongoose searches and converts staff to local
 	cleanDates(today);
-	var tomorrow = moment();
-	tomorrow.add(1, 'd');
-	cleanDates(tomorrow);
-	//today.add(6,'d'); //for testing, try to see if stuff has changed
-	console.log('today: '+today.toString());
-	
 	Milestone
-		.update({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}}, {$set:{status: 'Pending Action'}}, {multi:true})
-		.populate('bet')
+		.find({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}})
+		.populate('bet author')
 		.exec(function (err, milestones){
-			console.log("REMIND THEM: "+milestones);
+			console.log("REMIND THEM: "+milestones.length);
 			var l = milestones.length;
 			for (var i=0; i<l; i++){
-				sendEmailReminder(milestones[i].bet.monitors, milestones[i].bet, milestones[i].author);
+					milestones[i].status = "Pending Action";
+				milestones[i].save(function(err){
+					if (err){
+						console.log("Error while making Milestone pending: "+err);
+						return;
+					}
+					else{
+						sendEmailReminder(milestones[i].bet.monitors, milestones[i].bet, milestones[i].author);
+					}
+				});
 			}
+			console.log("exited makeMilestonePendingAndEmail");
+			callback();
+			return;
 		});
 }
 
@@ -76,82 +113,74 @@ function makeMilestonePendingAndEmail(){
 // any status  -> dropped (if today is drop date) + sends email
 // the function also marks any milestone left in that bet to be "dropped"
 
-function changeBetStatus(){
+function changeBetStatus(callback){
+	console.log("entered changeBetStatus");
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
 						//mongoose searches and converts staff to local
 	cleanDates(today);
 	var tomorrow = moment();
 	tomorrow.add(1, 'd');
 	cleanDates(tomorrow);
+
 	//Not started --> Action Required,
-	Bet
-		.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or:[{monitors: {$size: 3}}, {monitors: {$size: 4}}, {monitors: {$size: 5}}]} ,{$set:{status: 'Action Required'}},{ multi: true })
-		.populate('author')
-		.exec(function(err, bets1){
-			if (err){
-				console.log("Error while activating bet: "+err);
-			}
-			else{
-				var l = bets1.length;
-				for (var i =0; i< l; i++){
-					var bet_id = bets1[i]._id;
-					var author = bets1[i].author;
-					changeStatus.sendEmailAuthor(author, bet_id, 'Open');
+	function notStartedToActionRequired(callback){
+		console.log("entered notStartedToActionRequired");
+		//enough monitors, good to go
+		Bet
+			.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or:[{monitors: {$size: 3}}, {monitors: {$size: 4}}, {monitors: {$size: 5}}]}, {$set:{status:"Action Required"}}, {multi:true})
+			.exec(function(err, bets1){
+				if (err){
+					console.log("Error while activating bet: "+err);
+					return;
 				}
-				//handle bets with number of monitors < 3:
-				// inactive ----> Dropped
-				Bet
-					.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or: [{monitors: {$size: 0}}, {monitors: {$size: 1}}, {monitors: {$size: 2}}]} ,{$set:{status: 'Dropped'}}, { multi: true })
-					.populate('author')
-					.exec(function(err, bets){
-						if (err){
-							console.log("Error while activating bet: "+err);
-						}
-						else{
-							var l = bets.length;
-							for (var i =0; i< l; i++){
-								var bet_id = bets[i]._id;
-								var author = bets[i].author;
-								changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
-								//now handle the checkoffs, everything must be inactive
-								//open so we do not need to filter by those
-								Milestones
-									.update({_id: bet_id}, {$set:{status: 'Closed'}}, { multi: true })
-									.exec(function(e){
-										if (e){
-											console.log("Error while dropping milestone: "+e);
-										}
-									});	
+				else{
+					//handle bets with number of monitors < 3:
+					// inactive ----> Dropped
+					Bet
+						.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or: [{monitors: {$size: 0}}, {monitors: {$size: 1}}, {monitors: {$size: 2}}]}, {$set:{status:"Dropped"}}, {multi:true})
+						.exec(function(err, bets){
+							if (err){
+								console.log("Error while activating bet: "+err);
+								return;
 							}
-						}
-					});
-			}
-		});
+							console.log("exited notStartedToActionRequired")
+							callback();
 
+						});
+				}
+			});
+	}
+
+	function dropBetAfterDropDate(callback){
 	// Anything --> Dropped (after dropDate)
-	Bet
-		.update({status: "Action Required", dropDate: {$gt: today}}, {$set:{status: 'Dropped'}})
-		.populate('author')
-		.exec(function(err, bets3){
-			if (err){
-				console.log("Error while dropping bet: "+err);
+		console.log("entered dropBetAfterDropDate");
+		Bet
+			.update({status: "Action Required", dropDate: {$gt: today}}, {$set:{status: "Dropped"}}, {multi:true})
+			.exec(function(err, bets3){
+				if (err){
+					console.log("Error while dropping bet: "+err);
+					return;
+				}
+				console.log("exited dropBetAfterDropDate");
+				callback();
 				return;
-			}
-			var l = bets3.length;
-			for (var i=0; i<l; i++){
-				var bet_id = bets3[i]._id;
+			});
+		
+	}
 
-				Milestone
-					.update({bet: bet_id, $or:[{status: "Open"}, {status: "Inactive"}, {status: 'Pending Action'}]}, {$set:{status: 'Closed'}}, {multi:true})
-					.exec(function (err, milestones){
-						if (err){
-							console.log("Error closing milestones: "+err);
-						}
-					});
-				var author = bets3[i].author;
-				changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
-			}
-		});
+	var operations = [];
+	operations.push(notStartedToActionRequired);
+	operations.push(dropBetAfterDropDate);
+	async.series(operations, function(err, results){
+		if (err){
+			console.log("Error changin bet status: "+err);
+			return;
+		}
+		console.log("Exited changeBetStatus");
+		callback();
+		return;
+	});
+	return;
 }
 //Testing function:
 //sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, mongoose.Types.ObjectId(), 'Dropped');
@@ -159,9 +188,18 @@ function changeBetStatus(){
 
 //combine three functions above
 changeStatus.overnightCheck = function(){
-	makeMilestoneActive();
-	makeMilestonePendingAndEmail();
-	changeBetStatus();
+	console.log("about to start series");
+	//console.log("async: "+async.series);
+	var operations = [];
+	operations.push(changeBetStatus);
+	operations.push(makeMilestoneClosed);
+	operations.push(makeMilestoneActive);
+	operations.push(makeMilestonePendingAndEmail);
+	async.series(operations, function(err, results){
+		if (err){
+			console.log('smth wrong '+err);
+		}    		console.log('CRON JOB FINISHED');
+		});
 }
 //======================== Emailing out =========================
 
