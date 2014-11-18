@@ -16,16 +16,13 @@ var MoneyRecord = require('../../models/MoneyRecord');
 var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
-// TODO:
-// Dummy money charging mechanishm (in PUT method when failed) 
 
-
-//================== CRON JOB ==================
+//===================     CRON JOB      ===================
 // server's timezone
 var timezone = (new time.Date()).getTimezone();
 
 var job = new CronJob({
-  cronTime: '00 07 23 * * *', //runs everyday at 1 min after midnight
+  cronTime: '00 01 00 * * *', //runs everyday at 1 min after midnight
   onTick: function() {
   	//testing: 
   	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
@@ -35,37 +32,23 @@ var job = new CronJob({
   start: false,
   timeZone: timezone
 });
-//comment out whenever ready
+//comment out in case don't 
 job.start();
 
-
-//======================== API route methods =========================
-
-
-//get all milestones in the DB
-router.get('/', function(req, res) {
-	Milestone.find({}, function(err, doc){
-		if (err){
-			utils.sendErrResponse(res,500, "Cannot retrieve Milestones");
-		}else{
-			utils.sendSuccessResponse(res,doc);
-		}
-	});
-});
-
+//===================     Helpers        ===================
+/*
+Charge money once one of the milestones is failed
+*/
 var updatePayments = function(author_id, bet_id, res) {
 	Bet.findOne({_id:bet_id})
 	   .exec(function(err, bet) {
 	   		if (err) {
 				utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
 			} else if (bet){
-				console.log("bet.amount and type:", bet.amount, typeof(bet.amount));
 				var amount = bet.amount / bet.monitors.length;
-				console.log("&&&&&&&&&", amount);
 				var recordRequests = [];
-
+				//prepare money record for each monitor of the bet
 				for (var i = 0; i <bet.monitors.length; i++) {
-					console.log("bet monitor id type", bet.monitors[i], typeof(bet.monitors[i]));
 					var request = {
 						from: new ObjectId(author_id),
 						to: bet.monitors[i],
@@ -73,7 +56,7 @@ var updatePayments = function(author_id, bet_id, res) {
 					};
 					recordRequests.push(request);
 				}
-
+				//insert them into the DB
 				MoneyRecord.create(recordRequests, function(err, records) {
 					if(err) {
 						utils.sendErrResponse(res, 500, "Cannot create the payment records");
@@ -89,21 +72,38 @@ var updatePayments = function(author_id, bet_id, res) {
 	
 }
 
+//=================== API route methods ===================
 
-//FUNCTION USED FOR CHECKING OFF
 
-//changes the status of milestone object: new_status = "Success" or "Failed"
+//get all milestones in the DB
+router.get('/', function(req, res) {
+	Milestone.find({}, function(err, doc){
+		if (err){
+			utils.sendErrResponse(res,500, "Cannot retrieve Milestones");
+		}else{
+			utils.sendSuccessResponse(res,doc);
+		}
+	});
+});
 
-//if new_status="Failed", then the entire bet is failed and the user gets notified by email
-//if new_status = "Success" and all other milestones were checkoff/failed,
-//then the entire bet succeeded and user get's notified by email
+
+
+
+//!! FUNCTION FOR CHECKING OFF
+
+/*
+Change the status of Milestone object: 
+new_status = "Success" or "Failed"
+	if new_status="Failed", 
+	  then the entire bet is failed and the user gets notified by email and charged
+	if new_status = "Success" and all other milestones were checkoff/failed,
+	  then the entire bet succeeded and user get's notified by email
+*/
 
 router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
 	var new_status = req.body.status; //Success or Failed
 	var test = req.body.test;
-
-	console.log("here is the milestone id", milestone_id);
 	
 	Milestone
 		.findById(milestone_id)
@@ -166,30 +166,25 @@ router.put('/:milestone_id', function(req, res) {
 										console.log("9");
 										utils.sendErrResponse(res, 500, err);
 									}
-									//send email
-									if (!test){
+									if (!test){// not in test mode
 										console.log("10");
-										// UPDATE PAYMENT STUFF
+										// UPDATE PAYMENT STUFF, notify author
 										console.log("milestone.author", milestone.author);
-										updatePayments(milestone.author._id, milestone.bet, res);
 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+										updatePayments(milestone.author._id, milestone.bet, res);
+									
 									} else {
+										//test mode, just send success
 										//console.log("EMAIL DANA");
 										//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
-										//charge money here
 										console.log("11");
 										utils.sendSuccessResponse(res, savedmilestone);
 									}
-
-									
-
-								});
-
-								
+								});								
 							});
 					}
 					else{
-						//should never get here
+						//should never get here, other statuses shouldn't be sent
 						console.log("12");
 						utils.sendSuccessResponse(res, savedmilestone);
 					}
