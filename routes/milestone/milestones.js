@@ -173,13 +173,15 @@ router.put('/:milestone_id', function(req, res) {
 										console.log("milestone.author", milestone.author);
 										updatePayments(milestone.author._id, milestone.bet, res);
 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+									} else {
+										//console.log("EMAIL DANA");
+										//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
+										//charge money here
+										console.log("11");
+										utils.sendSuccessResponse(res, savedmilestone);
 									}
 
-									//console.log("EMAIL DANA");
-									//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
-									//charge money here
-									console.log("11");
-									//utils.sendSuccessResponse(res, savedmilestone);
+									
 
 								});
 
