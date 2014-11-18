@@ -10,7 +10,6 @@ var router = express.Router();
 var utils = require('../../utils/utils')
 var emailNotifier = require('../../utils/email');
 var changeStatus = require('../../utils/changeStatus')
-
 var User = require('../../models/User');
 var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
@@ -24,7 +23,7 @@ var Milestone = require('../../models/Milestone');
 var timezone = (new time.Date()).getTimezone();
 
 var job = new CronJob({
-  cronTime: '00 01 00 * * *', //runs everyday at 1 min after midnight
+  cronTime: '30 19 19 * * *', //runs everyday at 1 min after midnight
   onTick: function() {
   	//testing: 
   	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
@@ -35,7 +34,7 @@ var job = new CronJob({
   timeZone: timezone
 });
 //comment out whenever ready
-//job.start();
+job.start();
 
 
 //======================== API route methods =========================
@@ -59,6 +58,7 @@ router.get('/', function(req, res) {
 //if new_status="Failed", then the entire bet is failed and the user gets notified by email
 //if new_status = "Success" and all other milestones were checkoff/failed,
 //then the entire bet succeeded and user get's notified by email
+
 router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
 	var new_status = req.body.status; //Success or Failed
@@ -153,6 +153,7 @@ router.put('/:milestone_id', function(req, res) {
 			}
 		});
 });
+
 
 
 

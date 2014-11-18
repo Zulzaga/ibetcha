@@ -26,11 +26,7 @@ var milestonesSchema = new Schema({
 	status:{
 		type: String,
 		enum: milestoneStatus
-	},
-	monitors:[{
-		type: ObjectId,
-		ref: 'User'
-	}]
+	}
 });
 
 //Bindings

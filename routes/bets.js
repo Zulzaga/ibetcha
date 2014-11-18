@@ -54,6 +54,7 @@ router.post('/', function(req, res) {
   }
 });
 
+/*
 // method for changing bet by:
 //- adding a monitor (takes from req.body.monitor, it must be ObjectId)
 //- changing a status: should NOT be used, for testing purposes
@@ -108,6 +109,7 @@ router.put('/:bet_id', function(req, res) {
   });
 });
 
+*/
 //get one single bet by bet_id
 router.get('/:bet_id', function(req, res) {
   var bet_id = req.params.bet_id;
