@@ -4,3 +4,101 @@
     margin-left: 120px;
     padding: 20px;
 }
+
+.userInfo-container {
+    padding: 30px;
+    margin-top: 40px;
+}
+
+.bet-cat-title, .request-monitor-title, .request-friend-title {
+	height: 30px;
+	font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.user-username {
+    font-size: 24px;
+    margin-top: 30px;
+    font-weight: 700;
+    display: inline-block;
+    font-size: 24px; 
+}
+
+.no-bets, .no-requests{
+    font-weight: 700;
+    font-size: 20px;   
+    color: steelBlue;
+    text-align: center;
+}
+
+.userInfo-box {
+    display: inline-block;
+    padding-bottom: 30px;
+    min-height: 320px;
+}
+
+.bets, .no-bets {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.single-bet {
+    width: 250px;
+    height: 230px;
+    margin-right: 20px;
+    display: inline-block;
+    background-color: #F5F5F5;
+    padding: 20px;
+    border-radius: 2px;
+}
+
+
+.bet-description, .bet-amount, .bet-status, .bet-monitors, .bet-author, .bet-endDate, .bet-frequency, .bet-startDate, .request-from{
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.bets {
+    width: auto;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.bet-detail-link {
+    font-size: 22px;
+    text-decoration: underline;
+    color: steelBlue;
+}
+
+.bet-info, .bet-monitoring-info {
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    height: 100%;
+}
+
+.bet-single-box {
+    top: 100px;
+}
+
+.bet-Title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: steelBlue;
+}
+
+.single-bet-container{
+    margin-top: 110px;
+    top :300px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    font-size: 20px;
+    font-weight: 700;
+}

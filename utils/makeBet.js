@@ -21,9 +21,10 @@ makeBet.validateBetData = function(data){
 	var result = true;
 	var startDate = (new Date(data.startDate)).valueOf();
 	var endDate = (new Date(data.endDate)).valueOf();
-	var result = startDate<endDate;
-	return true;
+	var result = startDate < endDate;
+	return result;
 }
+
 //function that handles the logic of generating milestone JSONs
 //availabe frequencies so far:
 /*
