@@ -13,9 +13,10 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MILLIS_IN_A_DAY = 86400000;
 
-//================== Important methods ===================
+//================== Important methods ==============================
 
-// Authenticates the user and redirects to the users login page if necessary.
+// Helper function that helps authenticates the user and if no user logged in, responds with 
+// appropriate message.
 function isAuthenticated(req, res, next) {
     if (req.user) {
         return next();
@@ -24,24 +25,21 @@ function isAuthenticated(req, res, next) {
      utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
-
-
 //======================== API route methods =========================
 
-
-//get the bet's of the logged in user
+// Gets the bets of the currently logged in user.
 router.get('/', isAuthenticated, function(req, res) {
-  Bet.find({ }).populate('author monitors milestones').exec(function(err, bets){
-  	if (err){
-  		utils.sendErrResponse(res, 500, err);
-  	}
-  	else{
-  		utils.sendSuccessResponse(res, bets);
-  	}
-  });
+    Bet.find({ }).populate('author monitors milestones').exec(function(err, bets){
+      	if (err){
+      	   	utils.sendErrResponse(res, 500, err);
+      	}
+      	else{
+      		  utils.sendSuccessResponse(res, bets);
+      	}
+    });
 });
 
-//create a bet object after it's validated
+// Create a bet object after it's validated
 router.post('/', function(req, res) {
 		console.log("HERE0"+makeBet.validateBetData);
   if (makeBet.validateBetData(req.body)){

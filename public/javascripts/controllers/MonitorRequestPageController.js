@@ -20,7 +20,7 @@ ibetcha.controller('MonitorRequestPageController',
             $scope.accept = function(id){
             	console.log(id);
 	        	$http({
-	                method: "GET",
+	                method: "POST",
 	                url: "monitorRequests/" + id + "/accept",
 	                }).success(function(data, status, headers, config) {
 	                	console.log(data.content);
@@ -35,7 +35,7 @@ ibetcha.controller('MonitorRequestPageController',
 	        $scope.reject = function(id){
 	        	console.log(id);
 	        	$http({
-	                method: "GET",
+	                method: "POST",
 	                url: "monitorRequests/" + id + "/reject",
 	                }).success(function(data, status, headers, config) {
 	                	console.log(data.content);
