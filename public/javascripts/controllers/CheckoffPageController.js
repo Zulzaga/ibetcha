@@ -39,29 +39,37 @@ ibetcha.controller('CheckoffPageController',
         };
 
         $scope.check = function (milestoneId) {
-            var yes = confirm("Did this person really do what he was supposed to do?");
-            var milestoneStatus = "Failed";
+            var yes = confirm("Did this person really do what he/she was supposed to do?");
             if (yes) {
-                milestoneStatus = "Success";
+                sendCheckoff(milestoneId, "Success");
             }
-            $http({
-                method:"PUT",
-                url:"milestones/" + milestoneId,
-                data: {
-                    status: milestoneStatus
-                }
-            })
-            .success(function(data, status, headers, config) {
-                console.log("inside check", data.content, $routeParams.id);
-                alert("Checkoff successful");
-                $location.path('/checkoff/' + $routeParams.id);
-                init();   
-            })
-            .error(function(data, status, headers, config) {
-                alert(data.err+ " Checkoff failed");
-            });
-            
         };
+
+        $scope.fail = function (milestoneId) {
+            var no = confirm("Did this person really fail to do what he/she was supposed to do?");
+            if (no) {
+                sendCheckoff(milestoneId, "Failed");
+            }
+        }
+
+        var sendCheckoff = function(milestoneId, milestoneStatus) {
+            $http({
+                    method:"PUT",
+                    url:"milestones/" + milestoneId,
+                    data: {
+                        status: "Success"
+                    }
+                })
+                .success(function(data, status, headers, config) {
+                    console.log("inside check", data.content, $routeParams.id);
+                    alert("Checkoff successful");
+                    $location.path('/checkoff/' + $routeParams.id);
+                    init();   
+                })
+                .error(function(data, status, headers, config) {
+                    alert(data.err+ " Checkoff failed");
+                });
+        }
 
         
 

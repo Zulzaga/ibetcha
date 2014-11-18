@@ -132,7 +132,7 @@ router.get('/:bet_id/milestones/pending', function(req, res) {
               if(error) {
                 utils.sendErrResponse(res, 500, error);
               } else {
-                console.log("milestones: " + milestones, milestones.length);
+                console.log("milestones: " + milestones, milestones.length, bet_id);
                 utils.sendSuccessResponse(res, milestones);
               }
   });

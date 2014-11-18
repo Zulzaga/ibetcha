@@ -12,6 +12,7 @@ var emailNotifier = require('../../utils/email');
 var changeStatus = require('../../utils/changeStatus')
 
 var User = require('../../models/User');
+var MoneyRecord = require('../../models/MoneyRecord');
 var Bet = require('../../models/Bet');
 var Milestone = require('../../models/Milestone');
 
@@ -51,6 +52,50 @@ router.get('/', function(req, res) {
 		}
 	});
 });
+
+var updatePayments = function(author_id, bet_id) {
+	Bet.findOne({_id:bet_id}, function(err, bet) {
+		if (err) {
+			utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
+		} else if (bet){
+			var amount = bet.amount / bet.monitors.length;
+			console.log("&&&&&&&&&", amount);
+			var monitors_ids = [];
+			var amounts = Array.apply(null, new Array(bet.monitors.length)).map(Number.prototype.valueOf,amount);
+			console.log("*********", amounts);
+			for (var i = 0; i <bet.monitors.length; i++) {
+				monitors_ids.push(bet.monitors[i]._id);
+			}
+			MoneyRecord.create(monitors_ids, amounts, function(err, records) {
+				if(err) {
+					utils.sendErrResponse(res, 500, 'An error occurred while creating MoneyRecord');
+				} else {
+					User.findOne({_id:author_id}, function(err, user) {
+						if(err) {
+							utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
+						} else {
+							if (user) {
+								user.payments.push.apply(records);
+								user.save(function(err) {
+									if(err) {
+										utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
+									} else {
+										utils.sendSuccessResponse(res, 500, user);
+									}
+								})
+							}
+						}
+					});
+				}
+			});
+
+		} else {
+			utils.sendErrResponse(res, 500, 'There is no such bet like that');
+		}
+	});
+	
+}
+
 
 //FUNCTION USED FOR CHECKING OFF
 
@@ -130,6 +175,8 @@ router.put('/:milestone_id', function(req, res) {
 									//send email
 									if (!test){
 										console.log("10");
+										// UPDATE PAYMENT STUFF
+										updatePayments(milestone.author, milestone.bet);
 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 									}
 
