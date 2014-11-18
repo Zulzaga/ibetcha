@@ -6,6 +6,7 @@
 
   var test_date = new Date();
   start_date.setDate(start_date.getDate());
+  
   var end_date = new Date(start_date);
   end_date.setDate(end_date.getDate() + 7);
   
@@ -89,47 +90,6 @@
   });
 
 
-// Edit bet: change status
-$.ajax({
-    url: urlString + "bets/"+new_bet_id,
-    type: "PUT",
-    dataType:"json",
-    data: { 
-      test: true,
-      monitor: true,
-      status: new_status,
-    },
-
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      QUnitTesting("Edit bet: success message", data.success);
-      QUnitTesting("Edit bet: status change", data.content.status ===new_status);
-      console.log("added a monitor: "+data.content.monitors.length);
-      QUnitTesting("Edit bet: add monitor", data.content.monitors.length===1);
-
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Edit bet: error", false);
-    }
-  });
-
-// Edit milestone
-$.ajax({
-    url: urlString + "milestones/"+milestone_id_to_check,
-    type: "PUT",
-    dataType:"json",
-    data: { 
-      test: true,
-      monitor: true,
-      status: "Pending Action",
-    },
-
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      QUnitTesting("Edit milestone: success message", data.success);
-      QUnitTesting("Edit milestone: new status", data.content.status === "Pending Action");
-    }
-});
 
 // check Milestone dates (testing generate_milestones function)
 $.ajax({

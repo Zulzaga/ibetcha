@@ -19,8 +19,14 @@
 10 error There is likely additional logging output above.
 11 error System Darwin 13.0.0
 12 error command "node" "/usr/local/bin/npm" "start"
+<<<<<<< HEAD
 13 error cwd /Users/zulsarbatmunkh/Documents/saadiyah_mukushev_dhlim_zulsar_finalProj
 14 error node -v v0.10.31
 15 error npm -v 1.4.23
+=======
+13 error cwd /Users/danamukusheva/Desktop/saadiyah_mukushev_dhlim_zulsar_finalProj
+14 error node -v v0.10.32
+15 error npm -v 1.4.28
+>>>>>>> c7e7980bf6df1fdfe465b9b01d5ba9a446767f64
 16 error code ELIFECYCLE
 17 verbose exit [ 1, true ]

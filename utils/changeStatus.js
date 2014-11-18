@@ -61,20 +61,20 @@ function makeMilestonePendingAndEmail(){
 	
 	Milestone
 		.update({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}}, {$set:{status: 'Pending Action'}}, {multi:true})
-		.populate('monitors')
+		.populate('bet')
 		.exec(function (err, milestones){
 			console.log("REMIND THEM: "+milestones);
 			var l = milestones.length;
 			for (var i=0; i<l; i++){
-				sendEmailReminder(milestones[i].monitors, milestones[i].bet, milestones[i].author);
+				sendEmailReminder(milestones[i].bet.monitors, milestones[i].bet, milestones[i].author);
 			}
 		});
 }
 
 // changes bets statuses according to their start, end and drop dates
 // not started -> action required (if today is start date) + sends email
-
 // any status  -> dropped (if today is drop date) + sends email
+// the function also marks any milestone left in that bet to be "dropped"
 
 function changeBetStatus(){
 	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
@@ -83,25 +83,25 @@ function changeBetStatus(){
 	var tomorrow = moment();
 	tomorrow.add(1, 'd');
 	cleanDates(tomorrow);
-	//Not started --> Action Required, DROPPED
+	//Not started --> Action Required,
 	Bet
-		.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, monitors: {$not: {$size: {$lt: 3}}}} ,{$set:{status: 'Action Required'}})
+		.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or:[{monitors: {$size: 3}}, {monitors: {$size: 4}}, {monitors: {$size: 5}}]} ,{$set:{status: 'Action Required'}},{ multi: true })
 		.populate('author')
-		.exec(function(err, bets){
+		.exec(function(err, bets1){
 			if (err){
 				console.log("Error while activating bet: "+err);
 			}
 			else{
-				var l = bets.length;
+				var l = bets1.length;
 				for (var i =0; i< l; i++){
-					var bet_id = bets[i]._id;
-					var author = bets[i].author;
+					var bet_id = bets1[i]._id;
+					var author = bets1[i].author;
 					changeStatus.sendEmailAuthor(author, bet_id, 'Open');
 				}
 				//handle bets with number of monitors < 3:
 				// inactive ----> Dropped
 				Bet
-					.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, monitors: {$size: {$lt: 3}}} ,{$set:{status: 'Dropped'}})
+					.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or: [{monitors: {$size: 0}}, {monitors: {$size: 1}}, {monitors: {$size: 2}}]} ,{$set:{status: 'Dropped'}}, { multi: true })
 					.populate('author')
 					.exec(function(err, bets){
 						if (err){
@@ -113,6 +113,15 @@ function changeBetStatus(){
 								var bet_id = bets[i]._id;
 								var author = bets[i].author;
 								changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
+								//now handle the checkoffs, everything must be inactive
+								//open so we do not need to filter by those
+								Milestones
+									.update({_id: bet_id}, {$set:{status: 'Closed'}}, { multi: true })
+									.exec(function(e){
+										if (e){
+											console.log("Error while dropping milestone: "+e);
+										}
+									});	
 							}
 						}
 					});
@@ -123,14 +132,14 @@ function changeBetStatus(){
 	Bet
 		.update({status: "Action Required", dropDate: {$gt: today}}, {$set:{status: 'Dropped'}})
 		.populate('author')
-		.exec(function(err, bets){
+		.exec(function(err, bets3){
 			if (err){
 				console.log("Error while dropping bet: "+err);
 				return;
 			}
-			var l = bets.length;
+			var l = bets3.length;
 			for (var i=0; i<l; i++){
-				var bet_id = bets[i]._id;
+				var bet_id = bets3[i]._id;
 
 				Milestone
 					.update({bet: bet_id, $or:[{status: "Open"}, {status: "Inactive"}, {status: 'Pending Action'}]}, {$set:{status: 'Closed'}}, {multi:true})
@@ -139,7 +148,7 @@ function changeBetStatus(){
 							console.log("Error closing milestones: "+err);
 						}
 					});
-				var author = bets[i].author;
+				var author = bets3[i].author;
 				changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
 			}
 		});

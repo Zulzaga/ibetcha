@@ -121,11 +121,14 @@ makeBet.makeBet=function(req,res){
 		var userId = req.user._id;
 	}
 
+	var dropDate = (new Date(data.endDate));
+	dropDate.setDate(dropDate.getDate()+10); //window of 10 days after bet ends to check off
+
 	var status = "Not Started"
 	var betJSON = {author:userId, 
 				  startDate:data.startDate, 
 				  endDate:data.endDate,
-				  dropDate:data.endData,
+				  dropDate:dropDate,
 				  frequency:data.frequency,
 				  description:data.description,
 				  status: status,
