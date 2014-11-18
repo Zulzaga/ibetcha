@@ -8,7 +8,7 @@ var milestoneStatus = [
 	'Pending Action', //still requires action
 	'Success',//success checkoff
 	'Failed', // failed checkoff
-	'Closed', // bet Drop date passed
+	'Closed' // bet Drop date passed
 ];
 
 //Milestones Schema

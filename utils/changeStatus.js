@@ -113,6 +113,14 @@ function changeBetStatus(){
 								var bet_id = bets[i]._id;
 								var author = bets[i].author;
 								changeStatus.sendEmailAuthor(author, bet_id, 'Dropped');
+								//now handle the checkoffs, everything must be inactive/ open so we do not need to filter by those
+								Milestones
+									.update({_id: bet_id}, {$set:{status: 'Closed'}}, { multi: true })
+									.exec(function(e){
+										if (e){
+											console.log("Error while dropping milestone: "+e);
+										}
+									});	
 							}
 						}
 					});
