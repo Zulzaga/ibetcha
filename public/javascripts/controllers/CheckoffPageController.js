@@ -5,13 +5,16 @@ ibetcha.controller('CheckoffPageController',
     function($scope, $http, $location, $cookieStore, $routeParams) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
 
+        var count = 0;
         var init = function() {
             $http({
                 method: "GET",
                 url: "bets/" +  $routeParams.id +"/milestones/pending",
                 }).success(function(data, status, headers, config) {
-                    console.log("pending data received", data.content);
+                    console.log("pending data received: " + count, data.content);
+                    count++;
                     if (data.content.length === 0) {
+                        console.log("scope is empty");
                         $scope.empty = true;
                         $scope.pending = [];
                     } else {
@@ -63,8 +66,8 @@ ibetcha.controller('CheckoffPageController',
                 .success(function(data, status, headers, config) {
                     console.log("inside check", data.content, $routeParams.id);
                     alert("Checkoff successful");
-                    $location.path('/checkoff/' + $routeParams.id);
-                    init();
+                    init();   
+
                 })
                 .error(function(data, status, headers, config) {
                     alert(data.err+ " Checkoff failed");
