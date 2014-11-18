@@ -33,10 +33,6 @@ var userSchema = new Schema({
 	monitoring: [{
 		type: ObjectId,
 		ref: 'Bet'
-	}],
-	payments: [{
-		type: ObjectId,
-		ref: 'MoneyRecord'
 	}]
 });
 

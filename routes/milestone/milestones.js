@@ -67,7 +67,8 @@ var updatePayments = function(author_id, bet_id, res) {
 				for (var i = 0; i <bet.monitors.length; i++) {
 					console.log("bet monitor id type", bet.monitors[i], typeof(bet.monitors[i]));
 					var request = {
-						friend: bet.monitors[i],
+						from: new ObjectId(author_id),
+						to: bet.monitors[i],
 						amount: amount
 					};
 					recordRequests.push(request);
@@ -75,50 +76,9 @@ var updatePayments = function(author_id, bet_id, res) {
 
 				MoneyRecord.create(recordRequests, function(err, records) {
 					if(err) {
-						console.log("err is this: " + err);
-						utils.sendErrResponse(res, 500, 'An error occurred while creating MoneyRecord');
+						utils.sendErrResponse(res, 500, "Cannot create the payment records");
 					} else {
-						console.log("55555555555555555555555555555555555");
-						console.log(records, Object.prototype.toString.call(records));
-						console.log(author_id, author_id instanceof ObjectId);
-						console.log("55555555555555555555555555555555555");
-						User.findOne({_id: new ObjectId(author_id)})
-							.populate("payments")
-							.exec(function(err, user) {
-								if(err) {
-									console.log("err is that: "+err);
-									//return;
-									utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
-								} else {
-									if (user) {
-										for(var i = 1; i < arguments.length; ++i) {
-											var record = arguments[i];
-											user.update(									
-												{
-													$push:{
-														payments: record//{$each: records}
-													}
-												},
-												{upsert: true}, 
-												function(err, model) {
-													if(err) {
-														console.log(err);
-														utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
-													} else {
-														console.log("ahhhhhhhhhhhhhhhh");
-														console.log(model);
-														utils.sendSuccessResponse(res, 500, model);
-													}
-												}
-											);
-										}
-										
-									} 
-									else {
-										utils.sendErrResponse(res, 500, 'There is no such user');
-									}
-								}
-							});
+						utils.sendSuccessResponse(res, records);
 					}
 				});
 

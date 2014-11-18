@@ -7,6 +7,7 @@ var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
+var MoneyRecord = require('../models/MoneyRecord');
 
 // Routing for the testing page
 router.get('/', function(req, res) {
@@ -32,6 +33,9 @@ var cleanCollections = function() {
 	   console.log('milestones removed') 
 	});
 	MonitorRequest.remove({}, function(err) { 
+	   console.log('monitor requests removed') 
+	});
+	MoneyRecord.remove({}, function(err) { 
 	   console.log('monitor requests removed') 
 	});
 }
