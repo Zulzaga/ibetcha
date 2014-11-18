@@ -1,0 +1,56 @@
+.requests-title {
+    margin-top: 120px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;  
+    margin-bottom: 20px;
+}
+
+.request-empty {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    color: steelBlue;
+}
+
+.single-monitor-request,  .single-friend-request{
+    width: 100%;
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.req-box {
+    margin-left: 50px;
+    display: inline-block;
+    vertical-align: top;
+    width: 500px;
+}
+
+.friends-box {
+    margin-left: 50px;
+    width: 400px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.big-box {
+    min-height: 450px;
+    width: auto;
+    display: inline-block;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.request-monitor-title, .request-friend-title{
+    color: steelBlue;
+    text-decoration: underline;
+    padding-right: 50px;
+    display: inline-block;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}

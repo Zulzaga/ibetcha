@@ -346,7 +346,7 @@ $.ajax({
   async: false,
   success: function(data, textStatus, jqXHR) {
     console.log(data.content);
-    QUnitTesting("Get friends", data.content.length === 1);
+    QUnitTesting("Get friends", data.content.length >= 1);
   },
   error: function(jqXHR, textStatus, err) {
     QUnitTesting("Get friends", false);

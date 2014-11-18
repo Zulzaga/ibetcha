@@ -3,7 +3,15 @@
   <script src="javascripts/ui/datepicker.js"></script>
   
     <ng-include src="'partials/navbar.html'"></ng-include>
-    
+    <div id="edit-instruction">
+        Hello There :)! Make sure to read the guidelines below before making a new bet:</br></br>
+
+        The earliest start date you can start your resolution is tomorrow and the end date cannot be after the start date. </br></br>
+
+        The minimum amount amount you can bet is $5 and the maximum is $100. </br></br>
+
+        You can only add your friends as your monitors. </br></br>
+    </div>
     <div id="edit-page">
         <h2>Make a New Bet</h2>
         <form class="edit-form" novalidate ng-submit="editSubmit()" >

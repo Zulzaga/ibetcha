@@ -29,11 +29,11 @@ ibetcha.controller('EditBetPageController',
                     data: $scope.editForm,
                     }).success(function(data, status, headers, config) {
                         console.log(data.content);
-                        alert("Successfully sent the request!");
+                        alert("Successfully created the bet! Good luck on your resolution! You can do this ;)!");
                         $location.path('/home');
                     }).
                 error(function(data, status, headers, config) {
-                    alert(data.err);
+                    alert("Could not create a new bet! Make sure to follow the guidelines!");
                 });
             }
         }
