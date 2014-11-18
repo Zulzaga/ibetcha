@@ -23,11 +23,11 @@ var Milestone = require('../../models/Milestone');
 var timezone = (new time.Date()).getTimezone();
 
 var job = new CronJob({
-  cronTime: '30 19 19 * * *', //runs everyday at 1 min after midnight
+  cronTime: '00 07 23 * * *', //runs everyday at 1 min after midnight
   onTick: function() {
   	//testing: 
   	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
-
+  	console.log("CRON JOB AT ACTION");
   	changeStatus.overnightCheck();	
   },
   start: false,
