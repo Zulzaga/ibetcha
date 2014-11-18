@@ -8,14 +8,14 @@ var MoneyRecordSchema = new Schema({
 	amount: {type:Number, required:true}
 });
 
-MoneyRecord.statics.create = function(friend, amount, callback) {
-    var newRequest = new FriendRequest({
-        'friend': friend,
-        'amount': amount
-    });
+// MoneyRecordSchema.statics.create = function(friend, amount, callback) {
+//     var newRequest = new MoneyRecord({
+//         'friend': friend,
+//         'amount': amount
+//     });
 
-    newRequest.save(callback);
-}
+//     newRequest.save(callback);
+// }
 
 
 //Bindings

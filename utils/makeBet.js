@@ -58,7 +58,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
 			date: current_date,
 			bet: betID,
 			author: userID,
-			status: "Inactive",//"Inactive", 
+			status: "Pending Action",//"Inactive", 
 			monitors:[]
 		};
 		milestones_array.push(my_milestone);
@@ -69,7 +69,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
 			date: end_date,
 			bet: betID,
 			author: userID,
-			status: "Inactive",//"Inactive", 
+			status: "Pending Action",//"Inactive", 
 			monitors:[]
 		};
 		milestones_array.push(my_milestone);

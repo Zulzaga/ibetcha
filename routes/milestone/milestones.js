@@ -53,46 +53,59 @@ router.get('/', function(req, res) {
 	});
 });
 
-var updatePayments = function(author_id, bet_id) {
-	Bet.findOne({_id:bet_id}, function(err, bet) {
-		if (err) {
-			utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
-		} else if (bet){
-			var amount = bet.amount / bet.monitors.length;
-			console.log("&&&&&&&&&", amount);
-			var monitors_ids = [];
-			var amounts = Array.apply(null, new Array(bet.monitors.length)).map(Number.prototype.valueOf,amount);
-			console.log("*********", amounts);
-			for (var i = 0; i <bet.monitors.length; i++) {
-				monitors_ids.push(bet.monitors[i]._id);
-			}
-			MoneyRecord.create(monitors_ids, amounts, function(err, records) {
-				if(err) {
-					utils.sendErrResponse(res, 500, 'An error occurred while creating MoneyRecord');
-				} else {
-					User.findOne({_id:author_id}, function(err, user) {
-						if(err) {
-							utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
-						} else {
-							if (user) {
-								user.payments.push.apply(records);
-								user.save(function(err) {
-									if(err) {
-										utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
-									} else {
-										utils.sendSuccessResponse(res, 500, user);
-									}
-								})
-							}
-						}
-					});
-				}
-			});
+var updatePayments = function(author_id, bet_id, res) {
+	Bet.findOne({_id:bet_id})
+	   .populate("monitors")
+	   .exec(function(err, bet) {
+	   		if (err) {
+				utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
+			} else if (bet){
+				console.log("bet.amount and type:", bet.amount, typeof(bet.amount));
+				var amount = bet.amount / bet.monitors.length;
+				console.log("&&&&&&&&&", amount);
+				var recordRequests = [];
 
-		} else {
-			utils.sendErrResponse(res, 500, 'There is no such bet like that');
-		}
-	});
+				for (var i = 0; i <bet.monitors.length; i++) {
+					request = {
+						friend: bet.monitors[i],
+						amount: amount
+					};
+					recordRequests.push(request);
+				}
+
+				MoneyRecord.create(recordRequests, function(err, records) {
+					if(err) {
+						console.log("err is this: " + err);
+						utils.sendErrResponse(res, 500, 'An error occurred while creating MoneyRecord');
+					} else {
+						User.findOne({_id:author_id}, function(err, user) {
+							if(err) {
+								console.log("err is that: "+err);
+								//return;
+								utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
+							} else {
+								if (user) {
+									user.payments = user.payments + records;
+									user.save(function(err) {
+										if(err) {
+											console.log("err is that: "+err);
+											//return;
+											utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
+										} else {
+											console.log("wooo hoooo");
+											utils.sendSuccessResponse(res, 500, user);
+										}
+									})
+								}
+							}
+						});
+					}
+				});
+
+			} else {
+				utils.sendErrResponse(res, 500, 'There is no such bet like that');
+			}
+		});
 	
 }
 
@@ -176,7 +189,7 @@ router.put('/:milestone_id', function(req, res) {
 									if (!test){
 										console.log("10");
 										// UPDATE PAYMENT STUFF
-										updatePayments(milestone.author, milestone.bet);
+										updatePayments(milestone.author, milestone.bet, res);
 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 									}
 
@@ -184,7 +197,7 @@ router.put('/:milestone_id', function(req, res) {
 									//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
 									//charge money here
 									console.log("11");
-									utils.sendSuccessResponse(res, savedmilestone);
+									//utils.sendSuccessResponse(res, savedmilestone);
 
 								});
 
