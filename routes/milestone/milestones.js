@@ -5,12 +5,12 @@ var time = require('time');
 var moment = require('moment');
 moment().format();
 var router = express.Router();
+var ObjectId = mongoose.Schema.ObjectId;
 
 //linking collections and utils 
 var utils = require('../../utils/utils')
 var emailNotifier = require('../../utils/email');
 var changeStatus = require('../../utils/changeStatus')
-
 var User = require('../../models/User');
 var MoneyRecord = require('../../models/MoneyRecord');
 var Bet = require('../../models/Bet');
@@ -25,7 +25,7 @@ var Milestone = require('../../models/Milestone');
 var timezone = (new time.Date()).getTimezone();
 
 var job = new CronJob({
-  cronTime: '00 01 00 * * *', //runs everyday at 1 min after midnight
+  cronTime: '30 19 19 * * *', //runs everyday at 1 min after midnight
   onTick: function() {
   	//testing: 
   	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
@@ -36,7 +36,7 @@ var job = new CronJob({
   timeZone: timezone
 });
 //comment out whenever ready
-//job.start();
+job.start();
 
 
 //======================== API route methods =========================
@@ -66,8 +66,9 @@ var updatePayments = function(author_id, bet_id, res) {
 				var recordRequests = [];
 
 				for (var i = 0; i <bet.monitors.length; i++) {
+					console.log("bet monitor id type", bet.monitors[i]._id);
 					request = {
-						friend: bet.monitors[i],
+						friend: ObjectId.fromString(bet.monitors[i]._id),
 						amount: amount
 					};
 					recordRequests.push(request);
@@ -78,27 +79,29 @@ var updatePayments = function(author_id, bet_id, res) {
 						console.log("err is this: " + err);
 						utils.sendErrResponse(res, 500, 'An error occurred while creating MoneyRecord');
 					} else {
-						User.findOne({_id:author_id}, function(err, user) {
-							if(err) {
-								console.log("err is that: "+err);
-								//return;
-								utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
-							} else {
-								if (user) {
-									user.payments = user.payments + records;
-									user.save(function(err) {
-										if(err) {
-											console.log("err is that: "+err);
-											//return;
-											utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
-										} else {
-											console.log("wooo hoooo");
-											utils.sendSuccessResponse(res, 500, user);
-										}
-									})
+						User.findOne({_id:author_id})
+							.populate("payments")
+							.exec(function(err, user) {
+								if(err) {
+									console.log("err is that: "+err);
+									//return;
+									utils.sendErrResponse(res, 500, 'An error occurred while looking up the user');
+								} else {
+									if (user) {
+										user.payments = user.payments + records;
+										user.save(function(err) {
+											if(err) {
+												console.log("err is that: "+err);
+												//return;
+												utils.sendErrResponse(res, 500, 'An error occurred while saving payments');
+											} else {
+												console.log("wooo hoooo");
+												utils.sendSuccessResponse(res, 500, user);
+											}
+										})
+									}
 								}
-							}
-						});
+							});
 					}
 				});
 
@@ -117,6 +120,7 @@ var updatePayments = function(author_id, bet_id, res) {
 //if new_status="Failed", then the entire bet is failed and the user gets notified by email
 //if new_status = "Success" and all other milestones were checkoff/failed,
 //then the entire bet succeeded and user get's notified by email
+
 router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
 	var new_status = req.body.status; //Success or Failed
@@ -197,7 +201,7 @@ router.put('/:milestone_id', function(req, res) {
 									//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
 									//charge money here
 									console.log("11");
-									//utils.sendSuccessResponse(res, savedmilestone);
+									utils.sendSuccessResponse(res, savedmilestone);
 
 								});
 
@@ -213,6 +217,7 @@ router.put('/:milestone_id', function(req, res) {
 			}
 		});
 });
+
 
 
 

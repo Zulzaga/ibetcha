@@ -8,7 +8,7 @@ var milestoneStatus = [
 	'Pending Action', //still requires action
 	'Success',//success checkoff
 	'Failed', // failed checkoff
-	'Closed', // bet Drop date passed
+	'Closed' // bet Drop date passed
 ];
 
 //Milestones Schema
@@ -26,11 +26,7 @@ var milestonesSchema = new Schema({
 	status:{
 		type: String,
 		enum: milestoneStatus
-	},
-	monitors:[{
-		type: ObjectId,
-		ref: 'User'
-	}]
+	}
 });
 
 //Bindings

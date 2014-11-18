@@ -5,7 +5,7 @@ var mongoose = require("mongoose"),
 // Schema for keeping track of who owes what
 var MoneyRecordSchema = new Schema({
 	friend: {type: ObjectId, required: true},
-	amount: {type:Number, required:true}
+	amount: {type: Number, required:true}
 });
 
 // MoneyRecordSchema.statics.create = function(friend, amount, callback) {
