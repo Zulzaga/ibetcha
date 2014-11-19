@@ -23,7 +23,7 @@ var Milestone = require('../../models/Milestone');
 var timezone = (new time.Date()).getTimezone();
 
 var job = new CronJob({
-  cronTime: '00 14 04 * * *', //runs everyday at 1 min after midnight
+  cronTime: '00 16 04 * * *', //runs everyday at 1 min after midnight
   onTick: function() {
   	//testing: 
   	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
