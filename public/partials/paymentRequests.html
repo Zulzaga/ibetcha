@@ -27,7 +27,7 @@
     		<div class="money-track" ng-repeat="payment in tos">
     			<div class="request-empty" ng-if="payment.requested">From: {{payment.from.username}} {{payment.requested}}</div>
     			<div class="request-empty" ng-if="payment.requested">Amount: ${{payment.amount}} {{payment.requested}}</div>
-    			<button class="btn btn-default" ng-if"payment.requested" ng-click="received(payment._id)">I received the money</button>
+    			<button class="btn btn-default" ng-if="payment.requested" ng-click="received(payment._id)">I received the money</button>
     		</div>
 	        </div>
     	</div>
