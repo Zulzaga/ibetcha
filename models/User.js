@@ -3,7 +3,7 @@ var mongoose = require("mongoose"),
 	Schema = mongoose.Schema;
 	passwordHash = require('password-hash');
 
-// Users Schema
+// User Schema
 var userSchema = new Schema({
 	//login related information:
 	venmo:{
@@ -21,16 +21,16 @@ var userSchema = new Schema({
 		min: 1, //failed
 		max: 5  //success
 	},
-	bets:[{ //list of bets the user created
+	bets:[{ // list of bets the user created
 		type: ObjectId,
 		ref: 'Bet'
 	}],
-	friends:[{ //list of friends of the user
+	friends:[{ // list of friends of the user
 		type: ObjectId,
 		ref: 'User',
 		unique: true
 	}],
-	monitoring: [{
+	monitoring: [{ // list of monitoring bets
 		type: ObjectId,
 		ref: 'Bet'
 	}]

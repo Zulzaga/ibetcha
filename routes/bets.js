@@ -40,7 +40,8 @@ Check bet data before entering it to the DB
   var result = true;
   var startDate = (new Date(data.startDate)).valueOf();
   var endDate = (new Date(data.endDate)).valueOf();
-  var result = startDate < endDate;
+  var result = (startDate < endDate);
+  var result = ((Math.ceil((endDate-startDate)/MILLIS_IN_A_DAY)) > data.frequency);
   return result;
 }
 

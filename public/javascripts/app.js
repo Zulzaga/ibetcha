@@ -31,7 +31,7 @@ ibetcha.config(['$routeProvider', '$locationProvider',
       }).
       when('/bets/:id/:type', {
         templateUrl: 'partials/bet.html',
-        controller: 'BetPageController'
+        controller: 'BetDetailPageController'
       }).
       when('/checkoff/:id', {
         templateUrl: 'partials/checkoff.html',

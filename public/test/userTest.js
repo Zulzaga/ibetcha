@@ -57,26 +57,6 @@ $.ajax({
     }
 });
 
-// // Logging in with wrong credentials
-// $.ajax({
-//     url: urlString + "users/login",
-//     type: "POST",
-//     dataType:"json",
-//     data: {
-//       username: "Zulaa",
-//       email:"zulsar@mit.edu",
-//       password:"113"
-//     },
-//     async: false,
-//     success: function(data, textStatus, jqXHR) {
-//       QUnitTesting("User login", data.success === true);
-//     },
-//     error: function(jqXHR, textStatus, err) {
-//    	  console.log(jqXHR.responseText);
-//       QUnitTesting("User logging in with wrong credentials", false);
-//     }
-// });
-
 //Logout
 $.ajax({
     url: urlString + "users/logout",
