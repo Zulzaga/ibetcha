@@ -2,7 +2,7 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 
-//Friend Requests Schema
+// Friend Request Schema
 var friendRequestSchema = new Schema({
 	from:{
 		type: ObjectId,
@@ -22,7 +22,6 @@ friendRequestSchema.statics.create = function(from, to, callback) {
 
     newRequest.save(callback);
 }
-
 
 //Bindings
 var FriendRequest = mongoose.model('FriendRequest', friendRequestSchema);

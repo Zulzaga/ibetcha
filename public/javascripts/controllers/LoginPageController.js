@@ -33,8 +33,7 @@ ibetcha.controller('LoginPageController',
                     $cookieStore.put('session', true);                                        
                 }).
                 error(function(data, status, headers, config) {
-                    console.log(data.err);
-                    alert("Login information is incorrect");
+                    alert(data.err);
                 });
         }
 

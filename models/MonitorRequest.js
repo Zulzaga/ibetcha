@@ -2,10 +2,8 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 
-//Monitor Requests Schema
+// Monitor Request Schema
 var monitorRequestSchema = new Schema({
-	// date: Date,
-
 	from:{
 		type: ObjectId,
 		ref: 'User'
@@ -19,17 +17,6 @@ var monitorRequestSchema = new Schema({
 		ref: 'Bet'
 	}
 });
-
-// monitorRequestSchema.statics.create = function(from, to, bet, callback) {
-//     var newRequest = new MonitorRequest({
-//         'from': from,
-//         'to': to,
-//         'bet': bet
-//     });
-
-//     newRequest.save(callback);
-// }
-
 
 //Bindings
 var MonitorRequest = mongoose.model('MonitorRequest', monitorRequestSchema);

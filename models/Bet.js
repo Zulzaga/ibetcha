@@ -15,7 +15,7 @@ var betStatus = [
 	
 ];
 
-//Bets schema
+// Bet schema
 var betSchema = new Schema({
 	startDate: Date, //Date stored in UTC format
 	endDate: Date,

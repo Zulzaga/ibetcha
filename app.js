@@ -56,7 +56,8 @@ app.use('/friendRequests', friendRequests);
 app.use('/paymentRequests', paymentRequests);
 app.use('/test', test);
 
-// strategy for authentication
+// Passport strategy for Venmo authentication.
+// Not used for MVP.
 passport.use(new VenmoStrategy({
     clientID: "2096",
     clientSecret: "3pm76Jsh2tqdV2TcmRxAyBn9C6uNu2rq",
@@ -93,24 +94,7 @@ passport.use(new VenmoStrategy({
     }
 ));
 
-// passport.use('venmo', new OAuth2Strategy({
-//     authorizationURL: 'https://api.venmo.com/v1/oauth/authorize',
-//     tokenURL: 'https://api.venmo.com/v1/oauth/access_token',
-//     clientID: "2096",
-//     clientSecret: secrets.venmo.clientSecret,
-//     callbackURL: secrets.venmo.redirectUrl,
-//     passReqToCallback: true
-//   },
-//   function(req, accessToken, refreshToken, profile, done) {
-//     User.findById(req.user._id, function(err, user) {
-//       user.tokens.push({ kind: 'venmo', accessToken: accessToken });
-//       user.save(function(err) {
-//         done(err, user);
-//       });
-//     });
-//   }
-// ));
-
+// Passport Strategy for login.
 passport.use('login', new LocalStrategy({
     passReqToCallback: true
     }, function(req, username, password, done) {
@@ -122,10 +106,10 @@ passport.use('login', new LocalStrategy({
             }
             // already exists
             if (!user) {
-                return done(null, false, {error: 'User does not exist', success: false});
+                return done(null, false, 'User does not exist');
             } else {
                 if (!passwordHash.verify(password, user.password)) {
-                    return done(null, false, {error: 'Wrong username and password combination!', success: false});
+                    return done(null, false, 'Wrong username and password combination!');
                 }
 
                 return done(null, user);
@@ -134,6 +118,7 @@ passport.use('login', new LocalStrategy({
     }
 ));
 
+// Passport Strategy for creating a new user.
 passport.use('signup', new LocalStrategy({
     passReqToCallback: true
     },
@@ -146,21 +131,32 @@ passport.use('signup', new LocalStrategy({
             }
             // already exists
             if (user) {
-                return done(null, false, {error: 'User already exists', success: false});
+                return done(null, false, 'Username is already taken!. Try again with a different username.');
             } else {
-                // if there is no user with that email
-                // create the user
-                User.create(req.body.username, req.body.password, req.body.email, function (err, user) {
-                    if (err) {
-                        console.log(err);
+                User.findOne({'email': req.body.email}, function(err, user) {
+                    // In case of any error return
+                    if (err){
                         return done(err);
-                    } else if (user === null){
-                        return done(null, false, { error: "Could not create a new user!", success: false });
-                    } else {
-                        console.log(user);
-                        return done(null, user);
                     }
-                })
+                    // already exists
+                    if (user) {
+                        return done(null, false, 'Email is already taken! Try again with a different email.');
+                    } else {
+                        // if there is no user with that email
+                        // create the user
+                        User.create(req.body.username, req.body.password, req.body.email, function (err, user) {
+                            if (err) {
+                                console.log(err);
+                                return done(err);
+                            } else if (user === null){
+                                return done(null, false,  "Could not create a new user!");
+                            } else {
+                                console.log(user);
+                                return done(null, user);
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -205,8 +201,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
-
-
 
 module.exports = app;

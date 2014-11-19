@@ -13,7 +13,7 @@ var milestoneStatus = [
 
 //Milestones Schema
 var milestonesSchema = new Schema({
-	date:Date,
+	date: Date,
 	
 	bet:{
 		type: ObjectId,
