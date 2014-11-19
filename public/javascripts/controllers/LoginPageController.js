@@ -28,6 +28,7 @@ ibetcha.controller('LoginPageController',
                 url: "users/login",
                 data: $scope.loginForm
                 }).success(function(data, status, headers, config) {
+                    alert("Successfully logged in!");
                 	$location.path('/home');
                 	$cookieStore.put('user', $scope.loginForm.username);
                     $cookieStore.put('session', true);                                        
@@ -47,7 +48,7 @@ ibetcha.controller('LoginPageController',
                 url: "users/new",
                 data: $scope.signupForm,
                 }).success(function(data, status, headers, config) {
-                    console.log("signup successful");
+                    alert("Successfully signed up!");
                     $location.path('/home');
                     $cookieStore.put('user', $scope.signupForm.username);
                     $cookieStore.put('type', data.content._type);

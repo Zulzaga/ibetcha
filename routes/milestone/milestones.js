@@ -14,6 +14,7 @@ var changeStatus = require('../../utils/changeStatus')
 var User = require('../../models/User');
 var MoneyRecord = require('../../models/MoneyRecord');
 var Bet = require('../../models/Bet');
+var MonitorRequest = require('../../models/MonitorRequest');
 var Milestone = require('../../models/Milestone');
 
 
@@ -192,15 +193,22 @@ router.put('/:milestone_id', function(req, res) {
 										console.log("10");
 										// UPDATE PAYMENT STUFF, notify author
 										console.log("milestone.author", milestone.author);
-										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-										updatePayments(milestone.author._id, milestone.bet, res);
+										MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
+											if (err) {
+												utils.sendErrResponse(res, 500, err);
+											} else {
+												console.log(requests);
+												console.log("Successfully deleted all monitor requests!.");
+												changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+												updatePayments(milestone.author._id, milestone.bet, res);
+											}
+										});
 									
 									} else {
 										//test mode, just send success
 										//console.log("EMAIL DANA");
 										//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
 										console.log("11");
-										utils.sendSuccessResponse(res, savedmilestone);
 									}
 								});								
 							});
@@ -214,10 +222,5 @@ router.put('/:milestone_id', function(req, res) {
 			}
 		});
 });
-
-
-
-
-
 
 module.exports = router;

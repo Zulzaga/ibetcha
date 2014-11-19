@@ -13,7 +13,7 @@ ibetcha.controller('NavbarController',
                 method: "GET",
                 url: "users/logout",
                 }).success(function(data, status, headers, config) {
-                    alert("successfully logged out");
+                    alert(data.content);
                     $location.path('/');
                     
                     console.log("inside logout: cookiestore session is: " + $cookieStore.get('session'));
