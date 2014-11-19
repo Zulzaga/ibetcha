@@ -36,10 +36,10 @@ ibetcha.controller('PaymentRequestPageController',
                 url: "paymentRequests/paid/" + paymentId + "/claim"
             }).success(function(data, status, headers, config) {
                 alert("Once your friend confirms that you have paid, \n this payment will be erased from records");
-                init();
+                onPageLoad();
             }).error(function(data, status, headers, config) {
                 alert("8888888888" + data.err);
-                init();
+                onPageLoad();
             });
         }
 
@@ -50,13 +50,11 @@ ibetcha.controller('PaymentRequestPageController',
                 url: "paymentRequests/received/" + paymentId// + "/received"
             }).success(function(data, status, headers, config) {
                 alert("You have received this payment.\n This payment will be erased from records");
-                init();
+                onPageLoad();
             }).error(function(data, status, headers, config) {
                 alert("99999"+data.err);
-                init();
+                onPageLoad();
             });
         }
-
-        
     }
 );
