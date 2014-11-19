@@ -1,22 +1,23 @@
 /****
-* Controller for the Navbar.
-* Controls all the buttons on the bar.
+* Controller for the Invite page.
 */
 ibetcha.controller('InvitePageController',
     function($scope, $http, $location, $cookieStore) {
-        $http.defaults.headers.post["Content-Type"] = "application/json";
 
+        $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
         $scope.inviteForm = {};
         $scope.inviteForm.friendName = $cookieStore.get('user');
-        console.log("inviteform looks liek this: " + $scope.inviteForm.friendName);
-        
 
-        // Determines if somebody is logged in.
-        $scope.checkSession = function() {
-            return $cookieStore.get('session');
-        };
+        // If no session, (no user), redirect back to the login page.
+        if (!$cookieStore.get('session')) {
+            $location.path('/');
+        } 
 
+        // When the invite button is clicked, sends a request to the server to send an email invite
+        // to the given email.
+        // Upon success, redirects back to the Home page and 
+        // upon error, alerts the error with an appropriate message.
         $scope.invite = function() {
         	console.log("inside invite");
         	console.log("inviteform looks likk this: " + $scope.inviteForm.friendName);

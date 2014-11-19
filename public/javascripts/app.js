@@ -37,9 +37,9 @@ ibetcha.config(['$routeProvider', '$locationProvider',
         templateUrl: 'partials/checkoff.html',
         controller: 'CheckoffPageController'
       }).
-      when('/edit', {
-        templateUrl: 'partials/edit.html',
-        controller: 'EditBetPageController'
+      when('/newbet', {
+        templateUrl: 'partials/newbet.html',
+        controller: 'NewBetPageController'
       }).
       when('/request', {
         templateUrl: 'partials/sendFriendRequest.html',

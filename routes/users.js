@@ -123,11 +123,9 @@ router.get('/friends/:username', function(req, res) {
     User.findOne({username:req.params.username})
         .populate("friends")
         .exec(function(error, user) {
-            console.log("999999999"+user);
             if(error) {
                 utils.sendErrResponse(res, 500, error);
             } else if(user) {
-                console.log(user.friends.map(formatFriend));
                 utils.sendSuccessResponse( res, user.friends.map(formatFriend));
             }
         });
@@ -137,12 +135,9 @@ router.get('/friends/:username', function(req, res) {
 router.get('/logout', function(req, res) {
     console.log('inside serverside logout');
     if (req.user) {
-        console.log('loggingout');
         req.logout();
-        console.log("is req.user still here? " + req.user);
         utils.sendSuccessResponse(res, "Successfully logged out!.");
     } else {
-        console.log("something is wrong");
         utils.sendErrResponse(res, 401, 'No user logged in.');
     }
 });
@@ -166,7 +161,6 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
 router.post('/new', function(req, res, next) {
     console.log("inside signup function");
     if (req.user) {
-        console.log("rebound...");
         //res.redirect('/');
         utils.sendErrResponse(res, 401, 'There was an error!');
     } else {
@@ -198,15 +192,12 @@ router.post('/login', function(req, res, next) {
     } else {
         passport.authenticate('login', function(err, newUser, info){
             if (err) {
-                console.log("1");
                 utils.sendErrResponse(res, 500, 'There was an error!');
             } else if (!newUser){
-                console.log("2");
                 utils.sendErrResponse(res, 401, info);
             } else {
                 req.logIn(newUser, function(err) {
                     if (err) { 
-                        console.log("3");
                         utils.sendErrResponse(res, 500, 'There was an error!');
                     } else {
                         utils.sendSuccessResponse(res, formatUser(newUser));

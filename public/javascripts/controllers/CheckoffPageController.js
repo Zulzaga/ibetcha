@@ -3,13 +3,18 @@
 */
 ibetcha.controller('CheckoffPageController',
     function($scope, $http, $location, $cookieStore, $routeParams) {
-        $http.defaults.headers.post["Content-Type"] = "application/json";
 
+        $http.defaults.headers.post["Content-Type"] = "application/json";
+        $scope.loggedIn = $cookieStore.get('session');
+
+        // Helper function for loading the page.
         var count = 0;
-        var init = function() {
+        var onPageLoad = function() {
+
+            // get the pending milestones from the server
             $http({
                 method: "GET",
-                url: "bets/" +  $routeParams.id +"/milestones/pending",
+                url: "bets/" + $routeParams.id + "/milestones/pending",
                 }).success(function(data, status, headers, config) {
                     console.log("pending data received: " + count, data.content);
                     count++;
@@ -28,37 +33,18 @@ ibetcha.controller('CheckoffPageController',
                         }                        
                     }                    
                 }).
-            error(function(data, status, headers, config) {
-                alert(data.err);
-            });
+                error(function(data, status, headers, config) {
+                    alert(data.err);
+                });
         }
 
-        if (!$cookieStore.get('session')) {
-            $location.path('/');
-        } 
-        else {
-            // get the check off details
-            init();
-        };
-
-        $scope.check = function (milestoneId) {
-            var yes = confirm("Did this person really do what he/she was supposed to do?");
-            if (yes) {
-                sendCheckoff(milestoneId, "Success");
-            }
-        };
-
-        $scope.fail = function (milestoneId) {
-            var no = confirm("Did this person really fail to do what he/she was supposed to do?");
-            if (no) {
-                sendCheckoff(milestoneId, "Failed");
-            }
-        }
-
+        // Helper function for sending checkoff.
+        // Upon success, reloads the page and upon error,
+        // alerts the error with an appropriate message.
         var sendCheckoff = function(milestoneId, milestoneStatus) {
             $http({
-                    method:"PUT",
-                    url:"milestones/" + milestoneId,
+                    method: "PUT",
+                    url: "milestones/" + milestoneId,
                     data: {
                         status: milestoneStatus
                     }
@@ -66,15 +52,39 @@ ibetcha.controller('CheckoffPageController',
                 .success(function(data, status, headers, config) {
                     console.log("inside check", data.content, $routeParams.id);
                     alert("Checkoff successful");
-                    init();   
+                    onPageLoad();   
 
-                })
-                .error(function(data, status, headers, config) {
+                }).
+                error(function(data, status, headers, config) {
                     alert(data.err+ " Checkoff failed");
                 });
         }
 
-        
+        // If no session, (no user), redirect back to the login page.
+        if (!$cookieStore.get('session')) {
+            $location.path('/');
+        } 
+        else {
+            // load the page
+            onPageLoad();
+        };
 
+        // When the Check button is clicked, sends a request to the server to checkoff the 
+        // corresponding milestone.
+        $scope.check = function (milestoneId) {
+            var yes = confirm("Did this person really do what he/she was supposed to do?");
+            if (yes) {
+                sendCheckoff(milestoneId, "Success");
+            }
+        };
+
+        // When the Fail button is clicked, sends a request to the server to fail the 
+        // corresponding milestone.
+        $scope.fail = function (milestoneId) {
+            var no = confirm("Did this person really fail to do what he/she was supposed to do?");
+            if (no) {
+                sendCheckoff(milestoneId, "Failed");
+            }
+        }
     }
 );
