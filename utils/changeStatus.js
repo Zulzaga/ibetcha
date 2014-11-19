@@ -81,7 +81,6 @@ function makeMilestoneActive(callback){
 function makeMilestonePendingAndEmail(callback){
 	console.log("entered makeMilestonePendingAndEmail");
 	var today = getToday();
-	today.add(5,'d');
 	var tomorrow = getTomorrow();
 	Milestone
 		.find({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}})
