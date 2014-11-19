@@ -60,13 +60,19 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
   
   var my_date = start_date;
   var days_to_add_to_next_milestone = frequency; 
+  console.log("freq;:::::", days_to_add_to_next_milestone);
+
   var add_end_date = total_num_days % frequency; // 0 if no days left over, other if some day remaining
 
+  console.log("$$$$",add_end_date);
   var current_date = new Date(start_date.valueOf());
 
   for (i=1; i<= num_milestones; i++){ //note we start at i=1
-    var current_date = new Date(current_date.valueOf());
-    current_date.setDate(start_date.getDate() +(i*days_to_add_to_next_milestone));
+    console.log("start", start_date);
+    current_date.setDate(start_date.getDate() + (i*days_to_add_to_next_milestone));
+
+    console.log('mimim', start_date.getDate() + (i*days_to_add_to_next_milestone));
+    console.log("cur", current_date);
     
     var my_milestone = {
       //change date here
