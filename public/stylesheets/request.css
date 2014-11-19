@@ -29,6 +29,13 @@
     width: 500px;
 }
 
+.payments-box {
+    margin-left: 50px;
+    display: inline-block;
+    vertical-align: top;
+    width: 400px;
+}
+
 .friends-box {
     margin-left: 50px;
     width: 400px;

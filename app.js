@@ -17,6 +17,7 @@ var bets = require('./routes/bets');
 var milestones = require('./routes/milestone/milestones');
 var monitorRequests = require('./routes/monitorRequests');
 var friendRequests = require('./routes/friendRequests');
+var paymentRequests = require('./routes/paymentRequests');
 var test = require('./routes/test');
 
 var app = express();
@@ -52,6 +53,7 @@ app.use('/bets', bets);
 app.use('/milestones', milestones);
 app.use('/monitorRequests', monitorRequests);
 app.use('/friendRequests', friendRequests);
+app.use('/paymentRequests', paymentRequests);
 app.use('/test', test);
 
 // strategy for authentication

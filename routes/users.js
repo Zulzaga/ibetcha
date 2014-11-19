@@ -155,9 +155,9 @@ router.get('/payments', isAuthenticated, function(req, res) {
                         } else {
                             utils.sendSuccessResponse(res, { 'froms': froms, 'tos': tos });
                         }
-                    })
+                    });
                 }
-            })
+            });
         }
     });
 }); 

@@ -6,7 +6,8 @@ var mongoose = require("mongoose"),
 var MoneyRecordSchema = new Schema({
 	from : {type: ObjectId, ref: 'User', required: true},
 	to : {type: ObjectId, ref: 'User', required: true},
-	amount: {type: Number, required:true}
+	amount: {type: Number, required:true},
+	requested: {type:Boolean, required:true}
 });
 
 //Bindings

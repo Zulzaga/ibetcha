@@ -53,15 +53,15 @@ router.get('/', function(req, res) {
 	});
 });
 
+// When milestone has failed, create a charge to the user's account
 var updatePayments = function(author_id, bet_id, res) {
 	Bet.findOne({_id:bet_id})
 	   .exec(function(err, bet) {
 	   		if (err) {
 				utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
 			} else if (bet){
-				console.log("bet.amount and type:", bet.amount, typeof(bet.amount));
+
 				var amount = bet.amount / bet.monitors.length;
-				console.log("&&&&&&&&&", amount);
 				var recordRequests = [];
 
 				for (var i = 0; i <bet.monitors.length; i++) {
@@ -69,7 +69,8 @@ var updatePayments = function(author_id, bet_id, res) {
 					var request = {
 						from: new ObjectId(author_id),
 						to: bet.monitors[i],
-						amount: amount
+						amount: amount,
+						requested: false
 					};
 					recordRequests.push(request);
 				}
