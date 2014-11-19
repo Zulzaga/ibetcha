@@ -28,7 +28,7 @@ ibetcha.controller('MonitorRequestPageController',
 
 	    // When the Accept button is clicked, sends a request to the server to accept the
 	    // corresponding monitor request and reloads the page to reflect the update.
-        // Upon success reloads the page.
+        // Upon success, redirects back to the Home Page.
         // Upon error, alerts the error with an appropriate message.
         $scope.accept = function(id){
         	console.log(id);
@@ -37,7 +37,7 @@ ibetcha.controller('MonitorRequestPageController',
                 url: "monitorRequests/" + id + "/accept",
                 }).success(function(data, status, headers, config) {
                 	alert("Successfully accepted the request!");
-                    onPageLoad();
+                    $location.path('/home');
                 }).
             error(function(data, status, headers, config) {
                 alert(data.err);
