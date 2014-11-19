@@ -1,7 +1,7 @@
 /****
 * Controller for the Bet page.
 */
-ibetcha.controller('BetPageController',
+ibetcha.controller('BetDetailPageController',
     function($scope, $http, $location, $cookieStore, $routeParams) {
 
         $http.defaults.headers.post["Content-Type"] = "application/json";
