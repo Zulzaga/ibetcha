@@ -8,6 +8,7 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
+var FriendRequest = require('../models/FriendRequest');
 
 // Routing for the testing page
 router.get('/', function(req, res) {
@@ -35,7 +36,10 @@ var cleanCollections = function() {
 	   console.log('monitor requests removed') 
 	});
 	MoneyRecord.remove({}, function(err) { 
-	   console.log('monitor requests removed') 
+	   console.log('moneyrecords requests removed') 
+	});
+	FriendRequest.remove({}, function(err) { 
+	   console.log('friend requests removed') 
 	});
 }
 
