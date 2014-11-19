@@ -11,7 +11,7 @@
   end_date.setDate(end_date.getDate() + 7);
   
   var tomorrow = new Date(start_date);
-  tomorrow.setDate(start_date.getDate() + 1);
+  tomorrow.setDate(start_date.getDate() + 2);
 
   var frequency = 2; //every other day
   var frequencyDaily = 1;//daily
@@ -45,7 +45,7 @@
     var dummyData2 = { 
       test: true,
       startDate:start_date,
-      endDate:tomorrow, 
+      endDate: tomorrow, 
       frequency:frequencyDaily, 
       amount: amount
     }
@@ -100,12 +100,12 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Create new Bet: success message", data.success);
-      QUnitTesting("Create new Bet: one milestone", data.content.milestones.length===1);
+      QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===2);
       singleMilestoneId = data.content.milestones[0];
 
     },
     error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Make bet with single milestone: error", false);
+      QUnitTesting("Make bet with two milestones: error", false);
     }
   });
 
