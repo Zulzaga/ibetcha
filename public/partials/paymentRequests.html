@@ -23,7 +23,7 @@
     	</div>
 		<div class="payments-box">
     		<div class="requests-title">People who say they paid you</div>
-    		<div class="request-empty" ng-if="tos.length==0">None</div>
+    		<div class="request-empty" ng-if="noRequested">None</div>
     		<div class="money-track" ng-repeat="payment in tos">
     			<div class="request-empty" ng-if="payment.requested">From: {{payment.from.username}} {{payment.requested}}</div>
     			<div class="request-empty" ng-if="payment.requested">Amount: ${{payment.amount}} {{payment.requested}}</div>
