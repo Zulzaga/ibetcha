@@ -1,0 +1,17 @@
+<!-- page -->
+
+<div ng-controller="BetDetailPageController" id="betPage-container">
+    <ng-include src="'partials/navbar.html'"></ng-include>
+        <div class="single-bet-container">
+            <div class="bet-title">Bet Detail:</div>
+            <div class="bet-description">description: {{bet.description}}</div>
+            <div class="bet-status">status: {{bet.status}}</div>
+            <div class="bet-startDate">startDate: {{bet.startDate}}</div>
+            <div class="bet-endDate">endDate: {{bet.endDate}}</div>
+            <div class="bet-dropDate">dropDate: {{bet.dropDate}}</div>
+            <div class="bet-frequency">frequency: {{bet.frequency}}</div>
+            <div class="bet-amount">amount: ${{bet.amount}}</div>
+            <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
+            <button ng-click="checkoff()" ng-show="isMonitor" type="submit" class="btn btn-default">Checkoff</button>
+        </div>
+</div>

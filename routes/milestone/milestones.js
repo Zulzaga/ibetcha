@@ -67,6 +67,8 @@ var updatePayments = function(author_id, bet_id, res) {
 
 				var amount = bet.amount / bet.monitors.length;
 				var recordRequests = [];
+				console.log("amount is this guy:", amount, bet.amount, bet.monitors, bet.monitors.length, "\n");
+
 				//prepare money record for each monitor of the bet
 				for (var i = 0; i <bet.monitors.length; i++) {
 					var request = {

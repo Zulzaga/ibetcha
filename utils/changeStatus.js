@@ -81,6 +81,7 @@ function makeMilestoneActive(callback){
 function makeMilestonePendingAndEmail(callback){
 	console.log("entered makeMilestonePendingAndEmail");
 	var today = getToday();
+	today.add(5,'d');
 	var tomorrow = getTomorrow();
 	Milestone
 		.find({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}})
@@ -88,16 +89,19 @@ function makeMilestonePendingAndEmail(callback){
 		.exec(function (err, milestones){
 			var l = milestones.length;
 			for (var i=0; i<l; i++){
-				milestones[i].status = "Pending Action";
-				milestones[i].save(function(err){
-					if (err){
-						console.log("Error while making Milestone pending: "+err);
-						return;
-					}
-					else{
-						sendEmailReminder(milestones[i].bet.monitors, milestones[i].bet, milestones[i].author);
-					}
-				});
+				(function(i) {
+					milestones[i].status = "Pending Action";
+					milestones[i].save(function(err){
+						if (err){
+							console.log("Error while making Milestone pending: "+err);
+							return;
+						}
+						else{
+							sendEmailReminder(milestones[i].bet.monitors, milestones[i].bet._id, milestones[i].author);	
+						}
+					});
+				})(i);
+				
 			}
 			console.log("exited makeMilestonePendingAndEmail");
 			callback();
@@ -130,7 +134,6 @@ function changeBetStatus(callback){
 					return;
 				}
 				else{
-					console.log("GOT ACTIVE: "+bets1);
 					// handle bets with number of monitors < 3:
 					// Inactive ----> Dropped
 					Bet
@@ -140,7 +143,7 @@ function changeBetStatus(callback){
 								console.log("Error while activating bet: "+err);
 								return;
 							}
-							console.log("GOT DROPPED: "+bets);
+						
 							console.log("exited notStartedToActionRequired")
 							callback();
 						});
@@ -157,7 +160,6 @@ function changeBetStatus(callback){
 					console.log("Error while dropping bet: "+err);
 					return;
 				}
-				console.log("GOT DROPPED again: "+bets3);
 				console.log("exited dropBetAfterDropDate");
 				callback();
 				return;
@@ -208,7 +210,7 @@ changeStatus.sendEmailAuthor = function(author, bet_id, status){
 	if (status==="Dropped"){
 		var msg = {
 	      body: "This is a notification that your bet was dropped."+ "<br><br>" 
-	          + "You can find your dropped bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id+ ". <br><br>"
+	          + "You can find your dropped bet at http://mit-ibetcha.herokuapp.com/bets/"+bet_id+ ". <br><br>"
 	          + "You will not be charged for this bet.",
 	      subject: "Ibetcha notification for dropping Bet",
 	      text: "Your bet was dropped,"+author.username,
@@ -219,7 +221,7 @@ changeStatus.sendEmailAuthor = function(author, bet_id, status){
 	else if (status ==='Open'){
 		var msg = {
 	      body: "This is a notification that your bet is now up and running."+ "<br><br>" 
-	          + "You can find your active bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + ". <br><br>"
+	          + "You can find your active bet at http://mit-ibetcha.herokuapp.com/bets/"+bet_id + ". <br><br>"
 	          + "Good luck with your resolution!",
 	      subject: "Ibetcha Notification for starting bet",
 	      text: "Your bet is up,"+author.username,
@@ -232,7 +234,7 @@ changeStatus.sendEmailAuthor = function(author, bet_id, status){
 		var msg = {
 	      body: "This is a notification that your bet is now completed."+ "<br><br>" 
 	          + "Congratulations on following thorugh with your resolution!"
-	          + "You can still find your completed bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + ". <br><br>"
+	          + "You can still find your completed bet at http://mit-ibetcha.herokuapp.com/bets/"+bet_id + ". <br><br>"
 	          + "Good Job!",
 	      subject: "Ibetcha Notification for bet success",
 	      text: "Your bet is successful,"+author.username,
@@ -244,7 +246,7 @@ changeStatus.sendEmailAuthor = function(author, bet_id, status){
 	else if(status === 'Failed'){
 		var msg = {
 	      body: "This is a notification that you have failed at your bet."+ "<br><br>" 
-	          + "You can find your closed bet at http://ibetcha-mit.herokuapp.com/bets/"+bet_id + ". <br><br>"
+	          + "You can find your closed bet at http://mit-ibetcha.herokuapp.com/bets/"+bet_id + ". <br><br>"
 	          + "Your account will be charged shortly. :( <br><br>"
 	          + "Better luck next time!",
 	      subject: "Ibetcha Notification for failed bet",
@@ -260,18 +262,30 @@ changeStatus.sendEmailAuthor = function(author, bet_id, status){
 //send emails to the list of  monitors for each milestone if no one checked it off
 //monitors - list of JSON objects
 function sendEmailReminder(monitors, bet_id, author){
-	var emailList = getMonitorEmails(monitors);
-	for (var i = 0; i<emailList.length; i++){
-		var receiver = emailList[i];
-		var msg = {
-	      body: "There is a pending checkoff for "+author.username + "<br><br>" 
-	          + " follow the link http://ibetcha-mit.herokuapp.com/acceptfriend/",
-	      subject: "Ibetcha Reminder for pending checkoff",
-	      text: "You need to checkoff "+author.username,
-	      receiver: receiver
-	    };
-	    emailNotifier.sendReminder(receiver, msg);
-	}
+	Bet
+		.findOne({_id:bet_id})
+		.populate('monitors')
+		.exec(function(err, bet){
+			if (err){
+				console.log("ERROR IN FINDING BET IN REMINDING FUNCTION");
+				return;
+			}
+			var emailList = getMonitorEmails(bet.monitors);
+			for (var i = 0; i<emailList.length; i++){
+				var receiver = emailList[i];
+				var msg = {
+			      body: "There is a pending checkoff for "+author.username + "<br><br>" 
+			          + " follow the link http://mit-ibetcha.herokuapp.com/",
+			      subject: "Ibetcha Reminder for pending checkoff",
+			      text: "You need to checkoff "+author.username,
+			      receiver: receiver
+			    };
+			    emailNotifier.sendReminder(receiver, msg);
+			}
+
+		});
+
+
 	}
 
 //======================== Helpers =========================
