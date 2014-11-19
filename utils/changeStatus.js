@@ -10,21 +10,26 @@ var router = express.Router();
 //linking collections and utils 
 var utils = require('../utils/utils');
 var emailNotifier = require('../utils/email');
-
 var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 
 var changeStatus = {};
 
-//================== cron job details =========
+//================== Cron job details =========
+
+/*
+	When bet is dropped, make NOT checked off milestones Closed
+*/
 function makeMilestoneClosed(callback){
+	console.log("entered makeMilestoneClosed");
 	Milestone
 		.find({$or:[{status:"Open"}, {status:"Pending Action"}, {status:"Inactive"}]})
 		.populate('bet')
 		.exec(function (err, milestones){
 			var l = milestones.length;
 			for (var i=0; i<l; i++){
+				//look if bet was dropped
 				if (milestones[i].bet.status==="Dropped"){
 					milestones[i].status = "Closed";
 					milestones[i].save(function(err){
@@ -43,18 +48,15 @@ function makeMilestoneClosed(callback){
 			return;
 		});
 }
-
-// for those milestones whose effective date is today,
-// change status from "Inactive" to "Open"
+/*
+	For those milestones whose effective date is today,
+	change status from "Inactive" to "Open"
+*/
 
 function makeMilestoneActive(callback){
 	console.log("entered makeMilestoneActive");
-	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
-						//mongoose searches and converts staff to local
-	cleanDates(today);
-	var tomorrow = moment();
-	tomorrow.add(1, 'd');
-	cleanDates(tomorrow);
+	var today = getToday();
+	var tomorrow = getTomorrow();
 	Milestone
 		.update({status:"Inactive", date:{$gte:today, $lt: tomorrow}}, {$set:{status: 'Open'}}, {multi:true})
 		.exec(function (err, milestones){
@@ -64,7 +66,6 @@ function makeMilestoneActive(callback){
 			}
 			else{
 			//nothing should happen
-			//console.log("INACTIVE: "+milestones);
 			console.log("exited makeMilestoneActive");
 			callback();
 			return;
@@ -72,26 +73,22 @@ function makeMilestoneActive(callback){
 		});
 }
 
-//COMMENT OUT LINE 66 (emailing reminder) ONCE YOU CAN ADD MONITORS
+/*
+	Change status of the Milestone object from "Open" or "Pending Action"
+	to "Pending Action" if its effective date passed and no one checked it
+*/
 
-//changes status of the Milestone object from "Open" or "Pending Action"
-//to "Pending Action" if its effective date passed
-
-//NOTE: currently even with dropped bet, milestone get get active, but when it transitions 
-//to pending, it changes to "closed"
 function makeMilestonePendingAndEmail(callback){
 	console.log("entered makeMilestonePendingAndEmail");
-	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
-					//mongoose searches and converts staff to local
-	cleanDates(today);
+	var today = getToday();
+	var tomorrow = getTomorrow();
 	Milestone
 		.find({$or:[{status:"Open"}, {status:"Pending Action"}] , date:{$lt:today}})
 		.populate('bet author')
 		.exec(function (err, milestones){
-			console.log("REMIND THEM: "+milestones.length);
 			var l = milestones.length;
 			for (var i=0; i<l; i++){
-					milestones[i].status = "Pending Action";
+				milestones[i].status = "Pending Action";
 				milestones[i].save(function(err){
 					if (err){
 						console.log("Error while making Milestone pending: "+err);
@@ -108,21 +105,20 @@ function makeMilestonePendingAndEmail(callback){
 		});
 }
 
-// changes bets statuses according to their start, end and drop dates
-// not started -> action required (if today is start date) + sends email
-// any status  -> dropped (if today is drop date) + sends email
-// the function also marks any milestone left in that bet to be "dropped"
+/*
+   Change bets according to their start, end and drop dates
+     not started -> action required (if today is start date) + sends email
+     any status  -> dropped (if today is drop date) + sends email   
+*/
 
 function changeBetStatus(callback){
 	console.log("entered changeBetStatus");
-	var today = moment();// SHOULD NOT BE IN UTC FORMAT!!!
-						//mongoose searches and converts staff to local
-	cleanDates(today);
-	var tomorrow = moment();
-	tomorrow.add(1, 'd');
-	cleanDates(tomorrow);
+	var today = getToday();
+	var tomorrow = getTomorrow();
 
-	//Not started --> Action Required,
+	//2 cases for transitions
+
+	//case 1: Not Started --> Action Required,
 	function notStartedToActionRequired(callback){
 		console.log("entered notStartedToActionRequired");
 		//enough monitors, good to go
@@ -134,8 +130,8 @@ function changeBetStatus(callback){
 					return;
 				}
 				else{
-					//handle bets with number of monitors < 3:
-					// inactive ----> Dropped
+					// handle bets with number of monitors < 3:
+					// Inactive ----> Dropped
 					Bet
 						.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or: [{monitors: {$size: 0}}, {monitors: {$size: 1}}, {monitors: {$size: 2}}]}, {$set:{status:"Dropped"}}, {multi:true})
 						.exec(function(err, bets){
@@ -145,14 +141,12 @@ function changeBetStatus(callback){
 							}
 							console.log("exited notStartedToActionRequired")
 							callback();
-
 						});
 				}
 			});
 	}
-
+	//case 2: Anything --> Dropped (after dropped date)
 	function dropBetAfterDropDate(callback){
-	// Anything --> Dropped (after dropDate)
 		console.log("entered dropBetAfterDropDate");
 		Bet
 			.update({status: "Action Required", dropDate: {$gt: today}}, {$set:{status: "Dropped"}}, {multi:true})
@@ -168,6 +162,7 @@ function changeBetStatus(callback){
 		
 	}
 
+	//make sure that case 1 and case 2 run sequentially
 	var operations = [];
 	operations.push(notStartedToActionRequired);
 	operations.push(dropBetAfterDropDate);
@@ -182,13 +177,11 @@ function changeBetStatus(callback){
 	});
 	return;
 }
-//Testing function:
-//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, mongoose.Types.ObjectId(), 'Dropped');
 
 
-//combine three functions above
+//make database changes at midnight
 changeStatus.overnightCheck = function(){
-	console.log("about to start series");
+	console.log("about to start cron series");
 	//console.log("async: "+async.series);
 	var operations = [];
 	operations.push(changeBetStatus);
@@ -198,9 +191,11 @@ changeStatus.overnightCheck = function(){
 	async.series(operations, function(err, results){
 		if (err){
 			console.log('smth wrong '+err);
-		}    		console.log('CRON JOB FINISHED');
+		}    		
+			console.log('CRON JOB FINISHED');
 		});
 }
+
 //======================== Emailing out =========================
 
 //notifies user about the change in his/her bet
@@ -261,7 +256,6 @@ changeStatus.sendEmailAuthor = function(author, bet_id, status){
 
 //send emails to the list of  monitors for each milestone if no one checked it off
 //monitors - list of JSON objects
-
 function sendEmailReminder(monitors, bet_id, author){
 	var emailList = getMonitorEmails(monitors);
 	for (var i = 0; i<emailList.length; i++){
@@ -287,14 +281,26 @@ function getMonitorEmails(monitors){
 	return emailList;
 
 }
-function cleanDates(someDate){
-	someDate.millisecond(0);
-	someDate.second(0);
-	someDate.minute(0);
-	someDate.hour(0);
+function getToday(){
+	var today = moment();
+	today.millisecond(0);
+	today.second(0);
+	today.minute(0);
+	today.hour(0);
+	return today;
 	//var timezone = (new Date()).getTimezoneOffset(); 
 	//someDate.zone(timezone);
-
+}
+function getTomorrow(){
+	var today = moment();
+	today.add(1, 'd');
+	today.millisecond(0);
+	today.second(0);
+	today.minute(0);
+	today.hour(0);
+	return today;
+	//var timezone = (new Date()).getTimezoneOffset(); 
+	//someDate.zone(timezone);
 }
 
 

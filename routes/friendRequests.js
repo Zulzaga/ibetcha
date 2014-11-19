@@ -13,7 +13,10 @@ var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var FriendRequest = require('../models/FriendRequest');
 
-// Authenticates the user and redirects to the users login page if necessary.
+//================== Important methods ===================
+
+// Helper function that helps authenticates the user and if no user logged in, responds with 
+// appropriate message.
 function isAuthenticated(req, res, next) {
     if (req.user) {
         return next();
@@ -49,6 +52,7 @@ var friendEachOther = function(userid1, userid2, res, callback) {
     });
 };
 
+// Sends a friend request from logged in user to the user with the given id.
 function sendFriendRequest(to, req, res) {
     FriendRequest.findOne({ 'to': to._id, 'from': req.user._id }, function (err1, request1) {
         if (err1) {
@@ -79,7 +83,8 @@ function sendFriendRequest(to, req, res) {
         }
     });
 }
-// Deletes monitor request.
+
+// Deletes a monitor request with the given id.
 function deleteRequest(req, res, requestId) {
     FriendRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
         if (err) {
@@ -92,6 +97,10 @@ function deleteRequest(req, res, requestId) {
     });
 }
 
+//======================== API route methods =========================
+
+//============================GET METHODS:============================
+
 // Gets all monitor requests current user received.
 router.get('/', isAuthenticated, function(req, res) {
     FriendRequest.find({ to: req.user._id }).populate('from to').exec(function (err, requests) {
@@ -103,7 +112,10 @@ router.get('/', isAuthenticated, function(req, res) {
     });
 });
 
-// Creates new friend requests
+//============================POST METHODS:============================
+
+// Creates a new friend request from the logged in user to the user with given
+// email.
 router.post('/byEmail', isAuthenticated, function(req, res) {
     var requestTo = req.body.to;
     console.log("moooomooo",requestTo);
@@ -122,7 +134,7 @@ router.post('/byEmail', isAuthenticated, function(req, res) {
     }
 })
 
-// Creates new friend requests
+// Creates a new friend request from the logged in user to the user with the given username.
 router.post('/byUsername', isAuthenticated, function(req, res) {
     var requestTo = req.body.to;
     if (requestTo === req.user.username) {
@@ -143,7 +155,7 @@ router.post('/byUsername', isAuthenticated, function(req, res) {
 // Accepts a friend request.
 // Adds the user to the other user's friends list and adds the other user
 // to the current user's friends list and deletes the friend request.
-router.get('/:requestId/accept', isAuthenticated, function(req, res) {
+router.post('/:requestId/accept', isAuthenticated, function(req, res) {
     var requestId = req.params.requestId;
     console.log(requestId, req.user._id);
     FriendRequest.findOne({ _id: requestId, to: req.user._id }, function (err, request) {
@@ -157,8 +169,8 @@ router.get('/:requestId/accept', isAuthenticated, function(req, res) {
     });
 });
 
-// Rejects a friend request by deleting it.
-router.get('/:requestId/reject', isAuthenticated, function(req, res) {
+// Rejects a friend request by deleting the request.
+router.post('/:requestId/reject', isAuthenticated, function(req, res) {
     var requestId = req.params.requestId;
     deleteRequest(req, res, requestId);
 });

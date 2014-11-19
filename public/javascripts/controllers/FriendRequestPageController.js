@@ -35,7 +35,7 @@ ibetcha.controller('FriendRequestPageController',
             $scope.accept = function(id){
             	console.log(id);
 	        	$http({
-	                method: "GET",
+	                method: "POST",
 	                url: "friendRequests/" + id + "/accept",
 	                }).success(function(data, status, headers, config) {
 	                	console.log(data.content);
@@ -50,7 +50,7 @@ ibetcha.controller('FriendRequestPageController',
 	        $scope.reject = function(id){
 	        	console.log(id);
 	        	$http({
-	                method: "GET",
+	                method: "POST",
 	                url: "friendRequests/" + id + "/reject",
 	                }).success(function(data, status, headers, config) {
 	                	console.log(data.content);
