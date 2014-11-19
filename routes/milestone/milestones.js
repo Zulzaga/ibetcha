@@ -14,6 +14,7 @@ var changeStatus = require('../../utils/changeStatus')
 var User = require('../../models/User');
 var MoneyRecord = require('../../models/MoneyRecord');
 var Bet = require('../../models/Bet');
+var MonitorRequest = require('../models/MonitorRequest');
 var Milestone = require('../../models/Milestone');
 
 
@@ -198,7 +199,14 @@ router.put('/:milestone_id', function(req, res) {
 										//console.log("EMAIL DANA");
 										//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
 										console.log("11");
-										utils.sendSuccessResponse(res, savedmilestone);
+										MonitorRequest.find({ "from": req.user._id }, function(err, requests) {
+											if (err) {
+												utils.sendErrResponse(res, 500, err);
+											} else {
+												console.log("Successfully deleted all monitor requests!.");
+												utils.utils.sendSuccessResponse(res, savedmilestone);
+											}
+										});
 									}
 								});								
 							});
