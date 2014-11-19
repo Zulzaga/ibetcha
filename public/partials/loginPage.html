@@ -3,7 +3,7 @@
 <div ng-controller="LoginPageController" class="welcome-container">
 
     <div id="intro-text">
-        <h2><b> You are in Payback friends.</b></h2>
+        <h2><b> You are in ibetcha.</b></h2>
         <h2><b> You are welcome here.</b></h2>
     </div>
     <div id="loginpage-forms" class="form-panel main-blocks">
@@ -11,7 +11,7 @@
 
         <div class="loginpage-panel" id="login-container">
             <form novalidate ng-submit="login()" ng-controller="LoginPageController">
-            <h4>Login to Payback</h4>
+            <h4>Login to ibetcha</h4>
                 <div class="form-group">
                     <input type="username" name="username" class="form-control" id="username" ng-model="loginForm.username" placeholder="Username">
                 </div>
@@ -26,7 +26,7 @@
         <!-- Signup form -->
         <div class="loginpage-panel" id="signup-container">
             <form novalidate ng-submit="signup()">
-            <h4>New to Payback? Sign up.</h4>
+            <h4>New to ibetcha? Sign up.</h4>
                 <div class="form-group">
                     <input name="username" ng-model="signupForm.username" class="form-control" id="username" placeholder="Enter a Username">
                 </div>
@@ -40,6 +40,5 @@
 <!--                 <button type="submit" class="btn btn-default" name="venmoSignUp">Sign up with Venmo</button> -->
             </form>
         </div>
-
     </div>
 </div>

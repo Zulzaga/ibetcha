@@ -36,7 +36,7 @@ ibetcha.controller('NavbarController',
         }
 
         // When the home button is clicked, if there's a session (user logged in), 
-        // redirect to the Home page, otherwise redirects to the Login Page. 
+        // redirect to the Home page, otherwise redirects to the Login Page.
         $scope.home = function() {
             if($cookieStore.get('session')) {
                 console.log("@@");
