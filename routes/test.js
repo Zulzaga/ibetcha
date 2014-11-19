@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 
 	var urlString = "http://localhost:5000/";
 	if (process.env.MONGOLAB_URI) {
-	     urlString = "http://paybackfriends.herokuapp.com/";
+	     urlString = "http://mit-ibetcha.herokuapp.com/";
 	}
 	res.render('test.ejs', {urlString: urlString});
 });
