@@ -2,6 +2,16 @@ finalProj
 =========
 
 6.170 Final Team Project
+Link to the deployed version:
+  http://mit-ibetcha.herokuapp.com/#/
+Link to the tests:
+  http://mit-ibetcha.herokuapp.com/test/ 
+  NOTE: if you go to the tests link, the database will be cleared
+
+Test user credentials:
+  login: Dana, password: 18
+  login: Zulaa, password: 11
+  
 
 Link
 ------
