@@ -102,6 +102,7 @@ $.ajax({
       QUnitTesting("Create new Bet: success message", data.success);
       QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===2);
       singleMilestoneId = data.content.milestones[0];
+      console.log(data.content.milestones[0]);
 
     },
     error: function(jqXHR, textStatus, err) {
@@ -122,7 +123,6 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Fail milestone: success message", data.success);
-      console.log("bet status: "+data.content.bet.status);
       QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
 
     },
