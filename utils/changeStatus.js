@@ -95,6 +95,7 @@ function makeMilestonePendingAndEmail(callback){
 						return;
 					}
 					else{
+						console.log("emailing reminders");
 						sendEmailReminder(milestones[i].bet.monitors, milestones[i].bet, milestones[i].author);
 					}
 				});
@@ -130,7 +131,6 @@ function changeBetStatus(callback){
 					return;
 				}
 				else{
-					console.log("GOT ACTIVE: "+bets1);
 					// handle bets with number of monitors < 3:
 					// Inactive ----> Dropped
 					Bet
@@ -140,7 +140,7 @@ function changeBetStatus(callback){
 								console.log("Error while activating bet: "+err);
 								return;
 							}
-							console.log("GOT DROPPED: "+bets);
+						
 							console.log("exited notStartedToActionRequired")
 							callback();
 						});
@@ -157,7 +157,6 @@ function changeBetStatus(callback){
 					console.log("Error while dropping bet: "+err);
 					return;
 				}
-				console.log("GOT DROPPED again: "+bets3);
 				console.log("exited dropBetAfterDropDate");
 				callback();
 				return;
