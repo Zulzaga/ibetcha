@@ -14,7 +14,7 @@ var FriendRequest = require('../models/FriendRequest');
 var MoneyRecord = require('../models/MoneyRecord');
 
 //constants
-var MILLIS_IN_A_DAY = 86400000;
+var MILLIS_IN_A_DAY = 24*60*60*1000;
 
 //======================== Authentication    =========================
 /* 
@@ -60,13 +60,15 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
   
   var my_date = start_date;
   var days_to_add_to_next_milestone = frequency; 
+  console.log("freq;:::::", days_to_add_to_next_milestone);
+
   var add_end_date = total_num_days % frequency; // 0 if no days left over, other if some day remaining
 
+  console.log("$$$$",add_end_date);
   var current_date = new Date(start_date.valueOf());
 
   for (i=1; i<= num_milestones; i++){ //note we start at i=1
-    var current_date = new Date(current_date.valueOf());
-    current_date.setDate(start_date.getDate() +(i*days_to_add_to_next_milestone));
+    current_date = new Date(start_date.valueOf() + (i*days_to_add_to_next_milestone)*MILLIS_IN_A_DAY);
     
     var my_milestone = {
       //change date here
