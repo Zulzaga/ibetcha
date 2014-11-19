@@ -77,13 +77,20 @@ router.get('/current', isAuthenticated, function(req, res) {
                     utils.sendErrResponse(res, 500, 'There was an error');
                 } else {
                     user.bets = output;
-                    MonitorRequest.find({ to: req.user._id }).populate('to from bet').exec(function (err, requests) {
+                    Bet.populate([user.monitoring], {"path": "author" }, function (err, updatedBets) {
                         if (err) {
                             utils.sendErrResponse(res, 500, 'There was an error');
                         } else {
-                            utils.sendSuccessResponse(res, { 'user': user, 'requests': requests });
+                            user.monitoring = updatedBets;
+                            MonitorRequest.find({ to: req.user._id }).populate('to from bet').exec(function (err, requests) {
+                                if (err) {
+                                    utils.sendErrResponse(res, 500, 'There was an error');
+                                } else {
+                                    utils.sendSuccessResponse(res, { 'user': user, 'requests': requests });
+                                }
+                            });
                         }
-                    })
+                    });
                 }
             });
         } else {

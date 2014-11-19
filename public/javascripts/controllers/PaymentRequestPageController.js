@@ -62,7 +62,5 @@ ibetcha.controller('PaymentRequestPageController',
                 onPageLoad();
             });
         }
-
-        
     }
 );
