@@ -2,20 +2,32 @@
 
 <div ng-controller="PaymentRequestPageController" id="monitorPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
-        <div class="friends-box">
+        <div class="payments-box">
     		<div class="requests-title">People to whom you owe money:</div>
-    		<div class="request-empty" ng-if="friends.length==0">You don't owe any money.</div>
-    		<div class="money-track" ng-repeat="friend in froms">
-    			<div class="request-empty">To: {{friend.to.username}}</div>
-    			<div class="request-empty">Amount: ${{friend.amount}}</div>
+    		<div class="request-empty" ng-if="froms.length==0">You don't owe any money.</div>
+    		<div class="money-track" ng-repeat="payment in froms">
+    			<div class="request-empty">To: {{payment.to.username}}</div>
+    			<div class="request-empty">Amount: ${{payment.amount}}</div>
+    			<button class="btn btn-default" ng-click="paid(payment._id)">I have paid</button>
     		</div>
     	</div>
-    	<div class="req-box">
+    	<div class="payments-box">
     		<div class="requests-title">People who owe you money:</div>
-    		<div class="request-empty" ng-if="reqEmpty">No one owes you.</div>
-    		<div class="money-track" ng-repeat="friend in tos">
-    			<div class="request-empty">From: {{friend.from.username}}</div>
-    			<div class="request-empty">Amount: ${{friend.amount}}</div>
+    		<div class="request-empty" ng-if="tos.length==0">No one owes you.</div>
+    		<div class="money-track" ng-repeat="payment in tos">
+    			<div class="request-empty">From: {{payment.from.username}}</div>
+    			<div class="request-empty">Amount: ${{payment.amount}}</div>
+    			<button class="btn btn-default" ng-click="received(payment._id)">I received the money</button>
+    		</div>
+	        </div>
+    	</div>
+		<div class="payments-box">
+    		<div class="requests-title">People who say they paid you</div>
+    		<div class="request-empty" ng-if="tos.length==0">None</div>
+    		<div class="money-track" ng-repeat="payment in tos">
+    			<div class="request-empty" ng-if="payment.requested">From: {{payment.from.username}} {{payment.requested}}</div>
+    			<div class="request-empty" ng-if="payment.requested">Amount: ${{payment.amount}} {{payment.requested}}</div>
+    			<button class="btn btn-default" ng-if"payment.requested" ng-click="received(payment._id)">I received the money</button>
     		</div>
 	        </div>
     	</div>
