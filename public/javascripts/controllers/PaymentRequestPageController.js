@@ -1,8 +1,13 @@
+/****
+* Controller for the Payment requests page.
+*/
 ibetcha.controller('PaymentRequestPageController',
     function($scope, $http, $location, $cookieStore) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
+        $scope.loggedIn = $cookieStore.get('session');
 
-        var init = function() {
+        // Helper function that helps load the page.
+        var onPageLoad = function() {
             $http({
                 method: "GET",
                 url: "users/payments",
@@ -16,11 +21,12 @@ ibetcha.controller('PaymentRequestPageController',
                     alert(data.err);
                 });
         }
-        
+
+        // If no session, (no user), redirect back to the login page.
         if (!$cookieStore.get('session')) {
             $location.path('/');
         } else {
-            init();
+            onPageLoad();
         }
 
         $scope.paid = function(paymentId) {

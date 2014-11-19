@@ -1,13 +1,12 @@
-
 .form-group {
     width:500px;
 }
 
-#edit-page {
+#newbet-page {
 	margin-top:110px;
 }
 
-#edit-instruction{
+#newbet-instruction{
 	margin-top: 180px;
 	display: inline-block;
 	width: 500px;
@@ -18,38 +17,38 @@
 	text-align: center;
 }
 
-#edit-page{
+#newbet-page{
 	margin-left: 100px;
 	display: inline-block;
 }
 
-.edit {
+.newbet {
 	display: inline-block;
 }
-/*.edit-form {
+/*.newbet-form {
     margin: 50px;
     margin-top: 400px;
 }*/
 
-.edit-resolve .edit-date{
+.newbet-resolve .newbet-date{
     width:500px;
 }
 
-.edit-freq {
+.newbet-freq {
 	width: 100px;
 }
 
-.edit-dollar {
+.newbet-dollar {
 	width: 100px;
 }
 
-.edit-label{
+.newbet-label{
 	display: inline-block; 
 	width: 200px; 
 	text-align: left;
 }
 
-.edit-friends-label{
+.newbet-friends-label{
 	min-width: 100px;
 	text-align: center;
 }

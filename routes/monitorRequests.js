@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-//linking collections and utils
+// linking collections and utils
 var utils = require('../utils/utils')
 var passport = require('passport');
 var utils = require('../utils/utils');
