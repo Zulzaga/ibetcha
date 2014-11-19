@@ -211,7 +211,7 @@ router.post('/login', function(req, res, next) {
 // Sends email invites.
 router.post('/emailinvite', function(req, res) {
     var msg = {
-      body: "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/login",
+      body: "Please go the following link to login with Venmo:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/#/login",
       subject: "Ibetcha Invite from Your Friend!",
       text: "You have been invited by your friend to join ibetcha.",
       receiver: req.body.friendName
