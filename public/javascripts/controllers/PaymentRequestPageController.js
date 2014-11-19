@@ -15,7 +15,13 @@ ibetcha.controller('PaymentRequestPageController',
                     console.log("payment data received", data.content);
                     $scope.tos = data.content.tos;
                     $scope.froms = data.content.froms;   
-                    console.log($scope.tos, $scope.froms);
+                    $scope.noRequested = true;
+                    for(var i = 0; i < $scope.tos.length; i++) {
+                        if($scope.tos[i].requested) {
+                            $scope.noRequested = false;
+                        }
+                    }
+                    console.log($scope.tos, $scope.froms, $scope.noRequested);
                 }).error(function(data, status, headers, config) {
                     console.log("epic failed");
                     alert(data.err);
@@ -36,10 +42,10 @@ ibetcha.controller('PaymentRequestPageController',
                 url: "paymentRequests/paid/" + paymentId + "/claim"
             }).success(function(data, status, headers, config) {
                 alert("Once your friend confirms that you have paid, \n this payment will be erased from records");
-                init();
+                onPageLoad();
             }).error(function(data, status, headers, config) {
                 alert("8888888888" + data.err);
-                init();
+                onPageLoad();
             });
         }
 
@@ -50,10 +56,10 @@ ibetcha.controller('PaymentRequestPageController',
                 url: "paymentRequests/received/" + paymentId// + "/received"
             }).success(function(data, status, headers, config) {
                 alert("You have received this payment.\n This payment will be erased from records");
-                init();
+                onPageLoad();
             }).error(function(data, status, headers, config) {
                 alert("99999"+data.err);
-                init();
+                onPageLoad();
             });
         }
 
