@@ -130,6 +130,7 @@ function changeBetStatus(callback){
 					return;
 				}
 				else{
+					console.log("GOT ACTIVE: "+bets1);
 					// handle bets with number of monitors < 3:
 					// Inactive ----> Dropped
 					Bet
@@ -139,6 +140,7 @@ function changeBetStatus(callback){
 								console.log("Error while activating bet: "+err);
 								return;
 							}
+							console.log("GOT DROPPED: "+bets);
 							console.log("exited notStartedToActionRequired")
 							callback();
 						});
@@ -149,12 +151,13 @@ function changeBetStatus(callback){
 	function dropBetAfterDropDate(callback){
 		console.log("entered dropBetAfterDropDate");
 		Bet
-			.update({status: "Action Required", dropDate: {$gt: today}}, {$set:{status: "Dropped"}}, {multi:true})
+			.update({status: 'Action Required', dropDate: {$lt: today}}, {$set:{status: "Dropped"}}, {multi:true})
 			.exec(function(err, bets3){
 				if (err){
 					console.log("Error while dropping bet: "+err);
 					return;
 				}
+				console.log("GOT DROPPED again: "+bets3);
 				console.log("exited dropBetAfterDropDate");
 				callback();
 				return;

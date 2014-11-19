@@ -18,6 +18,7 @@ ibetcha.controller('BetDetailPageController',
                     $scope.bet = data.content;
                     $scope.bet.startDate = data.content.startDate.substring(0, 10);
                     $scope.bet.endDate = data.content.endDate.substring(0, 10);
+                    $scope.bet.dropDate = data.content.dropDate.substring(0, 10);
 
                     if($routeParams.type === 'monitor') {
                         $scope.isMonitor = true;
