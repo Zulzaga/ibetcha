@@ -1,4 +1,6 @@
 var urlString = $('#urlString').text();
+//constants
+var MILLIS_IN_A_DAY = 24*60*60*1000;
 
 // QUnit Test functional
 var QUnitTesting = function(nameOfTest, conditional) {
@@ -20,14 +22,8 @@ var friend_request_id;
 
   //          Making milestone date objects and bet data
   var start_date = new Date();
-
-  var test_date = new Date();
-  start_date.setDate(start_date.getDate());
-  var end_date = new Date(start_date);
-  end_date.setDate(end_date.getDate() + 7);
-  
-  var tomorrow = new Date(start_date);
-  tomorrow.setDate(start_date.getDate() + 1);
+  var end_date = new Date(start_date.valueOf()+7*MILLIS_IN_A_DAY);
+  var tomorrow = new Date(start_date.valueOf()+2*MILLIS_IN_A_DAY);
 
   var frequency = 2; //every other day
   var frequencyDaily = 1;
@@ -114,7 +110,7 @@ $.ajax({
     dataType:"json",
     data: {
       username: "Dana",
-      email:"dmukusheva@mit.edu",
+      email:"mukushev@mit.edu",
       password:"18"
     },
     async: false,
@@ -128,7 +124,7 @@ $.ajax({
 
 var dummyData = { 
     test: true,
-    startDate:tomorrow,//those were milliseconds, not numbers.
+    startDate:start_date,
     endDate:end_date, 
     frequency:frequency, 
     amount: amount

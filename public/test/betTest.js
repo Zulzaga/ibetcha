@@ -1,17 +1,12 @@
   var urlString = $('#urlString').text();
+  //constants
+  var MILLIS_IN_A_DAY = 24*60*60*1000;
   //form dummy bet attributes
 
-  //          Making milestone date objects and bet data
+  //Making milestone date objects and bet data
   var start_date = new Date();
-
-  var test_date = new Date();
-  start_date.setDate(start_date.getDate());
-  
-  var end_date = new Date(start_date);
-  end_date.setDate(end_date.getDate() + 7);
-  
-  var tomorrow = new Date(start_date);
-  tomorrow.setDate(start_date.getDate() + 2);
+  var end_date = new Date(start_date.valueOf()+7*MILLIS_IN_A_DAY);
+  var tomorrow = new Date(start_date.valueOf()+2*MILLIS_IN_A_DAY);
 
   var frequency = 2; //every other day
   var frequencyDaily = 1;//daily
@@ -29,15 +24,15 @@
   fourth_milestone_date.setDate(fourth_milestone_date.getDate() +7);
 
   //         Form new Bet data
-  var amount = 30;
-  var numTestMilestonesInserted = 4; //will be removed once get logic to generate milestones
+  var amount = 50;
+  var numTestMilestonesInserted = 5; 
   var new_status = "Dropped";
   var new_bet_id;
   var singleMilestoneId;
   var milestone_id_to_check;
   var dummyData = { 
       test: true,
-      startDate:start_date,//those were milliseconds, not numbers.
+      startDate:start_date,
       endDate:end_date, 
       frequency:frequency, 
       amount: amount
@@ -79,8 +74,6 @@
       QUnitTesting("Create new Bet: check start date", (new Date(data.content.startDate)).toLocaleString()===start_date.toLocaleString());
       QUnitTesting("Create new Bet: check end date", (new Date(data.content.endDate)).toLocaleString()===end_date.toLocaleString());
       milestone_id_to_check = data.content.milestones[0];
-      QUnitTesting("Create new Bet: check milestones", data.content.milestones.length === numTestMilestonesInserted);
-
       QUnitTesting("Create new Bet: check number of milestones", data.content.milestones.length === numTestMilestonesInserted);
 
     },
@@ -100,7 +93,7 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Create new Bet: success message", data.success);
-      QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===2);
+      QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===3);
       singleMilestoneId = data.content.milestones[0];
       console.log(data.content.milestones[0]);
 
