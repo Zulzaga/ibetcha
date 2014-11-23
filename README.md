@@ -12,7 +12,7 @@ Link to the tests:
 Test user credentials:
 -
   login: Dana, password: 18; 
-  login: Zulaa, password: 11
+  login: Zulaa, password: 11 
   
 
 Link
