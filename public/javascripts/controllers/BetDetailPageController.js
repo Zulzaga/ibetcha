@@ -19,6 +19,14 @@ ibetcha.controller('BetDetailPageController',
                     $scope.bet.startDate = data.content.startDate.substring(0, 10);
                     $scope.bet.endDate = data.content.endDate.substring(0, 10);
                     $scope.bet.dropDate = data.content.dropDate.substring(0, 10);
+                    $scope.milestones = [];
+                    var l = data.content.milestones.length;
+                    console.log("How many: "+l);
+                    for (var i=0; i<l; i++){
+                        var text = "Milestone #"+ (i+1)+" : starts on "+ data.content.milestones[i].date.substring(0,10)+
+                        " , status - "+data.content.milestones[i].status;
+                        $scope.milestones.push(text);
+                    }
 
                     if($routeParams.type === 'monitor') {
                         $scope.isMonitor = true;

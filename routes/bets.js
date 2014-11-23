@@ -67,7 +67,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
   console.log("$$$$",add_end_date, total_num_days);
   var current_date = new Date(start_date.valueOf());
 
-  for (i=1; i<= num_milestones; i++){ //note we start at i=1
+  for (i=0; i<= num_milestones; i++){ //note we start at i=1
 
     current_date = new Date(start_date.valueOf() + (i*days_to_add_to_next_milestone)*MILLIS_IN_A_DAY);
 
@@ -131,7 +131,6 @@ Create bet object
 */
 function makeBet(req,res){
   var data = req.body;
-  console.log("body", req.body);
 
   //check if in testing mode
   if (data.test){
@@ -141,9 +140,9 @@ function makeBet(req,res){
   else{
     var userId = req.user._id;
   }
-
-  var dropDate = (new Date(data.endDate));
-  dropDate.setDate(dropDate.getDate()+10); //window of 10 days after bet ends to check off
+  var endDate = new Date(data.endDate);
+  var dropDate = new Date(endDate.valueOf()+10*MILLIS_IN_A_DAY);
+ //window of 10 days after bet ends to check off
 
   var status = "Not Started"
   var betJSON = {author:userId, 
