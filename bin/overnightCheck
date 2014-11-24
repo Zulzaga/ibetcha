@@ -1,5 +1,4 @@
-
-#!/usr/bin/env node
+#!/mit-ibetcha/bin/node
 
 var express = require('express');
 var mongoose = require('mongoose');
