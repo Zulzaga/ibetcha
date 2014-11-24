@@ -34,7 +34,7 @@ var job = new CronJob({
   timeZone: "America/New_York"
 });
 //comment out in case don't 
-job.start();
+//job.start();
 
 
 
