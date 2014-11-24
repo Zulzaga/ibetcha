@@ -319,6 +319,6 @@ function getTomorrow(){
 	//someDate.zone(timezone);
 }
 
-
+changeStatus.overnightCheck();
 
 module.exports = changeStatus;
