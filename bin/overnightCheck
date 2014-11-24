@@ -1,4 +1,4 @@
-#!/bin/node
+#!/app/bin/
 
 var express = require('express');
 var mongoose = require('mongoose');
