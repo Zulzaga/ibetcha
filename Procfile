@@ -1,2 +1,2 @@
 web: node ./bin/www
-worker: node utils/changeStatus.js
+worker: node worker.js
