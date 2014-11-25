@@ -205,7 +205,7 @@ app.use(function(err, req, res, next) {
 });
 
 var job = new CronJob({
-  cronTime: '00 30 10 * * *', //runs everyday at 1 min after 6am
+  cronTime: '00 00 6,9,12,15,18,21 * * *', //runs everyday at 1 min after 6am
   onTick: worker.start,
   start: false,
   timeZone: "America/New_York"
