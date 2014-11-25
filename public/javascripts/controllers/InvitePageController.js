@@ -8,6 +8,10 @@ ibetcha.controller('InvitePageController',
         $scope.loggedIn = $cookieStore.get('session');
         $scope.inviteForm = {};
         $scope.inviteForm.friendName = $cookieStore.get('user');
+        $scope.inviteErr = "";
+        $scope.inviteMsg = "";
+        $scope.requestErr = "";
+        $scope.requestMsg = "";
 
         // If no session, (no user), redirect back to the login page.
         if (!$cookieStore.get('session')) {
@@ -30,13 +34,53 @@ ibetcha.controller('InvitePageController',
                 url: "users/emailinvite",
                 data: $scope.inviteForm
                 }).success(function(data, status, headers, config) {
-                	$location.path('/home');
+                	$scope.inviteMsg = "Invite was successful!";
+                    $scope.inviteErr = "";
                 }).
                 error(function(data, status, headers, config) {
                     console.log(data.err);
-                    $scope.err ="Invite was not successful";
+                    $scope.inviteErr ="Invite was not successful";
+                    $scope.inviteMsg = "";
                 });
         }
 
+        // Sends a friend request to the user with the given username.
+        // Upon success, redirects to the Home page.
+        // Upon error, alerts the error with an appropriate message.
+        $scope.sendByUsername = function(){
+            console.log($scope.requestForm);
+            $http({
+                method: "POST",
+                url: "friendRequests/byUsername",
+                data: { to: $scope.requestForm.friendUsername },
+                }).success(function(data, status, headers, config) {
+                    console.log(data.content);
+                    $scope.requestMsg = "Successfully sent a friend request to " + $scope.requestForm.friendUsername + "!";
+                    $scope.requestErr = "";
+                }).
+            error(function(data, status, headers, config) {
+                $scope.requestMsg = "";
+                $scope.requestErr = data.err;
+            });
+        }
+
+        // Sends a friend request to the user with the given email.
+        // Upon success, redirects to the Home page.
+        // Upon error, alerts the error with an appropriate message.        
+        $scope.sendByEmail = function(){
+            $http({
+                method: "POST",
+                url: "friendRequests/byEmail",
+                data: { to: $scope.requestForm.friendEmail },
+                }).success(function(data, status, headers, config) {
+                    console.log(data.content);
+                    $scope.requestMsg = "Successfully sent the request!";
+                    $scope.requestErr = "";
+                }).
+            error(function(data, status, headers, config) {
+                $scope.requestErr = data.err;
+                $scope.requestMsg = "";
+            });
+        }
     }
 );

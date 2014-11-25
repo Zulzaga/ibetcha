@@ -55,20 +55,27 @@ button {
 	padding: 20px;
 }
 
-.invite-panel {
-	width: 300px;
-	position: absolute;
-	top: 60px;
-	left: 20px;
+#forms{
+	margin-top: 110px;
 	margin-bottom: 100px;
+	margin-left: 20px;
+}
+
+.invite-panel {
+	width: 500px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.errNot {
+	height: 40px;
 }
 
 .request-panel {
-	width: 300px;
-	position: absolute;
-	top: 120px;
-	left: 40px;
-	margin-bottom: 100px;
+	width: 500px;
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 80px;
 }
 .experiment {
 	background-color: #FF0066;

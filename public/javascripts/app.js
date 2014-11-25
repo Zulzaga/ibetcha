@@ -41,10 +41,6 @@ ibetcha.config(['$routeProvider', '$locationProvider',
         templateUrl: 'partials/newbet.html',
         controller: 'NewBetPageController'
       }).
-      when('/request', {
-        templateUrl: 'partials/sendFriendRequest.html',
-        controller: 'SendFriendRequestPageController'
-      }).
       when('/monitorRequests', {
         templateUrl: 'partials/monitorRequests.html',
         controller: 'MonitorRequestPageController'
