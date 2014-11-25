@@ -1,2 +1,3 @@
 web: node ./bin/www
-worker: node worker.js
+worker: node bot.js
+clock: node clock.js
