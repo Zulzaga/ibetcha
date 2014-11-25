@@ -9,7 +9,7 @@ var bot = require('./bot.js');
 // server's timezone
 
 var job = new CronJob({
-  cronTime: '00 15 09 * * *', //runs everyday at 1 min after 6am
+  cronTime: '00 46 09 * * *', //runs everyday at 1 min after 6am
   onTick: bot.start(),
   start: false,
   timeZone: "America/New_York"
