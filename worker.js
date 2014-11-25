@@ -188,7 +188,7 @@ function changeBetStatus(callback){
 
 
 //make database changes at midnight
-overnightCheck = function(){
+var overnightCheck = function(){
 	console.log("about to start cron series");
 	//console.log("async: "+async.series);
 	var operations = [];
@@ -207,7 +207,7 @@ overnightCheck = function(){
 //======================== Emailing out =========================
 
 //notifies user about the change in his/her bet
-sendEmailAuthor = function(author, bet_id, status){
+var sendEmailAuthor = function(author, bet_id, status){
 	var receiver = author.email;
 	//if bet got dropped
 	if (status==="Dropped"){
