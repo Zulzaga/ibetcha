@@ -2,6 +2,7 @@
 
 <div ng-controller="BetDetailPageController" id="betPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
+        <div class="err" ng-if="err">{{err}}</div>
         <div class="single-bet-container">
             <div class="bet-title">Bet Detail:</div>
             <div class="bet-description">description: {{bet.description}}</div>

@@ -15,7 +15,7 @@ ibetcha.controller('MonitorRequestPageController',
                 }).success(function(data, status, headers, config) {
                     $scope.requests = data.content;
                 }).error(function(data, status, headers, config) {
-                	alert(data.err);
+                	$scope.err = data.err;
             	});
         }
 
@@ -36,11 +36,10 @@ ibetcha.controller('MonitorRequestPageController',
                 method: "POST",
                 url: "monitorRequests/" + id + "/accept",
                 }).success(function(data, status, headers, config) {
-                	alert("Successfully accepted the request!");
-                    $location.path('/home');
+                    onPageLoad();
                 }).
             error(function(data, status, headers, config) {
-                alert(data.err);
+                $scope.err = data.err;
             });
         }
 
@@ -54,11 +53,10 @@ ibetcha.controller('MonitorRequestPageController',
                 method: "POST",
                 url: "monitorRequests/" + id + "/reject",
                 }).success(function(data, status, headers, config) {
-                	alert("Successfully rejected the request!");
                     onPageLoad();
                 }).
             error(function(data, status, headers, config) {
-                alert(data.err);
+                $scope.err = data.err;
             });
         }
     }

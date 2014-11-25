@@ -5,6 +5,8 @@ ibetcha.controller('SendFriendRequestPageController',
     function($scope, $http, $location, $cookieStore) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
+        $scope.err = "";
+        $scope.msg = "";
 
         // If no session, (no user), redirect back to the login page.
         if (!$cookieStore.get('session')) {
@@ -22,11 +24,12 @@ ibetcha.controller('SendFriendRequestPageController',
                 data: { to: $scope.requestForm.friendUsername },
                 }).success(function(data, status, headers, config) {
                     console.log(data.content);
-                    alert("Successfully sent a friend request to " + $scope.requestForm.friendUsername + "!");
-                    $location.path('/home');
+                    $scope.msg = "Successfully sent a friend request to " + $scope.requestForm.friendUsername + "!";
+                    $scope.err = "";
                 }).
             error(function(data, status, headers, config) {
-                alert(data.err);
+                $scope.msg = "";
+                $scope.err = data.err;
             });
         }
 
@@ -40,11 +43,12 @@ ibetcha.controller('SendFriendRequestPageController',
                 data: { to: $scope.requestForm.friendEmail },
                 }).success(function(data, status, headers, config) {
                     console.log(data.content);
-                    alert("Successfully sent the request!");
-                    $location.path('/home');
+                    $scope.msg = "Successfully sent the request!";
+                    $scope.err = "";
                 }).
             error(function(data, status, headers, config) {
-                alert(data.err);
+                $scope.err = data.err;
+                $scope.msg = "";
             });
         }
     }

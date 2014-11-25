@@ -35,7 +35,7 @@ ibetcha.controller('BetDetailPageController',
                     }
                 }).
                 error(function(data, status, headers, config) {
-                    alert(data.err);
+                    $scope.err = data.err;
                 });
         }
 

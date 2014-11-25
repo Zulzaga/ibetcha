@@ -31,11 +31,10 @@ ibetcha.controller('InvitePageController',
                 data: $scope.inviteForm
                 }).success(function(data, status, headers, config) {
                 	$location.path('/home');
-                	alert("invite was successful");
                 }).
                 error(function(data, status, headers, config) {
                     console.log(data.err);
-                    alert("Invite was not successful");
+                    $scope.err ="Invite was not successful";
                 });
         }
 

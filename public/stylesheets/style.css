@@ -35,3 +35,11 @@ a {
     min-width: 120px;
     margin-bottom: 30px;
 }
+
+.msg {
+    color: blue;
+}
+
+.err {
+    color: red;
+}

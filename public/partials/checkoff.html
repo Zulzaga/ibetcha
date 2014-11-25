@@ -3,7 +3,8 @@
 <div ng-controller="CheckoffPageController" id="betPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
     <div class="single-checkoff-container">
-        
+        <div class="msg" ng-if="msg">{{msg}}</div>
+        <div class="err" ng-if="err">{{err}}</div>
         Today's checkoff <br>
         <div class="today-milestone" ng-if="!empty">
             {{today.date}}

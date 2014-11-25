@@ -34,7 +34,7 @@ ibetcha.controller('CheckoffPageController',
                     }                    
                 }).
                 error(function(data, status, headers, config) {
-                    alert(data.err);
+                    $scope.err = data.err;
                 });
         }
 
@@ -51,12 +51,12 @@ ibetcha.controller('CheckoffPageController',
                 })
                 .success(function(data, status, headers, config) {
                     console.log("inside check", data.content, $routeParams.id);
-                    alert("Checkoff successful");
+                    $scope.msg = "Checkoff successful";
                     onPageLoad();   
 
                 }).
                 error(function(data, status, headers, config) {
-                    alert(data.err+ " Checkoff failed");
+                    $scope.err = data.err+ " Checkoff failed";
                 });
         }
 

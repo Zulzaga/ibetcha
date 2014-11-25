@@ -11,6 +11,7 @@
 
         <div class="loginpage-panel" id="login-container">
             <form novalidate ng-submit="login()" ng-controller="LoginPageController">
+            <div class="err" ng-if="loginErr">{{loginErr}}</div>
             <h4>Login to ibetcha</h4>
                 <div class="form-group">
                     <input type="username" name="username" class="form-control" id="username" ng-model="loginForm.username" placeholder="Username">
@@ -26,6 +27,7 @@
         <!-- Signup form -->
         <div class="loginpage-panel" id="signup-container">
             <form novalidate ng-submit="signup()">
+            <div class="err" ng-if="signErr">{{signErr}}</div>
             <h4>New to ibetcha? Sign up.</h4>
                 <div class="form-group">
                     <input name="username" ng-model="signupForm.username" class="form-control" id="username" placeholder="Enter a Username">

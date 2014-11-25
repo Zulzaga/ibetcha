@@ -24,7 +24,7 @@ ibetcha.controller('PaymentRequestPageController',
                     console.log($scope.tos, $scope.froms, $scope.noRequested);
                 }).error(function(data, status, headers, config) {
                     console.log("epic failed");
-                    alert(data.err);
+                    $scope.err = data.err;
                 });
         }
 
@@ -44,7 +44,7 @@ ibetcha.controller('PaymentRequestPageController',
                 alert("Once your friend confirms that you have paid, \n this payment will be erased from records");
                 onPageLoad();
             }).error(function(data, status, headers, config) {
-                alert("8888888888" + data.err);
+                $scope.err = data.err;
                 onPageLoad();
             });
         }
@@ -58,7 +58,7 @@ ibetcha.controller('PaymentRequestPageController',
                 alert("You have received this payment.\n This payment will be erased from records");
                 onPageLoad();
             }).error(function(data, status, headers, config) {
-                alert("99999"+data.err);
+                $scope.err = data.err;
                 onPageLoad();
             });
         }

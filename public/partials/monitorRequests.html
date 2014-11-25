@@ -2,6 +2,7 @@
 
 <div ng-controller="MonitorRequestPageController" id="monitorPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
+        <div class="err" ng-if="err">{{err}}</div>
     	<div class="requests-title">Monitor Requests:
     	</div>
     	<div class="request-empty" ng-if="requests.length == 0">You don't have any monitor requests.</div>

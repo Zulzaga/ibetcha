@@ -1,7 +1,8 @@
 <div ng-controller="SendFriendRequestPageController" class="invite-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
     <div id="request-forms" class="request-panel">
-
+        <div class="err" ng-if="err">{{err}}</div>
+        <div class="msg" ng-if="msg">{{msg}}</div>
         <!-- Signup form -->
         <div id="request-container">
             <form novalidate ng-submit="sendByUsername()">

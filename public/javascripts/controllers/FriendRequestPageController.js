@@ -23,11 +23,11 @@ ibetcha.controller('FriendRequestPageController',
 		            }).success(function(data, status, headers, config) {
 		                $scope.friends = data.content;
 		            }).error(function(jqXHR, textStatus, err){
-		                alert(err);
+		                $scope.err = err;
 		            });
                 }).
 	            error(function(data, status, headers, config) {
-	                alert(data.err);
+	                $scope.err = data.err;
 	            });
         }
 
@@ -47,11 +47,11 @@ ibetcha.controller('FriendRequestPageController',
                 url: "friendRequests/" + id + "/accept",
                 }).success(function(data, status, headers, config) {
                 	console.log(data.content);
-                	alert("Successfully accepted the friend request!");
+                	// var msg = "Successfully accepted the friend request!";
                     onPageLoad();
                 }).
             error(function(data, status, headers, config) {
-                alert(data.err);
+                $scope.err = data.err;
             });
         }
 
@@ -64,11 +64,11 @@ ibetcha.controller('FriendRequestPageController',
                 url: "friendRequests/" + id + "/reject",
                 }).success(function(data, status, headers, config) {
                 	console.log(data.content);
-                	alert("Successfully rejected the friend request!");
+                	// var msg = "Successfully rejected the friend request!";
                     onPageLoad();
                 }).
             error(function(data, status, headers, config) {
-                alert(data.err);
+                $scope.err = data.err;
             });
         }
     }

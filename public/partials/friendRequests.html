@@ -3,6 +3,8 @@
 <div ng-controller="FriendRequestPageController" id="friendPage-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
  		<div class="big-box">
+ 			<div class="err" ng-if="err">{{err}}</div>
+ 			<div class="msg" ng-if="msg">{{msg}}</div>
 	    	<div class="friends-box">
 	    		<div class="requests-title">Friends:</div>
 	    		<div class="request-empty" ng-if="friends.length == 0">You don't have any friends. Invite your friends :).</div>

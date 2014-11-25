@@ -5,6 +5,7 @@
         <!-- Signup form -->
         <div class="invite-panel" id="invite-container">
             <form novalidate ng-submit="invite()">
+            <div class="err" ng-if="err">{{err}}</div>
             <h4>Invite a friend to join ibetcha.</h4>
                 <div class="form-group">
                     <input name="friendEmail" ng-model="inviteForm.friendEmail" class="form-control" id="friendEmail" placeholder="Email">

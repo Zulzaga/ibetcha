@@ -14,7 +14,7 @@ ibetcha.controller('NewBetPageController',
             }).success(function(data, status, headers, config) {
                 $scope.friends = data.content;
             }).error(function(jqXHR, textStatus, err){
-                alert(err);
+                $scope.err = err;
             })
         }
 
@@ -44,11 +44,11 @@ ibetcha.controller('NewBetPageController',
                 data: $scope.editForm,
                 }).success(function(data, status, headers, config) {
                     console.log(data.content);
-                    alert("Successfully created the bet! Good luck on your resolution! You can do this ;)!");
+                    $scope.msg = "Successfully created the bet! Good luck on your resolution! You can do this ;)!";
                     $location.path('/home');
                 }).
             error(function(data, status, headers, config) {
-                alert("Could not create a new bet! Make sure to follow the guidelines!");
+                $scope.err = "Could not create a new bet! Make sure to follow the guidelines!";
             });
         }
     }
