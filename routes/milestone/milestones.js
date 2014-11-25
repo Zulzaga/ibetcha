@@ -18,23 +18,23 @@ var MonitorRequest = require('../../models/MonitorRequest');
 var Milestone = require('../../models/Milestone');
 
 
-//===================     CRON JOB      ===================
-// server's timezone
-var timezone = (new time.Date()).getTimezone();
+// //===================     CRON JOB      ===================
+// // server's timezone
+// var timezone = (new time.Date()).getTimezone();
 
-var job = new CronJob({
-  cronTime: '00 00 20 * * *', //runs everyday at 1 min after midnight
-  onTick: function() {
-  	//testing: 
-  	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
-  	console.log("CRON JOB AT ACTION");
-  	changeStatus.overnightCheck();	
-  },
-  start: false,
-  timeZone: "America/New_York"
-});
-//comment out in case don't 
-job.start();
+// var job = new CronJob({
+//   cronTime: '00 01 06 * * *', //runs everyday at 1 min after 6am
+//   onTick: function() {
+//   	//testing: 
+//   	//sendEmailReminder([{email:'mukushev@mit.edu'}], 'dummy',{username: "test"});
+//   	console.log("CRON JOB AT ACTION");
+//   	changeStatus.overnightCheck();	
+//   },
+//   start: false,
+//   timeZone: "America/New_York"
+// });
+// //comment out in case don't 
+// //job.start();
 
 
 

@@ -8,18 +8,23 @@ moment().format();
 var router = express.Router();
 
 //linking collections and utils 
-var utils = require('../utils/utils');
-var emailNotifier = require('../utils/email');
-var User = require('../models/User');
-var Bet = require('../models/Bet');
-var Milestone = require('../models/Milestone');
+var utils = require('./utils/utils');
+var emailNotifier = require('./utils/email');
+var User = require('./models/User');
+var Bet = require('./models/Bet');
+var Milestone = require('./models/Milestone');
 
-var changeStatus = {};
+module.exports = {
+	  start: function(){
+	  	overnightCheck();
+
+	  }
+	}
 
 //================== Cron job details =========
 
 /*
-	When bet is dropped, make NOT checked off milestones Closed
+When bet is dropped, make NOT checked off milestones Closed
 */
 function makeMilestoneClosed(callback){
 	console.log("entered makeMilestoneClosed");
@@ -118,7 +123,6 @@ function changeBetStatus(callback){
 	console.log("entered changeBetStatus");
 	var today = getToday();
 	var tomorrow = getTomorrow();
-
 	//2 cases for transitions
 
 	//case 1: Not Started --> Action Required,
@@ -184,7 +188,7 @@ function changeBetStatus(callback){
 
 
 //make database changes at midnight
-changeStatus.overnightCheck = function(){
+var overnightCheck = function(){
 	console.log("about to start cron series");
 	//console.log("async: "+async.series);
 	var operations = [];
@@ -203,7 +207,7 @@ changeStatus.overnightCheck = function(){
 //======================== Emailing out =========================
 
 //notifies user about the change in his/her bet
-changeStatus.sendEmailAuthor = function(author, bet_id, status){
+var sendEmailAuthor = function(author, bet_id, status){
 	var receiver = author.email;
 	//if bet got dropped
 	if (status==="Dropped"){
@@ -320,4 +324,3 @@ function getTomorrow(){
 }
 
 
-module.exports = changeStatus;
