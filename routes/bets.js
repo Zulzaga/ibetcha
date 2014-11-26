@@ -45,171 +45,12 @@ Check bet data before entering it to the DB
   return result;
 }
 
-/*
-Handle the logic of generating milestone JSONs
-*/
-function generate_milestones(userID, betID, startDate, endDate, frequency){
-  var milestones_array = [];
-  var start_date = new Date(startDate);
-  var end_date = new Date(endDate);
 
-  // number of milestones to create at intervals
-  var total_num_days = ((end_date.valueOf()-start_date.valueOf())/ MILLIS_IN_A_DAY);
-  
-  var num_milestones = Math.floor(total_num_days/frequency);
-  
-  var my_date = start_date;
-  var days_to_add_to_next_milestone = frequency; 
-  console.log("freq;:::::", days_to_add_to_next_milestone);
-
-  var add_end_date = total_num_days % frequency; // 0 if no days left over, other if some day remaining
-
-  console.log("$$$$",add_end_date, total_num_days);
-  var current_date = new Date(start_date.valueOf());
-
-  for (i=0; i<= num_milestones; i++){ //note we start at i=1
-
-    current_date = new Date(start_date.valueOf() + (i*days_to_add_to_next_milestone)*MILLIS_IN_A_DAY);
-
-    
-    var my_milestone = {
-      //change date here
-      date: current_date,
-      bet: betID,
-      author: userID,
-      status:  "Inactive", 
-      monitors:[]
-    };
-    milestones_array.push(my_milestone);
-  }
-  //edge case for end date
-  if ((add_end_date) !== 0){
-    var my_milestone= {
-      date: end_date,
-      bet: betID,
-      author: userID,
-      status: "Inactive", 
-      monitors:[]
-    };
-    milestones_array.push(my_milestone);
-  }
-  return milestones_array;
-}
-
-/*
-Insert milestones into the bets
-*/
-var store_all_milestones = function(res, MilestonesArray, betId){
-  Bet.findOne({_id:betId}, function(err, bet){
-    if (err){
-      utils.sendErrResponse(res, 500, err);
-    }
-    Milestone.create(MilestonesArray, function(err){
-      if (err){
-        utils.sendErrResponse(res,500, "Cannot post milestones to database")
-      }
-      else{
-        for (var i=1; i< arguments.length; ++i){
-          bet.milestones.push(arguments[i]._id);
-        }
-        bet.save(function(err){
-          if (err){
-            utils.sendErrResponse(res,500, "Cannot post milestones to database");
-          }
-          else{
-            utils.sendSuccessResponse(res,bet);
-          }
-        });
-      }
-      
-    });
-  });
-}
-
-/* 
-Create bet object
-*/
-function makeBet(req,res){
-  var data = req.body;
-
-  //check if in testing mode
-  if (data.test){
-    var userId = req.user._id; //will remove this line, don't worry Jonathan
-    milestones_JSONs = [{date: new Date()}, {date: new Date()}];
-  }
-  else{
-    var userId = req.user._id;
-  }
-  var endDate = new Date(data.endDate);
-  var dropDate = new Date(endDate.valueOf()+10*MILLIS_IN_A_DAY);
- //window of 10 days after bet ends to check off
-
-  var status = "Not Started"
-  var betJSON = {author:userId, 
-          startDate:data.startDate, 
-          endDate:data.endDate,
-          dropDate:dropDate,
-          frequency:data.frequency,
-          description:data.description,
-          status: status,
-          milestones:[],
-          amount: data.amount,
-          monitors:[],
-          }
-  var newBet = new Bet(betJSON);
-  
-  newBet.save(function(err, bet){
-    if (err){
-      utils.sendErrResponse(res, 500, err);
-    }
-    else{
-      User.findById( req.user._id, function (err, user) {
-            if (err){
-                utils.sendErrResponse(res, 500, 'There was an error!');
-            } else if (user === null){
-                utils.sendErrResponse(res, 401, 'No user found!');
-            } else {
-                user.bets.push(newBet._id);
-                user.save(function(err, newUser) {
-                  if (err) {
-                    utils.sendErrResponse(res, 500, 'There was an error!');
-                  } else {
-                      var monitors = data.monitors || [];
-                var betId = bet._id;
-                var monitorRequestArray = [];
-
-                for (i=0; i< monitors.length; i++){ //note we start at i=1
-                    var my_request = {
-                        //change date here
-                        from: req.user._id,
-                        to: monitors[i],
-                        bet: betId
-                    };
-                    monitorRequestArray.push(my_request);
-                }
-
-                MonitorRequest.create(monitorRequestArray, function(err, requests) {
-                    if (err) {
-                        utils.sendErrResponse(res, 500, 'There was an error');
-                    } else {
-                      console.log("Created monitor request!");
-                        var milestones_JSONs = generate_milestones(userId, bet._id, req.body.startDate, req.body.endDate, req.body.frequency);
-                        store_all_milestones(res, milestones_JSONs, newBet._id);
-                    }
-                })
-                  }
-                })
-            }
-        });
-    }
-  });
-
-}
 //======================== API route methods =========================
 
 // Gets the bets of the currently logged in user.
 router.get('/', isAuthenticated, function(req, res) {
-    Bet.find({ }).populate('author monitors milestones').exec(function(err, bets){
+    Bet.find({}).populate('author monitors milestones').exec(function(err, bets){
       	if (err){
       	   	utils.sendErrResponse(res, 500, err);
       	}
@@ -221,11 +62,21 @@ router.get('/', isAuthenticated, function(req, res) {
 
 // Create a bet object after it's validated
 router.post('/', function(req, res) {
-  if (validateBetData(req.body)){
-  		makeBet(req, res);
+  var data = req.body;
+  data.userId = req.user._id;
+
+  if (validateBetData(data)){
+  		Bet.create(data, function(err, code, content){
+        if (err) {
+            utils.sendErrResponse(res, code, content);
+        }
+        else{
+            utils.sendSuccessResponse(res, content);
+        }
+      });
   }
   else{
-  		utils.sendErrResponse(res, 500, "Can't create a new Bet object");
+  		utils.sendErrResponse(res, 500, "Invalid data for Bet");
   }
 });
 
@@ -246,16 +97,13 @@ router.get('/:bet_id', function(req, res) {
 router.get('/:bet_id/milestones/pending', function(req, res) {
   console.log("inside pending milestones");
   var bet_id = req.params.bet_id;
-  Milestone.find({bet:bet_id, $or:[{status:'Pending Action'}, {status:'Open'}]})
-           .populate('author monitors')
-           .sort({date:-1})
-           .exec(function(error, milestones) {
-              if(error) {
-                utils.sendErrResponse(res, 500, error);
-              } else {
-                console.log("milestones: " + milestones, milestones.length, bet_id);
-                utils.sendSuccessResponse(res, milestones);
-              }
+  Milestone.findPending(bet_id, function(err, code, content){
+    if (err) {
+        utils.sendErrResponse(res, code, content);      
+    }
+    else{
+        utils.sendSuccessResponse(res, content);
+    }
   });
 });
 

@@ -1,6 +1,8 @@
 var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
+var MonitorRequest = require('./MonitorRequest');
+var changeStatus = require('../utils/changeStatus');
 
 var milestoneStatus = [
 	'Inactive', //not yet reached the effective date
@@ -11,7 +13,7 @@ var milestoneStatus = [
 	'Closed' // bet Drop date passed
 ];
 
-//Milestones Schema
+//========================== SCHEMA DEFINITION ==========================
 var milestonesSchema = new Schema({
 	date: Date,
 	
@@ -28,6 +30,22 @@ var milestonesSchema = new Schema({
 		enum: milestoneStatus
 	}
 });
+
+
+//========================== SCHEMA STATICS ==========================
+milestonesSchema.statics.findPending = function(bet_id, callback){
+  	this.find({bet:bet_id, $or:[{status:'Pending Action'}, {status:'Open'}]})
+       .populate('author monitors')
+       .sort({date:-1})
+       .exec(function(error, milestones) {
+          	if(error) {
+            	callback(true, 500, error);
+          	} else {
+            	callback(false, 200, milestones);
+          	}
+			});
+}
+
 
 //Bindings
 var Milestone = mongoose.model('Milestone', milestonesSchema);
