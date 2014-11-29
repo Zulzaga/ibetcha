@@ -36,8 +36,9 @@ var userSchema = new Schema({
 	}]
 });
 
+//Create a user JSON and save the new user
 userSchema.statics.create = function(username, password, email, callback) {
-    password = passwordHash.generate(password);
+    password = passwordHash.generate(password); // hash the password for storage
     var newUser = new User({
         'username': username,
         'password': password,
@@ -47,11 +48,10 @@ userSchema.statics.create = function(username, password, email, callback) {
         'rating': 3,
         'monitoring': []
     });
-
     newUser.save(callback);
 }
 
 var User = mongoose.model('User', userSchema);
 
-//exporting for usage anywhere in the app (see above for usage guide)
+//exporting for usage anywhere in the app
 module.exports = User;

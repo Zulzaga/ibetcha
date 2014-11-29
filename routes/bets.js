@@ -45,7 +45,6 @@ Check bet data before entering it to the DB
   return result;
 }
 
-
 //======================== API route methods =========================
 
 // Gets the bets of the currently logged in user.

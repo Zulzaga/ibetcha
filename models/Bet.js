@@ -94,6 +94,7 @@ betSchema.statics.create = function(data, callback){
 	            } else if (user === null){
 	                callback(true, 500, 'No user found!');
 	            } else {
+	            	/// HERE: there might me an issue with asynchronous behavior
 	                user.bets.push(newBet._id);
 	                user.save(function(err, newUser) {
 	                  if (err) {
@@ -112,7 +113,7 @@ betSchema.statics.create = function(data, callback){
 	                    };
 	                    monitorRequestArray.push(my_request);
 	                }
-
+	                // here again...
 	                MonitorRequest.create(monitorRequestArray, function(err, requests) {
 	                    if (err) {
 	                        callback(true, 500,'There was an error');
@@ -153,10 +154,8 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
   var current_date = new Date(start_date.valueOf());
 
   for (i=0; i<= num_milestones; i++){ //note we start at i=1
-
     current_date = new Date(start_date.valueOf() + (i*days_to_add_to_next_milestone)*MILLIS_IN_A_DAY);
 
-    
     var my_milestone = {
       //change date here
       date: current_date,
@@ -167,6 +166,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency){
     };
     milestones_array.push(my_milestone);
   }
+
   //edge case for end date
   if ((add_end_date) !== 0){
     var my_milestone= {
@@ -206,7 +206,6 @@ var store_all_milestones = function(MilestonesArray, betId, callback){
           }
         });
       }
-      
     });
   });
 }

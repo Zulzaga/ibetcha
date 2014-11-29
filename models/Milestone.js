@@ -31,7 +31,6 @@ var milestonesSchema = new Schema({
 	}
 });
 
-
 //========================== SCHEMA STATICS ==========================
 milestonesSchema.statics.findPending = function(bet_id, callback){
   	this.find({bet:bet_id, $or:[{status:'Pending Action'}, {status:'Open'}]})
@@ -43,9 +42,8 @@ milestonesSchema.statics.findPending = function(bet_id, callback){
           	} else {
             	callback(false, 200, milestones);
           	}
-			});
+		});
 }
-
 
 //Bindings
 var Milestone = mongoose.model('Milestone', milestonesSchema);
