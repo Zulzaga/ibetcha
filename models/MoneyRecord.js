@@ -2,6 +2,8 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 
+var Bet = require("./Bet");
+
 // Schema for keeping track of who owes what
 var MoneyRecordSchema = new Schema({
 	from : {type: ObjectId, ref: 'User', required: true},
@@ -17,8 +19,12 @@ var MoneyRecordSchema = new Schema({
 var MoneyRecord = mongoose.model('MoneyRecord', MoneyRecordSchema);
 
 // Methods
-MoneyRecordSchema.methods.processPaymentClaim = function(cb) {
-	return MoneyRecord.find({ type: this.type }, cb);
+MoneyRecordSchema.statics.processPaymentClaim = function(objectId, setParams, cb) {
+	return MoneyRecord.findOneAndUpdate(objectId, setParams, cb);
+}
+
+MoneyRecordSchema.statics.confirmPaymentClaim = function(objectId, cb) {
+	return MoneyRecord.findOneAndRemove(ObjectId, cb);
 }
 
 module.exports = MoneyRecord;

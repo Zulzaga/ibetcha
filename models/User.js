@@ -3,6 +3,8 @@ var mongoose = require("mongoose"),
 	Schema = mongoose.Schema;
 	passwordHash = require('password-hash');
 
+var Bet = require("./Bet");
+
 // User Schema
 var userSchema = new Schema({
 	//login related information:
@@ -49,6 +51,23 @@ userSchema.statics.create = function(username, password, email, callback) {
         'monitoring': []
     });
     newUser.save(callback);
+}
+
+userSchema.statics.fetchAllUsers = function(cb) {
+	return User.find({}, cb);
+}
+
+userSchema.statics.getCurrentUserInfo = function(userId, cb) {
+	var userPromise = User.findById(userId).populate('bets monitoring').exec(function(err, user) {
+		if(err) {
+			cb( true, 500, "There was an error");
+		} else if (user !== null) {
+			console.log("0");
+			Bet.getCurrentUserBets(user, userId, cb);
+		} else {
+			cb( true, 500, "No user logged in.");
+		}
+	});
 }
 
 var User = mongoose.model('User', userSchema);

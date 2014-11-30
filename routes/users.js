@@ -48,46 +48,27 @@ var formatFriend = function(friend) {
 // For testing purposes, shows all information about the users and will be
 // deleted for the final implementation.
 router.get('/', function(req, res) {
-    User.find({}, function (err, users) {
+    var cb = function (err, users) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
         } else {
             utils.sendSuccessResponse(res, users);
         }
-    });
+    };
+
+    User.fetchAllUsers(cb);
 });
 
 // Gets the currently logged in user information.
 router.get('/current', isAuthenticated, function(req, res) {
-    User.findById(req.user._id).populate('bets monitoring').exec(function (err, user) {
+    User.getCurrentUserInfo(req.user._id, function(err, code, content){
         if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error');
-        } else if (user !== null){
-            Bet.populate([user.bets], {"path": "milestones" }, function (err, output) {
-                if (err) {
-                    utils.sendErrResponse(res, 500, 'There was an error');
-                } else {
-                    user.bets = output;
-                    Bet.populate([user.monitoring], {"path": "author" }, function (err, updatedBets) {
-                        if (err) {
-                            utils.sendErrResponse(res, 500, 'There was an error');
-                        } else {
-                            user.monitoring = updatedBets;
-                            MonitorRequest.find({ to: req.user._id }).populate('to from bet').exec(function (err, requests) {
-                                if (err) {
-                                    utils.sendErrResponse(res, 500, 'There was an error');
-                                } else {
-                                    utils.sendSuccessResponse(res, { 'user': user, 'requests': requests });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        } else {
-            utils.sendErrResponse(res, 401, 'No user logged in.');
+            utils.sendErrResponse(res, code, content);
         }
-    });
+        else{
+            utils.sendSuccessResponse(res, content);
+        }
+      });
 });
 
 // Gets all the payments that the current user owes other people

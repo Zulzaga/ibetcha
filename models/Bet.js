@@ -58,6 +58,35 @@ var betSchema = new Schema({
 
 
 //========================== SCHEMA STATICS ==========================
+
+
+betSchema.statics.getCurrentUserBets = function(user, userId, cb) {
+	var promise = Bet.populate([user.bets], {"path": "milestones" }, function(err, output) {
+		if(err) {
+			cb(true, 500, "There was an error");
+		} else {
+			user.bets = output;
+            var betPromise = Bet.populate([user.monitoring], {"path": "author" }, function(err, updatedBets) {
+            	if(err) {
+            		cb(true, 500, "There was an error");
+            	} else {
+            		user.monitoring = updatedBets;
+            		var monitorPromise = MonitorRequest.find({ to: userId }).populate('to from bet').exec(function(err, requests) {
+                		if(err) {
+                			cb(true, 500, "There was an error");
+                		} else {
+                			cb(false, 200, {'user': user, 'requests': requests});
+                		}	                	
+            		});
+                	
+            	}
+            });
+		}
+	});
+};
+
+
+
 betSchema.statics.create = function(data, callback){
 	  var callback = callback;
 	  var userId = data.userId;
