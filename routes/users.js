@@ -13,19 +13,10 @@ var Milestone = require('../models/Milestone');
 var FriendRequest = require('../models/FriendRequest');
 var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
+var isAuthenticated = utils.isAuthenticated;
 
 //================== Important methods ===============================
 
-// Helper function that helps authenticates the user and if no user logged in, responds with 
-// appropriate message.
-function isAuthenticated(req, res, next) {
-    if (req.user) {
-        return next();
-    }
-
-    // If a user is not logged in, redirect to the login page.
-    utils.sendErrResponse(res, 401, "User is not logged in!");
-};
 
 // Helper that formats the user information for sending user info
 // to the client-side.

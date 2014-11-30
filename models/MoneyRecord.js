@@ -10,7 +10,15 @@ var MoneyRecordSchema = new Schema({
 	requested: {type: Boolean, required:true}
 });
 
+
+
+
 //Bindings
 var MoneyRecord = mongoose.model('MoneyRecord', MoneyRecordSchema);
+
+// Methods
+MoneyRecordSchema.methods.processPaymentClaim = function(cb) {
+	return MoneyRecord.find({ type: this.type }, cb);
+}
 
 module.exports = MoneyRecord;

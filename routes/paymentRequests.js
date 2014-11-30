@@ -12,31 +12,24 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
+var isAuthenticated = utils.isAuthenticated;
 
-// Authenticates the user and redirects to the users login page if necessary.
-function isAuthenticated(req, res, next) {
-    if (req.user) {
-        return next();
-    }
-
-    // If a user is not logged in, redirect to the login page.
-    utils.sendErrResponse(res, 401, "User is not logged in!");
-};
 
 // Update the payment to indicate the claim that the user has paid friends
 router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
     console.log("inside serverside paid claim");
-    MoneyRecord.findOneAndUpdate({ _id: req.params.paymentId}, 
+
+    MoneyRecord.processPaymentClaim({ _id: req.params.paymentId}, 
                                 {$set: { requested: true}},
-        function(err, payment) {
-            if(err) {
-                utils.sendErrResponse(res, 500, 'There was an error! Could not find payment.');
-            } else {
-                console.log("claim to have paid: ", payment);
-                utils.sendSuccessResponse(res, payment);
-            }
-        }
-    );
+                                function(err, payment) {
+                                    if(err) {
+                                        utils.sendErrResponse(res, 500, 'There was an error! Could not find payment.');
+                                    } else {
+                                        console.log("claim to have paid: ", payment);
+                                        utils.sendSuccessResponse(res, payment);
+                                    }
+                                });
+
 });
 
 // Delete the payment record to indicate that the friend confirmed the claim (that the user has paid)

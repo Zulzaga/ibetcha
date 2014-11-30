@@ -12,24 +12,11 @@ var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var FriendRequest = require('../models/FriendRequest');
 var MoneyRecord = require('../models/MoneyRecord');
+var isAuthenticated = utils.isAuthenticated;
 
 //constants
 var MILLIS_IN_A_DAY = 24*60*60*1000;
 
-//======================== Authentication    =========================
-/* 
-Helper function that helps authenticates the user 
-and if no user logged in, responds with 
-appropriate message.
-*/
-
-function isAuthenticated(req, res, next) {
-    if (req.user) {
-        return next();
-    }
-    // If a user is not logged in, redirect to the login page.
-     utils.sendErrResponse(res, 401, "User is not logged in!");
-};
 
 //========================      Helpers      =========================
 

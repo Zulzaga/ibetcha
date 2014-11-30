@@ -32,5 +32,16 @@ utils.requireLogin = function(req, res, next) {
     } else {
         next();
     }
-}
+};
+
+// Authenticates the user and redirects to the users login page if necessary.
+utils.isAuthenticated = function (req, res, next) {
+    if (req.user) {
+        return next();
+    }
+
+    // If a user is not logged in, redirect to the login page.
+    utils.sendErrResponse(res, 401, "User is not logged in!");
+};
+
 module.exports = utils;
