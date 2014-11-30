@@ -40,6 +40,17 @@ var formatFriend = function(friend) {
     }
 }
 
+// function for ajax response calls
+// NOT USED RIGHT NOW
+var ajaxResponse = function(err, code, content, res){
+    if (err) {
+        utils.sendErrResponse(res, code, content);
+    }
+    else{
+        utils.sendSuccessResponse(res, content);
+    }
+};
+
 //======================== API route methods =========================
 
 //============================GET METHODS:============================
@@ -48,57 +59,78 @@ var formatFriend = function(friend) {
 // For testing purposes, shows all information about the users and will be
 // deleted for the final implementation.
 router.get('/', function(req, res) {
-    var cb = function (err, users) {
+    console.log("****************1**********************");
+    User.fetchAllUsers(function(err, code, content){
         if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
-        } else {
-            utils.sendSuccessResponse(res, users);
-        }
-    };
-
-    User.fetchAllUsers(cb);
-});
-
-// Gets the currently logged in user information.
-router.get('/current', isAuthenticated, function(req, res) {
-    User.getCurrentUserInfo(req.user._id, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);
+            utils.sendErrResponse(res, code, content);      
         }
         else{
             utils.sendSuccessResponse(res, content);
         }
-      });
+    });
+});
+
+// Gets the currently logged in user information.
+router.get('/current', isAuthenticated, function(req, res) {
+    console.log("inside users/current");
+    console.log("***************2***********************");
+    User.getCurrentUserInfo(req.user._id, function(err, code, content){
+        if (err) {
+            utils.sendErrResponse(res, code, content);      
+        }
+        else{
+            utils.sendSuccessResponse(res, content);
+        }
+    });
 });
 
 // Gets all the payments that the current user owes other people
 router.get('/payments', isAuthenticated, function(req, res) {
-    User.findById(req.user._id, function(err, user){
+    console.log("****************3**********************");
+    User.fetchAllPayments(user, function(err, code, content){
         if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error');
-        } else if (user === null) {
-            utils.sendErrResponse(res, 401, 'No such user found!');
-        } else {
-            MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
-                if (err) {
-                    utils.sendErrResponse(res, 500, 'There was an error');
-                } else {
-                    MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
-                        if (err) {
-                            utils.sendErrResponse(res, 500, 'There was an error');
-                        } else {
-                            utils.sendSuccessResponse(res, { 'froms': froms, 'tos': tos });
-                        }
-                    });
-                }
-            });
+            utils.sendErrResponse(res, code, content);      
+        }
+        else{
+            utils.sendSuccessResponse(res, content);
         }
     });
+    // User.findById(req.user._id, function(err, user){
+    //     if (err) {
+    //         utils.sendErrResponse(res, 500, 'There was an error');
+    //     } else if (user === null) {
+    //         utils.sendErrResponse(res, 401, 'No such user found!');
+    //     } else {
+    //         MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
+    //             if (err) {
+    //                 utils.sendErrResponse(res, 500, 'There was an error');
+    //             } else {
+    //                 MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
+    //                     if (err) {
+    //                         utils.sendErrResponse(res, 500, 'There was an error');
+    //                     } else {
+    //                         utils.sendSuccessResponse(res, { 'froms': froms, 'tos': tos });
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
 }); 
 
 // Finds the friends of the given user.
 router.get('/friends/:username', function(req, res) {
     console.log("inside get friends");
+    console.log("****************4**********************");
+    // User.findAllFriends(req.params.username, formatFriend, function(err, code, content){
+    //     if (err) {
+    //         utils.sendErrResponse(res, code, content);      
+    //     }
+    //     else{
+    //         utils.sendSuccessResponse(res, content);
+    //     }
+    // });
+
     User.findOne({username:req.params.username})
         .populate("friends")
         .exec(function(error, user) {
@@ -113,6 +145,7 @@ router.get('/friends/:username', function(req, res) {
 // Logs out the user
 router.get('/logout', function(req, res) {
     console.log('inside serverside logout');
+    console.log("*****************5*********************");
     if (req.user) {
         req.logout();
         utils.sendSuccessResponse(res, "Successfully logged out!.");
@@ -123,6 +156,16 @@ router.get('/logout', function(req, res) {
 
 // Finds the user by the id.
 router.get('/:user_id', isAuthenticated, function(req, res) {
+    console.log("****************6**********************");
+    // User.findUserById(req.params.user_id, formatUser, function(err, code, content){
+    //     if (err) {
+    //         utils.sendErrResponse(res, code, content);      
+    //     }
+    //     else{
+    //         utils.sendSuccessResponse(res, content);
+    //     }
+    // });
+    
     User.findById( req.params.user_id, function (err, user) {
         if (err){
             utils.sendErrResponse(res, 500, 'There was an error!');
@@ -138,6 +181,7 @@ router.get('/:user_id', isAuthenticated, function(req, res) {
 
 // Creates a new user.
 router.post('/new', function(req, res, next) {
+    console.log("******************7********************");
     console.log("inside signup function");
     if (req.user) {
         //res.redirect('/');
@@ -166,6 +210,7 @@ router.post('/new', function(req, res, next) {
 // If wrong password/username combination, responds back with an appropriate
 // message.
 router.post('/login', function(req, res, next) {
+    console.log("******************8********************");
     if (req.user) {
         utils.sendErrResponse(res, 401, 'User already logged in!');
     } else {

@@ -61,12 +61,12 @@ var betSchema = new Schema({
 
 
 betSchema.statics.getCurrentUserBets = function(user, userId, cb) {
-	var promise = Bet.populate([user.bets], {"path": "milestones" }, function(err, output) {
+	Bet.populate([user.bets], {"path": "milestones" }, function(err, output) {
 		if(err) {
 			cb(true, 500, "There was an error");
 		} else {
 			user.bets = output;
-            var betPromise = Bet.populate([user.monitoring], {"path": "author" }, function(err, updatedBets) {
+            Bet.populate([user.monitoring], {"path": "author" }, function(err, updatedBets) {
             	if(err) {
             		cb(true, 500, "There was an error");
             	} else {
@@ -77,13 +77,16 @@ betSchema.statics.getCurrentUserBets = function(user, userId, cb) {
                 		} else {
                 			cb(false, 200, {'user': user, 'requests': requests});
                 		}	                	
-            		});
-                	
+            		});                	
             	}
             });
 		}
 	});
 };
+
+
+
+
 
 
 

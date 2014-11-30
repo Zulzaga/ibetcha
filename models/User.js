@@ -54,20 +54,78 @@ userSchema.statics.create = function(username, password, email, callback) {
 }
 
 userSchema.statics.fetchAllUsers = function(cb) {
-	return User.find({}, cb);
+	console.log("**************************************");
+	return User.find({}, function(err, users) {
+		if(err) {
+			cb(true, 500, 'There was an error');
+		} else {
+			cb(false, 200, users);
+		}
+	});
+}
+
+userSchema.statics.fetchAllPayments = function(user, cb) {
+	console.log("**************************************");
+	return User.findById(user._id, function(err, user){
+        if (err) {
+            cb(true, 500, 'There was an error');
+        } else if (user === null) {
+            cb(true, 401, 'No such user found!');
+        } else {
+            MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
+                if (err) {
+                    cb(true, 500, 'There was an error');
+                } else {
+                    MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
+                        if (err) {
+                            cb(true, 500, 'There was an error');
+                        } else {
+                            cb(false, 200, { 'froms': froms, 'tos': tos });
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
+userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
+	console.log("**************************************");
+	return User.findOne({username:username})
+        .populate("friends")
+        .exec(function(error, user) {
+            if(error) {
+                cb(true, 500, error);
+            } else if(user) {
+                cb(false, 200, user.friends.map(formatFriend));
+            }
+        });
 }
 
 userSchema.statics.getCurrentUserInfo = function(userId, cb) {
-	var userPromise = User.findById(userId).populate('bets monitoring').exec(function(err, user) {
+	console.log("**************************************");
+	return User.findById(userId).populate('bets monitoring').exec(function(err, user) {
 		if(err) {
 			cb( true, 500, "There was an error");
 		} else if (user !== null) {
-			console.log("0");
 			Bet.getCurrentUserBets(user, userId, cb);
 		} else {
 			cb( true, 500, "No user logged in.");
 		}
 	});
+}
+
+userSchema.statics.findUserById = function(userId, formatUser, cb) {
+	console.log("**************************************");
+	return User.findById( userId, function (err, user) {
+        if (err){
+            cb(true, 500, 'There was an error!');
+        } else if (user === null){
+            cb(true, 401, 'No such user found!');
+        } else {
+            cb(false, 200, formatUser(user));
+        }
+    });
 }
 
 var User = mongoose.model('User', userSchema);
