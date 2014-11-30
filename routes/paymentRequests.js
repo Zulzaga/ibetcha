@@ -14,16 +14,6 @@ var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
 var isAuthenticated = utils.isAuthenticated;
 
-var paymentCallback = function(err, payment) {
-    if (err) {
-        utils.sendErrResponse(res, 500, 'There was an error! Could not find payment.');
-    } else if (payment == null) {
-        utils.sendErrResponse(res, 500, 'No such payment exists!.');
-    } else {
-        utils.sendSuccessResponse(res, payment);
-    }
-};
-
 
 // Update the payment to indicate the claim that the user has paid friends
 router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
@@ -31,7 +21,14 @@ router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
 
     MoneyRecord.processPaymentClaim({_id: req.params.paymentId}, 
                                     {$set: {requested: true}},
-                                    paymentCallback);
+                                    function(err, code, content){
+                                        if (err) {
+                                            utils.sendErrResponse(res, code, content);      
+                                        }
+                                        else{
+                                            utils.sendSuccessResponse(res, content);
+                                        }
+                                    });
 
 });
 
@@ -39,7 +36,14 @@ router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
 router.get('/received/:paymentId', isAuthenticated, function(req, res) {
     console.log('inside serverside received');
     MoneyRecord.findOneAndRemove({_id: req.params.paymentId}, 
-                                   paymentCallback(err, payment));
+                                   function(err, code, content){
+                                        if (err) {
+                                            utils.sendErrResponse(res, code, content);      
+                                        }
+                                        else{
+                                            utils.sendSuccessResponse(res, content);
+                                        }
+                                    });
 });
 
 // // Gets all monitor requests current user received.
