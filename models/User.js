@@ -106,7 +106,7 @@ userSchema.statics.getCurrentUserInfo = function(userId, cb) {
 		if(err) {
 			cb( true, 500, "There was an error");
 		} else if (user !== null) {
-			Bet.getCurrentUserBets(user, userId, cb);
+			mongoose.model('Bet').getCurrentUserBets(user, userId, cb);
 		} else {
 			cb( true, 500, "No user logged in.");
 		}

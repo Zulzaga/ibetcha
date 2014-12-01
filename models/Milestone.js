@@ -2,7 +2,7 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 var MonitorRequest = require('./MonitorRequest');
-var changeStatus = require('../utils/changeStatus');
+//var changeStatus = require('../utils/changeStatus');
 var emailNotifier = require('../utils/email');
 
 
@@ -117,7 +117,7 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 										// send email to author
 										if (!test){
 											console.log("5");
-											changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
+											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 										}
 										console.log("6");
 										callback(false, 200, savedmilestone);
@@ -155,7 +155,7 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 											} else {
 												console.log(requests);
 												console.log("Successfully deleted all monitor requests!.");
-												changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+												emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 												Milestones.updatePayments(milestone.author._id, milestone.bet, callback);
 											}
 										});

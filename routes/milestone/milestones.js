@@ -10,8 +10,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 //linking collections and utils 
 var utils = require('../../utils/utils')
 var emailNotifier = require('../../utils/email');
-var changeStatus = require('../../utils/changeStatus');
-var User = require('../../models/User');
+//var changeStatus = require('../../utils/changeStatus');c
 var MoneyRecord = require('../../models/MoneyRecord');
 var Bet = require('../../models/Bet');
 var MonitorRequest = require('../../models/MonitorRequest');
@@ -108,81 +107,6 @@ router.put('/:milestone_id', function(req, res) {
 	var milestone_id = req.params.milestone_id;
 	var new_status = req.body.status; //Success or Failed
 	var test = req.body.test;
-	Milestone
-		.findById(milestone_id)
-		.populate('bet author')
-		.exec(function(err, milestone){
-			if (err){
-				console.log("1");
-				utils.sendErrResponse(res,500, "Cannot retrieve Milestone with provided ID");
-			}else{
-				milestone.status = new_status;
-				milestone.save(function(err, savedmilestone){
-					if (err){
-						console.log("2");
-						utils.sendErrResponse(res, 500, "Cannot save the milestone")
-					}
-					//new status = success
-					if (new_status === 'Success'){
-						Milestone
-							.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]})
-							.exec(function(err, milestones){
-								if (err){
-									console.log("3");
-									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
-								}
-								if (milestones.length === 0){ //means all other milestones got checked
-									milestone.bet.status = "Succeeded";
-									milestone.bet.save(function(err){
-										if (err){
-											console.log("4");
-											utils.sendErrResponse(res, 500, "could not update bet status");
-										}
-										// send email to author
-										if (!test){
-											console.log("5");
-											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
-										}
-										console.log("6");
-										utils.sendSuccessResponse(res, savedmilestone);
-									})
-								}
-								else{
-									// user received checkoff but bet still ongoing
-									console.log("7");
-									utils.sendSuccessResponse(res, savedmilestone);
-								}
-							});
-					}
-					//other status =  failed
-					else if (new_status==="Failed"){
-						Milestone
-							.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
-							.exec(function(err){
-								if(err){
-									console.log("8");
-									utils.sendErrResponse(res, 500, "Cannot find fraternal milestones")
-								}
-								milestone.bet.status = "Failed";
-								milestone.bet.save(function (err){
-									if (err){
-										console.log("9");
-										utils.sendErrResponse(res, 500, err);
-									}
-									if (!test){// not in test mode
-										console.log("10");
-										// UPDATE PAYMENT STUFF, notify author
-										console.log("milestone.author", milestone.author);
-										MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
-											if (err) {
-												utils.sendErrResponse(res, 500, err);
-											} else {
-												console.log(requests);
-												console.log("Successfully deleted all monitor requests!.");
-												emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-												updatePayments(milestone.author._id, milestone.bet, res);
-											}
-										});
 
 	Milestone.checkoff(milestone_id, new_status, test, function(err, code, content){
                                         if (err) {
@@ -192,7 +116,7 @@ router.put('/:milestone_id', function(req, res) {
                                             utils.sendSuccessResponse(res, content);
                                         }
                                     });
-
+	});
 	// Milestone
 	// 	.findById(milestone_id)
 	// 	.populate('bet author')
@@ -226,7 +150,7 @@ router.put('/:milestone_id', function(req, res) {
 	// 									// send email to author
 	// 									if (!test){
 	// 										console.log("5");
-	// 										changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
+	// 										emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 	// 									}
 	// 									console.log("6");
 	// 									utils.sendSuccessResponse(res, savedmilestone);
@@ -264,7 +188,7 @@ router.put('/:milestone_id', function(req, res) {
 	// 										} else {
 	// 											console.log(requests);
 	// 											console.log("Successfully deleted all monitor requests!.");
-	// 											changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+	// 											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 	// 											updatePayments(milestone.author._id, milestone.bet, res);
 	// 										}
 	// 									});
@@ -287,6 +211,5 @@ router.put('/:milestone_id', function(req, res) {
 	// 			});
 	// 		}
 	// 	});
-});
 
 module.exports = router;
