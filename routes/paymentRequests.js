@@ -35,8 +35,8 @@ router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
 // Delete the payment record to indicate that the friend confirmed the claim (that the user has paid)
 router.get('/received/:paymentId', isAuthenticated, function(req, res) {
     console.log('inside serverside received');
-    MoneyRecord.findOneAndRemove({_id: req.params.paymentId}, 
-                                   function(err, code, content){
+    MoneyRecord.confirmPaymentClaim({_id: req.params.paymentId},
+                                    function(err, code, content){
                                         if (err) {
                                             utils.sendErrResponse(res, code, content);      
                                         }
@@ -44,6 +44,15 @@ router.get('/received/:paymentId', isAuthenticated, function(req, res) {
                                             utils.sendSuccessResponse(res, content);
                                         }
                                     });
+    // MoneyRecord.findOneAndRemove({_id: req.params.paymentId}, 
+    //                                function(err, code, content){
+    //                                     if (err) {
+    //                                         utils.sendErrResponse(res, code, content);      
+    //                                     }
+    //                                     else{
+    //                                         utils.sendSuccessResponse(res, content);
+    //                                     }
+    //                                 });
 });
 
 // // Gets all monitor requests current user received.

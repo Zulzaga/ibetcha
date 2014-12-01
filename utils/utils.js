@@ -36,7 +36,6 @@ utils.requireLogin = function(req, res, next) {
 
 // Authenticates the user and redirects to the users login page if necessary.
 utils.isAuthenticated = function (req, res, next) {
-    console.log("INSIDE ISAUTHENTICATED");
     if (req.user) {
         return next();
     }
