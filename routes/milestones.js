@@ -8,13 +8,13 @@ var router = express.Router();
 var ObjectId = require('mongoose').Types.ObjectId;
 
 //linking collections and utils 
-var utils = require('../../utils/utils')
-var emailNotifier = require('../../utils/email');
-//var changeStatus = require('../../utils/changeStatus');c
-var MoneyRecord = require('../../models/MoneyRecord');
-var Bet = require('../../models/Bet');
-var MonitorRequest = require('../../models/MonitorRequest');
-var Milestone = require('../../models/Milestone');
+var utils = require('../utils/utils')
+var emailNotifier = require('../utils/email');
+//var changeStatus = require('../utils/changeStatus');c
+var MoneyRecord = require('../models/MoneyRecord');
+var Bet = require('../models/Bet');
+var MonitorRequest = require('../models/MonitorRequest');
+var Milestone = require('../models/Milestone');
 
 
 

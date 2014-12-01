@@ -59,7 +59,7 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
                     callback(true, 500, 'Bet not found!');
                 } else {
                     bet.monitors.push(req.user._id);
-                    console.log(bet.monitors);
+                    //console.log(bet.monitors);
                     bet.save(function(err) {
                         if (err) {
                             callback(true, 500, 'There was an error! Could not save the bet.');
