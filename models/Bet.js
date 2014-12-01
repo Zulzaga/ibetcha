@@ -6,6 +6,7 @@ var User = require('./User');
 var Milestone = require('./Milestone');
 var MonitorRequest = require('./MonitorRequest');
 
+
 // Checks for model statuses
 var betStatus = [
 	'Not Started', //before startDate
@@ -120,7 +121,7 @@ betSchema.statics.create = function(data, callback){
 	      callback(true, 500, err);
 	    }
 	    else{
-	      User.findById(userId, function (err, user) {
+	      mongoose.model('User').findById(userId, function (err, user) {
 	            if (err){
 	                callback(true, 401, 'There was an error!');
 	            } else if (user === null){
