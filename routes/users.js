@@ -87,7 +87,7 @@ router.get('/current', isAuthenticated, function(req, res) {
 // Gets all the payments that the current user owes other people
 router.get('/payments', isAuthenticated, function(req, res) {
     console.log("****************3**********************");
-    User.fetchAllPayments(user, function(err, code, content){
+    User.fetchAllPayments(req.user, function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
@@ -122,24 +122,24 @@ router.get('/payments', isAuthenticated, function(req, res) {
 router.get('/friends/:username', function(req, res) {
     console.log("inside get friends");
     console.log("****************4**********************");
-    // User.findAllFriends(req.params.username, formatFriend, function(err, code, content){
-    //     if (err) {
-    //         utils.sendErrResponse(res, code, content);      
-    //     }
-    //     else{
-    //         utils.sendSuccessResponse(res, content);
-    //     }
-    // });
+    User.findAllFriends(req.params.username, formatFriend, function(err, code, content){
+        if (err) {
+            utils.sendErrResponse(res, code, content);      
+        }
+        else{
+            utils.sendSuccessResponse(res, content);
+        }
+    });
 
-    User.findOne({username:req.params.username})
-        .populate("friends")
-        .exec(function(error, user) {
-            if(error) {
-                utils.sendErrResponse(res, 500, error);
-            } else if(user) {
-                utils.sendSuccessResponse( res, user.friends.map(formatFriend));
-            }
-        });
+    // User.findOne({username:req.params.username})
+    //     .populate("friends")
+    //     .exec(function(error, user) {
+    //         if(error) {
+    //             utils.sendErrResponse(res, 500, error);
+    //         } else if(user) {
+    //             utils.sendSuccessResponse( res, user.friends.map(formatFriend));
+    //         }
+    //     });
 });
 
 // Logs out the user
@@ -210,7 +210,6 @@ router.post('/new', function(req, res, next) {
 // If wrong password/username combination, responds back with an appropriate
 // message.
 router.post('/login', function(req, res, next) {
-    console.log("******************8********************");
     if (req.user) {
         utils.sendErrResponse(res, 401, 'User already logged in!');
     } else {

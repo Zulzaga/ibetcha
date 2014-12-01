@@ -72,7 +72,7 @@ betSchema.statics.getCurrentUserBets = function(user, userId, cb) {
             		cb(true, 500, "There was an error");
             	} else {
             		user.monitoring = updatedBets;
-            		var monitorPromise = MonitorRequest.find({ to: userId }).populate('to from bet').exec(function(err, requests) {
+            		MonitorRequest.find({ to: userId }).populate('to from bet').exec(function(err, requests) {
                 		if(err) {
                 			cb(true, 500, "There was an error");
                 		} else {

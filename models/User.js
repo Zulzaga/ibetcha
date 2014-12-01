@@ -4,6 +4,7 @@ var mongoose = require("mongoose"),
 	passwordHash = require('password-hash');
 
 var Bet = require("./Bet");
+var MoneyRecord = require("./MoneyRecord");
 
 // User Schema
 var userSchema = new Schema({
@@ -54,7 +55,6 @@ userSchema.statics.create = function(username, password, email, callback) {
 }
 
 userSchema.statics.fetchAllUsers = function(cb) {
-	console.log("**************************************");
 	return User.find({}, function(err, users) {
 		if(err) {
 			cb(true, 500, 'There was an error');
@@ -65,18 +65,17 @@ userSchema.statics.fetchAllUsers = function(cb) {
 }
 
 userSchema.statics.fetchAllPayments = function(user, cb) {
-	console.log("**************************************");
 	return User.findById(user._id, function(err, user){
         if (err) {
             cb(true, 500, 'There was an error');
         } else if (user === null) {
             cb(true, 401, 'No such user found!');
         } else {
-            MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
+            MoneyRecord.find({ 'from': user._id }).populate('from to').exec(function(err, froms) {
                 if (err) {
                     cb(true, 500, 'There was an error');
                 } else {
-                    MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
+                    MoneyRecord.find({ 'to': user._id}).populate('from to').exec(function(err, tos) {
                         if (err) {
                             cb(true, 500, 'There was an error');
                         } else {
@@ -90,11 +89,11 @@ userSchema.statics.fetchAllPayments = function(user, cb) {
 }
 
 userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
-	console.log("**************************************");
 	return User.findOne({username:username})
         .populate("friends")
         .exec(function(error, user) {
             if(error) {
+            	console.log(error);
                 cb(true, 500, error);
             } else if(user) {
                 cb(false, 200, user.friends.map(formatFriend));
@@ -103,7 +102,6 @@ userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
 }
 
 userSchema.statics.getCurrentUserInfo = function(userId, cb) {
-	console.log("**************************************");
 	return User.findById(userId).populate('bets monitoring').exec(function(err, user) {
 		if(err) {
 			cb( true, 500, "There was an error");
@@ -116,7 +114,6 @@ userSchema.statics.getCurrentUserInfo = function(userId, cb) {
 }
 
 userSchema.statics.findUserById = function(userId, formatUser, cb) {
-	console.log("**************************************");
 	return User.findById( userId, function (err, user) {
         if (err){
             cb(true, 500, 'There was an error!');

@@ -1,4 +1,4 @@
-  var urlString = $('#urlString').text();
+
   //constants
   var MILLIS_IN_A_DAY = 24*60*60*1000;
   //form dummy bet attributes
@@ -45,18 +45,7 @@
       amount: amount
     }
 
-  // QUnit Test functional
-  var QUnitTesting = function(nameOfTest, conditional) {
-    QUnit.test(nameOfTest, function(assert) {
-      assert.ok(conditional);
-    });
-  };
-
-  // check if the expected error message is returned
-  var compareResponseText = function(jqXHR, expectedString) {
-    return JSON.parse(jqXHR.responseText).err === expectedString;
-  };
-
+  
   // Create new bet
   $.ajax({
     url: urlString + "bets",

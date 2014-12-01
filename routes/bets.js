@@ -23,7 +23,7 @@ var MILLIS_IN_A_DAY = 24*60*60*1000;
 /*
 Check bet data before entering it to the DB
 */
-  function validateBetData(data){
+function validateBetData(data){
   var result = true;
   var startDate = (new Date(data.startDate)).valueOf();
   var endDate = (new Date(data.endDate)).valueOf();
