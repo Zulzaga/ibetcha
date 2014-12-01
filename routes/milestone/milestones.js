@@ -142,7 +142,7 @@ router.put('/:milestone_id', function(req, res) {
 										// send email to author
 										if (!test){
 											console.log("5");
-											changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
+											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 										}
 										console.log("6");
 										utils.sendSuccessResponse(res, savedmilestone);
@@ -180,7 +180,7 @@ router.put('/:milestone_id', function(req, res) {
 											} else {
 												console.log(requests);
 												console.log("Successfully deleted all monitor requests!.");
-												changeStatus.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+												emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 												updatePayments(milestone.author._id, milestone.bet, res);
 											}
 										});
