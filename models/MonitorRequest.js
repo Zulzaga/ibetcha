@@ -21,6 +21,7 @@ var monitorRequestSchema = new Schema({
 });
 
 monitorRequestSchema.statics.getCurrentUserRequests = function(req, callback) {
+    console.log("********************************GETCURRENTUSERREQUESTS*************************************");
 	MonitorRequest.find({ to: req.user._id }).populate('from to bet').exec(function (err, requests) {
         if (err) {
             callback(true, 500, 'There was an error! Could not get users.')
