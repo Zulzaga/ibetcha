@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var mongoose = require("mongoose");
 
 //linking collections and utils
 var utils = require('../utils/utils')
@@ -17,9 +18,9 @@ var isAuthenticated = utils.isAuthenticated;
 
 // Update the payment to indicate the claim that the user has paid friends
 router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
-    console.log("inside serverside paid claim");
+    console.log("inside serverside paid claim", req.params.paymentId);
 
-    MoneyRecord.processPaymentClaim({_id: req.params.paymentId}, 
+    mongoose.model('MoneyRecord').processPaymentClaim({_id: req.params.paymentId}, 
                                     {$set: {requested: true}},
                                     function(err, code, content){
                                         if (err) {
@@ -35,7 +36,7 @@ router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
 // Delete the payment record to indicate that the friend confirmed the claim (that the user has paid)
 router.get('/received/:paymentId', isAuthenticated, function(req, res) {
     console.log('inside serverside received');
-    MoneyRecord.confirmPaymentClaim({_id: req.params.paymentId},
+    mongoose.model('MoneyRecord').confirmPaymentClaim({_id: req.params.paymentId},
                                     function(err, code, content){
                                         if (err) {
                                             utils.sendErrResponse(res, code, content);      
