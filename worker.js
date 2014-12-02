@@ -8,7 +8,6 @@ moment().format();
 var router = express.Router();
 
 //linking collections and utils 
-var utils = require('./utils/utils');
 var emailNotifier = require('./utils/emails');
 var User = require('./models/User');
 var Bet = require('./models/Bet');

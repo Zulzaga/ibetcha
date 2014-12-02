@@ -13,7 +13,7 @@ var transporter = nodemailer.createTransport({
 
 // NB! No need to recreate the transporter object. You can use
 // the same transporter object for all e-mails
-var emailNotifier = {};
+var emailNotifier = {"mimi":"mimi"};
 
 emailNotifier.sendNotification = function (user, emailTo, res, msg){
     if (user){ // only for sending activation code to user
