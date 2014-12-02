@@ -27,40 +27,42 @@
             Your monitors have upto 10 days after the end date to check you off, or else the bet is invalidated</br></br></br>
         </div>
     </div>
-    <div id="newbet-page">
-        <h2>Make a New Bet</h2>
-        <form class="newbet-form" novalidate ng-submit="editSubmit()" >
-            <!-- add clear button -->
-            
-            <div class="form-group">
-                <label class="newbet-label">I resolve to </label>
-                <input type="text" class="newbet form-control newbet-resolve" ng-model="editForm.description" placeholder="go to gym everyday"></input>
-            </div>
-            <div class="form-group">
-                <label class="newbet-label">Starting </label>
-                <input type="text" class="newbet form-control newbet-date datepicker" ng-model="editForm.startDate"></input>
-            </div>
-            <div class="form-group">
-                <label class="newbet-label">Ending </label>
-                <input type="text" class="newbet form-control newbet-date datepicker" ng-model="editForm.endDate"></input>
-            </div>
-            <div class="form-group">
-                <label class="newbet newbet-label">Every</label>
-                <input type="number" min="1" step="1" class="newbet newbet-freq" ng-model="editForm.frequency"></input> Days
-            </div>
-            <div class="form-group">
-                <label class="newbet newbet-label">and I am willing to bet </label>
-                <input type="number" min="3" step="1" class="newbet newbet-dollar" ng-model="editForm.amount"></input> Dollars
-            </div>
-            <div class="form-group" >
-                <label class="newbet-label">Add Friends to Monitor You</label>
-                <select class="newbet-friends-label" name="editForm.monitors" ng-model="editForm.monitors" ng-options="friend.username for friend in friends" ng-multiple="true" multiple>
-                </select>
-            </div>
-            <div id="submit-button-wrapper">
-                <button id="submit-button" ng-click="submit()" class="btn btn-primary" >Make My Bet</button>
-            </div>
-        </form>
+    <div id="newbet-box">
+        <div id="newbet-page">
+            <h2 class="newbet-title">Make a New Bet</h2>
+            <form class="newbet-form" novalidate ng-submit="editSubmit()" >
+                <!-- add clear button -->
+                
+                <div class="newbet-form-group">
+                    <label class="newbet-label">I resolve to </label>
+                    <input type="text" class="newbet form-control newbet-resolve" ng-model="editForm.description" placeholder="go to gym everyday"></input>
+                </div>
+                <div class="newbet-form-group">
+                    <label class="newbet-label">Starting </label>
+                    <input type="text" class="newbet form-control newbet-date datepicker" ng-model="editForm.startDate"></input>
+                </div>
+                <div class="newbet-form-group">
+                    <label class="newbet-label">Ending </label>
+                    <input type="text" class="newbet form-control newbet-date datepicker" ng-model="editForm.endDate"></input>
+                </div>
+                <div class="newbet-form-group">
+                    <label class="newbet newbet-label">Every</label>
+                    <input type="number" min="1" step="1" class="newbet newbet-freq" ng-model="editForm.frequency"></input> Days
+                </div>
+                <div class="newbet-form-group">
+                    <label class="newbet newbet-label">and I am willing to bet </label>
+                    <input type="number" min="3" step="1" class="newbet newbet-dollar" ng-model="editForm.amount"></input> Dollars
+                </div>
+                <div class="newbet-form-group" >
+                    <label class="newbet-label">Add Friends to Monitor You</label>
+                    <select class="newbet-friends-label" name="editForm.monitors" ng-model="editForm.monitors" ng-options="friend.username for friend in friends" ng-multiple="true" multiple>
+                    </select>
+                </div>
+                <div id="submit-button-wrapper">
+                    <button id="submit-button" ng-click="submit()" class="btn btn-primary" >Make My Bet</button>
+                </div>
+            </form>
+        </div>
     </div>
     
 </div>

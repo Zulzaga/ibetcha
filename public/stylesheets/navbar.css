@@ -89,11 +89,28 @@
 }
 
 #m-navbar-search-button {
-    position: relative;
     color: #A35133;
-    margin-top: 30px;
-    margin-right: 0px;
+    position: fixed;
+    margin-left: 0px;
     text-align: center;
+    width: 340px;
+    right: 150px;
+}
+
+.navbar-submit {
+    right: 0px;
+    display: inline-block;
+    position: absolute;
+    vertical-align: top;
+    top: 25px;
+}
+
+.navbar-text {
+    position: absolute;
+    left: 0px;
+    display: inline-block;
+    vertical-align: top;
+    top: 5px;
 }
 
 #m-navbar-makebet-button .m-navbar-icon{
@@ -110,4 +127,14 @@
 
 #m-navbar-edit-button .m-navbar-icon{
     color: #7286A5;
+}
+
+.navbar-err {
+    color: red;
+    width: 150px;
+    font-size: 14px;
+    margin-left: 30px;
+    position: fixed;
+    top: 90px;
+    text-align: left;
 }
