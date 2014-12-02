@@ -27,7 +27,7 @@ $.ajax({
 	dataType:"json",
 	async: false,
 	success: function(data, textStatus, jqXHR) {
-		QUnitTesting("Getting User payments", data.content.length >= 1);
+		QUnitTesting("Getting User payments", data.content.froms.length >= 1);
 		tos = data.content.tos;
 		froms = data.content.froms;
 	},
