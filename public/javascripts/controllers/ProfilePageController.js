@@ -6,20 +6,24 @@ ibetcha.controller('ProfilePageController',
         
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
+        $scope.currentUser = $cookieStore.get('user');
 
         // Helper function for loading the page.
         var onPageLoad = function() {
-
-        	// get current user infos from the server.
-        	$http({
-	            method: "GET",
-	            url: "users/" + $routeParams.username,
-	            }).success(function(data, status, headers, config) {
-	                $scope.userInfo = data.content.user;
-	            }).
-	        error(function(data, status, headers, config) {
-	            $scope.err = data.err;
-	        });
+            if ($routeParams.username == $scope.currentUser) {
+                $location.path('/home');
+            } else {
+                // get current user infos from the server.
+                $http({
+                    method: "GET",
+                    url: "users/" + $routeParams.username,
+                    }).success(function(data, status, headers, config) {
+                        $scope.userInfo = data.content.user;
+                    }).
+                error(function(data, status, headers, config) {
+                    $scope.err = data.err;
+                });
+            }
         }
 
         // If no session, (no user), redirect back to the login page.

@@ -119,7 +119,7 @@ router.get('/logout', function(req, res) {
 
 // Finds the user by username.
 router.get('/:username', isAuthenticated, function(req, res) {
-    User.findOne({username: req.params.username}, function (err, user) {
+    User.findOne({ username: req.params.username }, function (err, user) {
         if (err) {
             utils.sendErrResponse(res, 401, 'There was an error!');      
         } else if (user){

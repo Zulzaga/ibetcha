@@ -107,7 +107,7 @@ milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) 
 //if the bet is the last to receive a checkoff, it also updates the bet status
 milestonesSchema.statics.handle_success = function(milestone, callback){
 	Milestone
-		.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]})
+		.find({bet: milestone.bet._id, $or:[{ status:'Pending Action' }, { status:'Inactive' }, {status:'Open'}]})
 		.exec(function(err, milestones){
 			if (err){
 				callback(true, 500, "Cannot find fraternal milestones")

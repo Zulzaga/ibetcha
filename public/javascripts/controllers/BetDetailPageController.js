@@ -6,6 +6,7 @@ ibetcha.controller('BetDetailPageController',
 
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
+        $scope.currentUser = $cookieStore.get('user');
 
         // Helper function for loading the page.
         var onPageLoad = function() {
@@ -29,6 +30,8 @@ ibetcha.controller('BetDetailPageController',
                     }
 
                     if($routeParams.type === 'monitor') {
+                        console.log("Monitors:", $scope.currentUser in data.content.monitors);
+
                         $scope.isMonitor = true;
                     } else {
                         $scope.isMonitor = false;
