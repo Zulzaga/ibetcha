@@ -18,10 +18,10 @@
                 <div class="bets" ng-if="userInfo.bets.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.bets">
                         <div class="bet-info">
-                            <div class="bet-description">description: {{bet.description}}</div>
-                            <div class="bet-status">status: {{bet.status}}</div>
-                            <div class="bet-amount">amount: ${{bet.amount}}</div>
-                            <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
+                            <div class="bet-description">Description: {{bet.description}}</div>
+                            <div class="bet-status">Status: {{bet.status}}</div>
+                            <div class="bet-amount">Amount: ${{bet.amount}}</div>
+                            <div class="bet-monitors">Monitors: {{bet.monitors.length}}</div>
                             <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
                         </div>
 <!--                         <div class="bet-monitoring" ng-repeat="">

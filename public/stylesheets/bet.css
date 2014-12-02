@@ -102,4 +102,53 @@
     margin-bottom: 10px;
     color: steelBlue;
 }
+.bet-box{
+    margin: 10px;
+    padding:10px;
+    max-width:800px;
+    border:solid black 1px;
+    border-radius:5px; 
+    text-align: left;
+    word-break:break-all;
+    margin-left: auto;
+    margin-right: auto;;
+}
+
+.milestone{
+    display:inline-block;
+    width:100px;
+    padding:5px;
+    margin: 10px;
+    border:solid black 1px;
+    font-size: 15px;
+    text-align: center;
+}
+.milestone_grey{
+    background-color: #A8A8A8;
+}
+
+.milestone_green{
+   background-color: #40D6A4;
+}
+
+.milestone_red{
+   background-color: #EB6767;
+}
+
+.milestone_orange{
+   background-color: #F7994D;
+}
+.milestone_blue{
+    background-color: #9196E6;
+}
+.milestone_dark_grey{
+    background-color: #70717D;
+}
+.milestone_white{
+    background-color: #FFFFFF;
+}
+.request-box{
+    border: black solid 1px;
+    border-radius: 5px;
+}
 

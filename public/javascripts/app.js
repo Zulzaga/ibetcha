@@ -5,7 +5,7 @@ var ibetcha = angular.module('ibetcha', [
   'ngRoute',
   'ngResource',
   'ngAnimate',
-  'ngCookies',
+  'ngCookies'
 ]);
 
 // Configures routes with templates and controllers
