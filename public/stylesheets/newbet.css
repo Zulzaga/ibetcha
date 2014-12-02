@@ -91,6 +91,7 @@
 }
 
 #submit-button-wrapper {
+	margin-left: 8px;
 	margin-top: 20px;
 	text-align: center;
 }
