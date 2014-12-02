@@ -94,7 +94,7 @@ var saveBet = function(bet, req, callback) {
         if (err) {
             callback(true, 500, 'There was an error! Could not save the bet.');
         } else {
-            User.findById(req.user._id, function (err, user) {
+            mongoose.model('User').findById(req.user._id, function (err, user) {
                 if (err) {
                     callback(true, 500, 'There was an error! Could not get requests.');
                 } else {
