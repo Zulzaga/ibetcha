@@ -7,7 +7,7 @@
         <div class="err" ng-if="err">{{err}}</div>
         Today's checkoff <br>
         <div class="today-milestone" ng-if="!empty">
-            {{today.date}}
+            {{today.date.substring(0,10)}}
             <button type="Checkoff" class="btn btn-default" ng-click="check(today._id)">Check</button>
             <button type="Checkoff" class="btn btn-default" ng-click="fail(today._id)">Fail</button>
         </div>
@@ -15,7 +15,7 @@
 
         Pending checkoffs <br> 
         <div class="pending-milestone" ng-repeat="milestone in pending">
-            {{milestone.date}}
+            {{milestone.date.substring(0,10)}}
             <button type="Checkoff" class="btn btn-default" ng-click="check(milestone._id)">Check</button>
             <button type="Checkoff" class="btn btn-default" ng-click="fail(milestone._id)">Fail</button>
         </div>            
