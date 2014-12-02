@@ -3,8 +3,6 @@ var router = express.Router();
 
 // linking collections and utils
 var utils = require('../utils/utils')
-var passport = require('passport');
-var utils = require('../utils/utils');
 var emailNotifier = require('../utils/emails');
 
 var User = require('../models/User');
@@ -117,19 +115,12 @@ router.get('/logout', function(req, res) {
 
 // Finds the user by username.
 router.get('/:username', isAuthenticated, function(req, res) {
-    User.findOne({ username: req.params.username }, function (err, user) {
+    User.findByUsername(req.params.username, formatUser, function(err, code, content){
         if (err) {
-            utils.sendErrResponse(res, 401, 'There was an error!');      
-        } else if (user){
-            User.getUserInfo(user._id, function(err, code, content){
-                if (err) {
-                    utils.sendErrResponse(res, code, content);      
-                }else {
-                    utils.sendSuccessResponse(res, content);
-                }
-            });
-        } else {
-            utils.sendErrResponse(res, 500, "User does not exist!");  
+            utils.sendErrResponse(res, code, content);      
+        }
+        else {
+            utils.sendSuccessResponse(res, content);
         }
     });
 });
@@ -138,56 +129,28 @@ router.get('/:username', isAuthenticated, function(req, res) {
 
 // Creates a new user.
 router.post('/new', function(req, res, next) {
-    if (!req.body.password || !req.body.username || !req.body.email) {
-        utils.sendErrResponse(res, 401, 'Missing Credentials. Username, password and/or email cannot be empty.');
-    } else if (req.user) {
-        //res.redirect('/');
-        utils.sendErrResponse(res, 401, 'There was an error!');
-    } else {
-        passport.authenticate('signup', function(err, newUser, info){
-            if (err) {
-                utils.sendErrResponse(res, 500, 'There was an error!');
-            } else if (!newUser){
-                utils.sendErrResponse(res, 500, info);
-            } else {
-
-                req.logIn(newUser, function(err) {
-                  if (err) { 
-                        utils.sendErrResponse(res, 500, 'There was an error!');
-                  } else {
-                        utils.sendSuccessResponse(res, newUser);
-                  }
-                }); 
-            }
-        })(req, res, next);
-    }
+    User.signup(req, res, next, function(err, code, content){
+        if (err) {
+            utils.sendErrResponse(res, code, content);      
+        }
+        else {
+            utils.sendSuccessResponse(res, content);
+        }
+    });
 });
 
 // Logs in a user.
 // If wrong password/username combination, responds back with an appropriate
 // message.
 router.post('/login', function(req, res, next) {
-    if (!req.body.password || !req.body.username) {
-        utils.sendErrResponse(res, 401, 'Missing Credentials. Username and/or password cannot be empty.');
-    } else if (req.user) {
-        utils.sendErrResponse(res, 401, 'User already logged in!');
-    } else {
-        passport.authenticate('login', function(err, newUser, info){
-            if (err) {
-                utils.sendErrResponse(res, 500, 'There was an error!');
-            } else if (!newUser){
-                utils.sendErrResponse(res, 401, "Wrong username and password combination!");
-            } else {
-                req.logIn(newUser, function(err) {
-                    if (err) { 
-                        utils.sendErrResponse(res, 500, 'There was an error!');
-                    } else {
-                        utils.sendSuccessResponse(res, formatUser(newUser));
-                    }
-                }); 
-            }
-        })(req, res, next);
-    }
+    User.login(req, res, next, function(err, code, content){
+        if (err) {
+            utils.sendErrResponse(res, code, content);      
+        }
+        else {
+            utils.sendSuccessResponse(res, content);
+        }
+    });
 });
 
 // Sends email invites.
@@ -198,6 +161,7 @@ router.post('/emailinvite', function(req, res) {
       text: "You have been invited by your friend to join ibetcha.",
       receiver: req.body.friendName
     };
+    
     emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
 

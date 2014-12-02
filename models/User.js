@@ -2,6 +2,7 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 	passwordHash = require('password-hash');
+	passport = require('passport');
 
 var Bet = require("./Bet");
 var MoneyRecord = require("./MoneyRecord");
@@ -106,9 +107,9 @@ userSchema.statics.getUserInfo = function(userId, cb) {
 	});
 }
 
-//find  a user by ID
-userSchema.statics.findUserById = function(userId, formatUser, cb) {
-	return User.findById( userId, function (err, user) {
+// find a user by ID
+userSchema.statics.findByUsername = function(username, formatUser, cb) {
+	return User.findOne({ "username": username }, function (err, user) {
         if (err){
             cb(true, 500, 'There was an error!');
         } else if (user === null){
@@ -117,6 +118,57 @@ userSchema.statics.findUserById = function(userId, formatUser, cb) {
             cb(false, 200, formatUser(user));
         }
     });
+}
+
+// signup a new user
+userSchema.statics.signup = function(req, res, next, cb) {
+	if (!req.body.password || !req.body.username || !req.body.email) {
+        cb(true, 401, 'Missing Credentials. Username, password and/or email cannot be empty.');
+    } else if (req.user) {
+        cb(true, 401, 'User already logged in!');
+    } else {
+        passport.authenticate('signup', function(err, newUser, info){
+            if (err) {
+                cb(true, 500, 'There was an error!');
+            } else if (!newUser){
+                cb(true, 500, info);
+            } else {
+                req.logIn(newUser, function(err) {
+                  if (err) { 
+                        cb(res, 500, 'There was an error!');
+                  } else {
+                        cb(false, 200, newUser);
+                  }
+                }); 
+            }
+        })(req, res, next);
+    }
+}
+
+// login a user
+userSchema.statics.login = function(req, res, next, cb) {
+	if (!req.body.password || !req.body.username) {
+        cb(true, 401, 'Missing Credentials. Username and/or password cannot be empty.');
+    } else if (req.user) {
+        cb(true, 401, 'User already logged in!');
+    } else {
+    	// authenticate the user info using passport 
+        passport.authenticate('login', function(err, newUser, info){
+            if (err) {
+                cb(true, 500, 'There was an error!');
+            } else if (!newUser){
+                cb(true, 401, "Wrong username and password combination!");
+            } else {
+                req.logIn(newUser, function(err) {
+                    if (err) { 
+                        cb(true, 500, 'There was an error!');
+                    } else {
+                        cb(false, 200, newUser);
+                    }
+                }); 
+            }
+        })(req, res, next);
+    }
 }
 
 var User = mongoose.model('User', userSchema);
