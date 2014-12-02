@@ -87,6 +87,9 @@ milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) 
 
 }
 
+//checkoff a user for a particular milestone:
+//* handles logic for the case where the checkoff is a "fail": closes bet and sends payment requests
+//* if checkoff is the last one required, marks the bet as success and notifies user
 milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, callback) {
 	Milestone
 		.findById(milestone_id)
