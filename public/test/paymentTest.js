@@ -27,9 +27,9 @@ $.ajax({
 	dataType:"json",
 	async: false,
 	success: function(data, textStatus, jqXHR) {
-		QUnitTesting("Getting User payments", data.content.tos.length >= 1 && data.content.froms.length >= 1);
-		// console.log("33333333333333333333333333333333333333333333");
-		// console.log(data.content);
+		QUnitTesting("Getting User payments", data.content.froms.length >= 1 && data.content.froms.length >= 1);
+		console.log("33333333333333333333333333333333333333333333");
+		console.log(data.content);
 		tos = data.content.tos;
 		froms = data.content.froms;
 	},
@@ -39,7 +39,7 @@ $.ajax({
 });
 
 $.ajax({
-	url: urlString + "paymentRequests/paid/" + tos[0]._id + "/claim",
+	url: urlString + "paymentRequests/paid/" + froms[0]._id + "/claim",
 	type: "GET",
 	dataType:"json",
 	async: false,
@@ -100,13 +100,16 @@ $.ajax({
 	}
 });
 
+
 //Logout 
+
 $.ajax({
     url: urlString + "users/logout",
     type: "GET",
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
