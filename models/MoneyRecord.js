@@ -36,6 +36,8 @@ MoneyRecordSchema.statics.confirmPaymentClaim = function(objectId, cb) {
 	});
 }
 
+
+
 //Bindings
 var MoneyRecord = mongoose.model('MoneyRecord', MoneyRecordSchema);
 

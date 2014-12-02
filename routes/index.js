@@ -13,7 +13,7 @@ var Milestone = require('../models/Milestone');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	res.render('views/index');
+	res.render('index');
 });
 
 // Authenticates the user with Venmo.
