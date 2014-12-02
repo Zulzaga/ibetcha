@@ -101,7 +101,7 @@ userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
         });
 }
 
-userSchema.statics.getCurrentUserInfo = function(userId, cb) {
+userSchema.statics.getUserInfo = function(userId, cb) {
 	return User.findById(userId).populate('bets monitoring').exec(function(err, user) {
 		if(err) {
 			cb( true, 500, "There was an error");

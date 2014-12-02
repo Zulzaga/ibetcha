@@ -74,7 +74,7 @@ router.get('/', function(req, res) {
 router.get('/current', isAuthenticated, function(req, res) {
     console.log("inside users/current");
     console.log("***************2***********************");
-    User.getCurrentUserInfo(req.user._id, function(err, code, content){
+    User.getUserInfo(req.user._id, function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
@@ -95,27 +95,6 @@ router.get('/payments', isAuthenticated, function(req, res) {
             utils.sendSuccessResponse(res, content);
         }
     });
-    // User.findById(req.user._id, function(err, user){
-    //     if (err) {
-    //         utils.sendErrResponse(res, 500, 'There was an error');
-    //     } else if (user === null) {
-    //         utils.sendErrResponse(res, 401, 'No such user found!');
-    //     } else {
-    //         MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
-    //             if (err) {
-    //                 utils.sendErrResponse(res, 500, 'There was an error');
-    //             } else {
-    //                 MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
-    //                     if (err) {
-    //                         utils.sendErrResponse(res, 500, 'There was an error');
-    //                     } else {
-    //                         utils.sendSuccessResponse(res, { 'froms': froms, 'tos': tos });
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
 }); 
 
 // Finds the friends of the given user.
@@ -155,24 +134,20 @@ router.get('/logout', function(req, res) {
 });
 
 // Finds the user by the id.
-router.get('/:user_id', isAuthenticated, function(req, res) {
-    console.log("****************6**********************");
-    // User.findUserById(req.params.user_id, formatUser, function(err, code, content){
-    //     if (err) {
-    //         utils.sendErrResponse(res, code, content);      
-    //     }
-    //     else{
-    //         utils.sendSuccessResponse(res, content);
-    //     }
-    // });
-    
-    User.findById( req.params.user_id, function (err, user) {
-        if (err){
-            utils.sendErrResponse(res, 500, 'There was an error!');
-        } else if (user === null){
-            utils.sendErrResponse(res, 401, 'No such user found!');
+router.get('/:username', isAuthenticated, function(req, res) {
+    User.findOne({username: req.params.username}, function (err, user) {
+        if (err) {
+            utils.sendErrResponse(res, 401, 'There was an error!');      
+        } else if (user){
+            User.getUserInfo(user._id, function(err, code, content){
+                if (err) {
+                    utils.sendErrResponse(res, code, content);      
+                }else {
+                    utils.sendSuccessResponse(res, content);
+                }
+            });
         } else {
-            utils.sendSuccessResponse(res, formatUser(user));
+            utils.sendErrResponse(res, 500, "User does not exist!");  
         }
     });
 });

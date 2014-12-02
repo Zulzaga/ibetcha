@@ -15,7 +15,7 @@
 .m-navbar-button {
     position: relative;
     width: 110px;
-    height: 125px;
+    height: 137px;
     float:left;
     margin-top: auto;
     margin-bottom: auto;
@@ -81,6 +81,19 @@
 
 #m-navbar-logout-button .m-navbar-icon{
     color: #A35133;
+}
+
+#m-navbar-logout-button {
+    position: fixed;
+    right: 0px;
+}
+
+#m-navbar-search-button {
+    position: relative;
+    color: #A35133;
+    margin-top: 30px;
+    margin-right: 0px;
+    text-align: center;
 }
 
 #m-navbar-makebet-button .m-navbar-icon{

@@ -1,20 +1,14 @@
 <!-- page -->
 
-<div ng-controller="HomePageController" id="home-container">
+<div ng-controller="ProfilePageController" id="home-container">
     <ng-include src="'partials/navbar.html'"></ng-include>
         <div class="err" ng-if="err">{{err}}</div>
         <div class="userInfo-container">
-            <div class="user-username">Hi {{userInfo.username}}</div>
-            <!-- Div that contains all the profiles -->
-            <div class="requests-box">
-                <div class="request-monitor-title" ng-click="monitorRequests()">Monitor Requests</div>
-                <div class="request-friend-title" ng-click="friendRequests()">Friends / Friend Requests</div>
-                <div class="request-monitor-title" ng-click="paymentRequests()">Payment History</div>
-            </div>
+            <div class="user-username">Welcome to {{userInfo.username}}'s Profile</div>
             <div class="userInfo-box">
-                <div class="bet-cat-title">My Bets</div>
+                <div class="bet-cat-title">Bets</div>
                     <!-- Div containing all the semesters for this -->
-                <div class="no-bets" ng-if="userInfo.bets.length == 0">You don't have any bets. Make a new bet.</div>
+                <div class="no-bets" ng-if="userInfo.bets.length == 0">User doesn't have any bets.</div>
                 <div class="bets" ng-if="userInfo.bets.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.bets">
                         <div class="bet-info">
@@ -24,13 +18,11 @@
                             <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
                             <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
                         </div>
-<!--                         <div class="bet-monitoring" ng-repeat="">
-                            <div class="bet-milestone-monitors">monitors: {{milestone.monitors}}</div>
-                        </div> -->
+
                     </div>
                 </div>
                 <div class="bet-cat-title">Monitoring Bets</div>
-                <div class="no-bets" ng-if="userInfo.monitoring.length == 0">You don't have any bets to monitor.</div>
+                <div class="no-bets" ng-if="userInfo.monitoring.length == 0">User doesn't have any bets to monitor.</div>
                 <div class="bets" ng-if="userInfo.monitoring.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.monitoring">
                         <div class="bet-monitoring-info">
