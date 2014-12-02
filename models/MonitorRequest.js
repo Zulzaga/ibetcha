@@ -105,12 +105,12 @@ var saveBet = function(bet, req, callback) {
     });
 }
 
-monitorRequestSchema.statics.populateMonitorRequest = function(search, pathString, responseCallback) {
+monitorRequestSchema.statics.populateMonitorRequest = function(search, pathString, user, responseCallback) {
     MonitorRequest.find(search).populate(pathString).exec(function(err, requests) {
         if(err) {
             responseCallback(true, 500, "There was an error");
         } else {
-            responseCallback(false, 200, {'requests': requests});
+            responseCallback(false, 200, {'user': user, 'requests': requests});
         }                         
     }); 
 }
