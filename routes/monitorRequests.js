@@ -12,21 +12,8 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var isAuthenticated = utils.isAuthenticated;
-var response = utils.response;
+var propagateResponses = utils.propagateResponses;
 
-// Helper function that deletes a monitor request with the given id, sent to
-// currently logged in user.
-// function deleteRequest(req, res, requestId) {
-//     MonitorRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
-//         if (err) {
-//             utils.sendErrResponse(res, 500, 'There was an error! Could not find request.')
-//         } else if (request == null){
-//             utils.sendErrResponse(res, 500, 'No such request exists!.');
-//         } else {
-//             utils.sendSuccessResponse(res, request);
-//         }
-//     });
-// }
 
 //======================== API route methods =========================
 
@@ -35,20 +22,13 @@ var response = utils.response;
 // Gets all monitor requests current user received.
 router.get('/', isAuthenticated, function(req, res) {
     MonitorRequest.getCurrentUserRequests(req, function(err, code, content){
-                                        if (err) {
-                                            utils.sendErrResponse(res, code, content);      
-                                        }
-                                        else{
-                                            utils.sendSuccessResponse(res, content);
-                                        }
-                                    });
-    // MonitorRequest.find({ to: req.user._id }).populate('from to bet').exec(function (err, requests) {
-    //     if (err) {
-    //         utils.sendErrResponse(res, 500, 'There was an error! Could not get users.')
-    //     } else {
-    //         utils.sendSuccessResponse(res, requests);
-    //     }
-    // });
+         if (err) {
+             utils.sendErrResponse(res, code, content);      
+         }
+         else{
+             utils.sendSuccessResponse(res, content);
+         }
+    });
 });
 
 //============================POST METHODS:============================

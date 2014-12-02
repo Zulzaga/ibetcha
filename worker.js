@@ -19,7 +19,7 @@ module.exports = {
 	  	overnightCheck();
 
 	  }
-	}
+}
 
 //================== Cron job details =========
 

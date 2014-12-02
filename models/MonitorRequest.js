@@ -21,6 +21,7 @@ var monitorRequestSchema = new Schema({
 });
 
 monitorRequestSchema.statics.getCurrentUserRequests = function(req, callback) {
+    console.log("********************************GETCURRENTUSERREQUESTS*************************************");
 	MonitorRequest.find({ to: req.user._id }).populate('from to bet').exec(function (err, requests) {
         if (err) {
             callback(true, 500, 'There was an error! Could not get users.')
@@ -52,14 +53,14 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
         } else if (request === null){
             callback(true, 500, 'No such request exists!.');
         } else {
-            Bet.findById(request.bet, function(err, bet) {
+            mongoose.model('Bet').findById(request.bet, function(err, bet) {
                 if (err) {
                     callback(true, 500, 'There was an error! Could not find bet.');
                 } else if (bet === null) {
                     callback(true, 500, 'Bet not found!');
                 } else {
                     bet.monitors.push(req.user._id);
-                    console.log(bet.monitors);
+                    //console.log(bet.monitors);
                     bet.save(function(err) {
                         if (err) {
                             callback(true, 500, 'There was an error! Could not save the bet.');
@@ -75,10 +76,10 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
                                         } else {
                                             MonitorRequest.deleteRequest(req, req.params.requestId, function(err, code, content){
                                                 if (err) {
-                                                    utils.sendErrResponse(res, code, content);      
+                                                    callback(true, 500, content);      
                                                 }
                                                 else{
-                                                    utils.sendSuccessResponse(res, content);
+                                                    callback(false, 200, content);
                                                 }
                                             });
                                         }

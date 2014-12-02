@@ -17,6 +17,7 @@ var compareResponseText = function(jqXHR, expectedString) {
 var new_bet_id;
 var friend_id;
 var friend_request_id;
+var new_monitor_request_id;
 
   //form dummy bet attributes
 
@@ -162,6 +163,7 @@ var dummyData = {
     success: function(data, textStatus, jqXHR) {
       console.log("boop");
       console.log(data.content);
+      new_monitor_request_id = data.content._id;
       QUnitTesting("Creating a new monitor request", true );
 
     },
@@ -201,6 +203,21 @@ $.ajax({
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("User login", false);
+    }
+});
+
+//Login
+$.ajax({
+    url: urlString + "monitorRequests/" + new_monitor_request_id + "/accept",
+    type: "POST",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("Accept monitor request", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Accept monitor request: error", false);
     }
 });
 
