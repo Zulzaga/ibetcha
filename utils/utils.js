@@ -44,6 +44,8 @@ utils.isAuthenticated = function (req, res, next) {
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
+
+//unused: in progress
 //callback that propagates error codes or success messages up
 utils.propagateResponses = function(err, code, content){
     if (err) {
