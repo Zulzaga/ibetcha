@@ -8,7 +8,9 @@
 	    	<div class="friends-box">
 	    		<div class="requests-title">Friends:</div>
 	    		<div class="request-empty" ng-if="friends.length == 0">You don't have any friends. Invite your friends :).</div>
-	        	<div class="request-empty" ng-repeat="friend in friends">{{friend.username}}</div>
+	        	<div class="request-empty" ng-repeat="friend in friends">
+	        		<a href = "#/profile/{{friend.username}}">{{friend.username}}</a>
+	        	</div>
 	    	</div>
 	    	<div class="req-box">
 	    		<div class="requests-title">Friend Requests:</div>

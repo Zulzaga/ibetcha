@@ -16,17 +16,38 @@ ibetcha.controller('BetDetailPageController',
                 url: "bets/" +  $routeParams.id,
                 }).success(function(data, status, headers, config) {
                     $scope.bet = data.content;
-                    $scope.bet.startDate = data.content.startDate.substring(0, 10);
-                    $scope.bet.endDate = data.content.endDate.substring(0, 10);
-                    $scope.bet.dropDate = data.content.dropDate.substring(0, 10);
-                    $scope.milestones = [];
+                    $scope.bet.startDate = new Date(data.content.startDate).toDateString();
+                    $scope.bet.endDate = new Date(data.content.endDate).toDateString();
+                    $scope.bet.dropDate = new Date(data.content.dropDate).toDateString();
+                    $scope.milestones = data.content.milestones;
+                    $scope.monitors = data.content.monitors;
                     var l = data.content.milestones.length;
-                    console.log("How many: "+l);
-                    for (var i=0; i<l; i++){
-                        var text = "Milestone #"+ (i+1)+" : starts on "+ data.content.milestones[i].date.substring(0,10)+
-                        " , status - "+data.content.milestones[i].status;
-                        $scope.milestones.push(text);
+
+
+                    $scope.getMilestoneColor = function(m){
+                        if (m.status==="Inactive"){
+                            return {'milestone_grey milestone':true};
+                        }
+                        else if (m.status === "Success"){
+                            return {'milestone_green milestone':true};
+                        }
+                        else if (m.status === "Open"){
+                            return {'milestone_blue milestone':true};
+                        }
+                        else if (m.status === "Pending Action"){
+                            return {'milestone_orange milestone':true};
+                        }
+                        else if (m.status === "Failed"){
+                            return {'milestone_red milestone':true};
+                        }
+                        else if (m.status === "Closed"){
+                            return {'milestone_dark_grey milestone':true};
+                        }
+                        else{
+                            return {'milestone_white milestone':true};
+                        }
                     }
+                    console.log("How many: "+l);
 
                     if($routeParams.type === 'monitor') {
                         $scope.isMonitor = true;

@@ -5,15 +5,31 @@
         <div class="err" ng-if="err">{{err}}</div>
         <div class="single-bet-container">
             <div class="bet-title">Bet Detail:</div>
-            <div class="bet-description">description: {{bet.description}}</div>
-            <div class="bet-status">status: {{bet.status}}</div>
-            <div class="bet-startDate">startDate: {{bet.startDate}}</div>
-            <div class="bet-endDate">endDate: {{bet.endDate}}</div>
-            <div class="bet-dropDate">dropDate: {{bet.dropDate}}</div>
-            <div class="bet-frequency">frequency: {{bet.frequency}}</div>
-            <div class="bet-amount">amount: ${{bet.amount}}</div>
-            <div class="bet-monitors">monitors: {{bet.monitors.length}}</div>
-            <div class="bet-milestones">Milestones: {{milestones}}</div>
+            <div class="bet-description bet-box"> <p>Description: <br> {{bet.description}}</p>
+            </div>
+            <div class="bet-status bet-box">Status: {{bet.status}}</div>
+            <div class ="bet-timing bet-box">
+                <p class="bet-startDate">Start date: {{bet.startDate}}</p>
+                <p class="bet-endDate">End date: {{bet.endDate}}</p>
+                <p class="bet-dropDate">Drop date: {{bet.dropDate}}</p>
+                <p class="bet-frequency">Frequency: every {{bet.frequency}} day(s)</p>
+            </div>
+            
+            <div class="bet-amount bet-box">Amount: ${{bet.amount}}</div>
+            <div class="bet-monitors bet-box">
+                Monitors:
+                <p ng-repeat = "monitor in monitors">
+                    <a href="#/profile/{{monitor.username}}">{{monitor.username}}</a>
+                </p>
+            </div>
+            <div class="bet-milestones bet-box">
+                Milestones:<br>
+                <div ng-repeat="el in milestones" ng-class='       getMilestoneColor(el)'>
+                    <p>{{el.status}}</p>
+                    <p>{{el.date.substring(0,10)}}</p>
+                </div>
+ 
+            </div>
             <button ng-click="checkoff()" ng-show="isMonitor" type="submit" class="btn btn-default">Checkoff</button>
         </div>
 </div>
