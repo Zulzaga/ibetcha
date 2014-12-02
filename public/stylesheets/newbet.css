@@ -1,9 +1,15 @@
-.form-group {
-    width:500px;
+.newbet-form-group {
+    width: 500px;
+    margin-top: 5px;
+}
+
+#newbet-box {
+	width: 100%;
 }
 
 #newbet-page {
-	margin-top:110px;
+	width: 500px;
+	margin-top: 110px;
 	margin : 0 auto;
 }
 
@@ -12,7 +18,7 @@
 }
 
 #newbet-instructions-container{
-	margin-top: 180px;
+	margin-top: 160px;
 	margin-bottom: 30px;
 }
 
@@ -22,6 +28,7 @@
 	border-radius: 25px;
 	display: inline-block;
 	width: 500px;
+	height: 320px;
 	font-size: 15px;
 	font-weight: 700;
 	color: steelBlue;
@@ -29,12 +36,14 @@
 	text-align: left;
 	margin-bottom: 30px;
 	margin-right: 20px;
+	margin-left: 20px;
 }
 
 #newbet-rules{
 	background-color: #E0EBFF;
 	padding: 15px;
 	border-radius: 25px;
+	height: 320px;
 	display: inline-block;
 	width: 500px;
 	font-size: 15px;
@@ -42,6 +51,7 @@
 	color: steelBlue;
 	vertical-align: top;
 	text-align: left;
+	margin-left: 80px;
 }
 
 .newbet {
@@ -52,8 +62,12 @@
     margin-top: 400px;
 }*/
 
+.newbet-title {
+	text-align: center;
+}
+
 .newbet-resolve .newbet-date{
-    width:500px;
+    width: 500px;
 }
 
 .newbet-freq {
@@ -64,13 +78,19 @@
 	width: 100px;
 }
 
-.newbet-label{
+.newbet-label {
+	margin-top: 5px;
 	display: inline-block; 
 	width: 200px; 
 	text-align: left;
 }
 
-.newbet-friends-label{
+.newbet-friends-label {
 	min-width: 100px;
+	text-align: center;
+}
+
+#submit-button-wrapper {
+	margin-top: 20px;
 	text-align: center;
 }

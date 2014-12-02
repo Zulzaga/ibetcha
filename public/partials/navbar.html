@@ -14,12 +14,12 @@
         <div class="m-navbar-text">Send a Friend Request / Invite a Friend</div>
         <i class="m-navbar-arrow fa fa-caret-down"></i>
     </div>
-    <form class="navbar-form navbar-left" role="search" id="m-navbar-search-button" ng-submit="search()">
+    <form class="navbar-form navbar-left" ng-show="loggedIn" role="search" id="m-navbar-search-button" ng-submit="search()">
         <div class="form-group">
-          <input type="text" ng-model="text" class="form-control" name="text" placeholder="Search">
+          <input type="text" ng-model="text" class="form-control navbar-text" name="text" placeholder="Search">
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-        <div class="err" ng-if="err">{{err}}</div>
+        <button type="submit" class="btn btn-default navbar-submit">Submit</button>
+        <div class="navbar-err" ng-if="err">{{err}}</div>
     </form>
     <div class="m-navbar-button" ng-show="loggedIn" id="m-navbar-logout-button" ng-click="logout()">
         <i class="m-navbar-icon fa fa-sign-out"></i>
