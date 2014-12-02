@@ -4,6 +4,7 @@ var mongoose = require("mongoose"),
 
 var User = require('./User');
 
+//========================== SCHEMA DEFINITION ==========================
 // Friend Request Schema
 var friendRequestSchema = new Schema({
 	from:{
@@ -16,6 +17,9 @@ var friendRequestSchema = new Schema({
 	}
 });
 
+//============================ SCHEMA STATICS ============================
+
+/*Creates a friend request form a user to another */
 friendRequestSchema.statics.create = function(from, to, callback) {
     var newRequest = new FriendRequest({
         'from': from,
@@ -25,6 +29,7 @@ friendRequestSchema.statics.create = function(from, to, callback) {
     newRequest.save(callback);
 }
 
+/* Makes two users friends */
 friendRequestSchema.statics.friendEachOther = function(userid1, userid2, callback, responseCallback) {
 	User.findById( userid1, function(error, user1) {
         if (error) {
@@ -49,6 +54,7 @@ friendRequestSchema.statics.friendEachOther = function(userid1, userid2, callbac
     });
 } 
 
+/* Send a friend request from a user to another*/
 friendRequestSchema.statics.sendFriendRequest = function(to, req, callback){
 	FriendRequest.findOne({ 'to': to._id, 'from': req.user._id }, function (err1, request1) {
         if (err1) {
@@ -63,7 +69,6 @@ friendRequestSchema.statics.sendFriendRequest = function(to, req, callback){
                             if (err2) {
                                 callback(true, 500, 'There was an error');
                             } else {
-                                console.log("created friend request!");
                                 callback(false, 200, request3);
                             }
                         })
@@ -80,6 +85,7 @@ friendRequestSchema.statics.sendFriendRequest = function(to, req, callback){
     });
 }
 
+/*Delete a friend request*/
 friendRequestSchema.statics.deleteRequest = function(req, requestId, callback) {
 	FriendRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
         if (err) {

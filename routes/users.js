@@ -5,7 +5,7 @@ var router = express.Router();
 var utils = require('../utils/utils')
 var passport = require('passport');
 var utils = require('../utils/utils');
-var emailNotifier = require('../utils/email');
+var emailNotifier = require('../utils/emails');
 
 var User = require('../models/User');
 var Bet = require('../models/Bet');
@@ -15,7 +15,7 @@ var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
 var isAuthenticated = utils.isAuthenticated;
 
-//================== Important methods ===============================
+//================== Helper methods ===============================
 
 
 // Helper that formats the user information for sending user info
@@ -59,7 +59,6 @@ var ajaxResponse = function(err, code, content, res){
 // For testing purposes, shows all information about the users and will be
 // deleted for the final implementation.
 router.get('/', function(req, res) {
-    console.log("****************1**********************");
     User.fetchAllUsers(function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
@@ -72,9 +71,13 @@ router.get('/', function(req, res) {
 
 // Gets the currently logged in user information.
 router.get('/current', isAuthenticated, function(req, res) {
+<<<<<<< HEAD
     console.log("inside users/current");
     console.log("***************2***********************");
     User.getUserInfo(req.user._id, function(err, code, content){
+=======
+    User.getCurrentUserInfo(req.user._id, function(err, code, content){
+>>>>>>> 457144b23073b7927521dc385e85868dc6afa6c9
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
@@ -86,7 +89,6 @@ router.get('/current', isAuthenticated, function(req, res) {
 
 // Gets all the payments that the current user owes other people
 router.get('/payments', isAuthenticated, function(req, res) {
-    console.log("****************3**********************");
     User.fetchAllPayments(req.user, function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
@@ -99,8 +101,6 @@ router.get('/payments', isAuthenticated, function(req, res) {
 
 // Finds the friends of the given user.
 router.get('/friends/:username', function(req, res) {
-    console.log("inside get friends");
-    console.log("****************4**********************");
     User.findAllFriends(req.params.username, formatFriend, function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
@@ -109,22 +109,10 @@ router.get('/friends/:username', function(req, res) {
             utils.sendSuccessResponse(res, content);
         }
     });
-
-    // User.findOne({username:req.params.username})
-    //     .populate("friends")
-    //     .exec(function(error, user) {
-    //         if(error) {
-    //             utils.sendErrResponse(res, 500, error);
-    //         } else if(user) {
-    //             utils.sendSuccessResponse( res, user.friends.map(formatFriend));
-    //         }
-    //     });
 });
 
 // Logs out the user
 router.get('/logout', function(req, res) {
-    console.log('inside serverside logout');
-    console.log("*****************5*********************");
     if (req.user) {
         req.logout();
         utils.sendSuccessResponse(res, "Successfully logged out!.");
@@ -134,6 +122,7 @@ router.get('/logout', function(req, res) {
 });
 
 // Finds the user by the id.
+<<<<<<< HEAD
 router.get('/:username', isAuthenticated, function(req, res) {
     User.findOne({username: req.params.username}, function (err, user) {
         if (err) {
@@ -146,6 +135,14 @@ router.get('/:username', isAuthenticated, function(req, res) {
                     utils.sendSuccessResponse(res, content);
                 }
             });
+=======
+router.get('/:user_id', isAuthenticated, function(req, res) {
+    User.findById( req.params.user_id, function (err, user) {
+        if (err){
+            utils.sendErrResponse(res, 500, 'There was an error!');
+        } else if (user === null){
+            utils.sendErrResponse(res, 401, 'No such user found!');
+>>>>>>> 457144b23073b7927521dc385e85868dc6afa6c9
         } else {
             utils.sendErrResponse(res, 500, "User does not exist!");  
         }
@@ -156,8 +153,6 @@ router.get('/:username', isAuthenticated, function(req, res) {
 
 // Creates a new user.
 router.post('/new', function(req, res, next) {
-    console.log("******************7********************");
-    console.log("inside signup function");
     if (req.user) {
         //res.redirect('/');
         utils.sendErrResponse(res, 401, 'There was an error!');
@@ -214,7 +209,6 @@ router.post('/emailinvite', function(req, res) {
       text: "You have been invited by your friend to join ibetcha.",
       receiver: req.body.friendName
     };
-    console.log("req.user is this", req.user, req.body.friendName);
     emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
 

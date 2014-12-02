@@ -81,7 +81,6 @@ router.get('/:bet_id', function(req, res) {
 
 //get all pending milestones
 router.get('/:bet_id/milestones/pending', function(req, res) {
-  console.log("inside pending milestones");
   var bet_id = req.params.bet_id;
   Milestone.findPending(bet_id, function(err, code, content){
     if (err) {

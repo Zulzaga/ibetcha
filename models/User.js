@@ -6,7 +6,7 @@ var mongoose = require("mongoose"),
 var Bet = require("./Bet");
 var MoneyRecord = require("./MoneyRecord");
 
-// User Schema
+//========================== SCHEMA DEFINITION ==========================
 var userSchema = new Schema({
 	//login related information:
 	venmo:{
@@ -39,6 +39,8 @@ var userSchema = new Schema({
 	}]
 });
 
+//========================== SCHEMA STATICS ==========================
+
 //Create a user JSON and save the new user
 userSchema.statics.create = function(username, password, email, callback) {
     password = passwordHash.generate(password); // hash the password for storage
@@ -54,6 +56,7 @@ userSchema.statics.create = function(username, password, email, callback) {
     newUser.save(callback);
 }
 
+//find all users
 userSchema.statics.fetchAllUsers = function(cb) {
 	return User.find({}, function(err, users) {
 		if(err) {
@@ -64,6 +67,7 @@ userSchema.statics.fetchAllUsers = function(cb) {
 	});
 }
 
+//find all payments for a particular user
 userSchema.statics.fetchAllPayments = function(user, cb) {
 	return User.findById(user._id, function(err, user){
         if (err) {
@@ -88,6 +92,7 @@ userSchema.statics.fetchAllPayments = function(user, cb) {
     });
 }
 
+//find all friends for a user
 userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
 	return User.findOne({username:username})
         .populate("friends")
@@ -101,7 +106,12 @@ userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
         });
 }
 
+<<<<<<< HEAD
 userSchema.statics.getUserInfo = function(userId, cb) {
+=======
+//get the info of the user
+userSchema.statics.getCurrentUserInfo = function(userId, cb) {
+>>>>>>> 457144b23073b7927521dc385e85868dc6afa6c9
 	return User.findById(userId).populate('bets monitoring').exec(function(err, user) {
 		if(err) {
 			cb( true, 500, "There was an error");
@@ -113,6 +123,7 @@ userSchema.statics.getUserInfo = function(userId, cb) {
 	});
 }
 
+//find  a user by ID
 userSchema.statics.findUserById = function(userId, formatUser, cb) {
 	return User.findById( userId, function (err, user) {
         if (err){

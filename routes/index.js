@@ -9,6 +9,8 @@ var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 
+//======================== API route methods =========================
+
 /* GET home page. */
 router.get('/', function(req, res) {
 	res.render('index');
@@ -21,7 +23,6 @@ router.get('/auth/venmo', passport.authenticate('venmo', {
     scope: ['make_payments', 'access_feed', 'access_profile', 'access_email', 'access_phone', 'access_balance', 'access_friends'],
     failureRedirect: '/'
 }), function(req, res) {
-	console.log(req.user);
 });
 
 // Authenticates the user with Venmo.
@@ -30,7 +31,6 @@ router.get('/auth/venmo', passport.authenticate('venmo', {
 router.get('/auth/venmo/callback', passport.authenticate('venmo', {
     failureRedirect: '/users'
 }), function(req, res) {
-	console.log(req.user);
 	res.redirect('/users');
 });
 
