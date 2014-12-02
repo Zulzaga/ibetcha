@@ -25,7 +25,6 @@ module.exports = {
 When bet is dropped, make NOT checked off milestones Closed
 */
 function makeMilestoneClosed(callback){
-	console.log("entered makeMilestoneClosed");
 	Milestone
 		.find({$or:[{status:"Open"}, {status:"Pending Action"}, {status:"Inactive"}]})
 		.populate('bet')
@@ -37,7 +36,6 @@ function makeMilestoneClosed(callback){
 					milestones[i].status = "Closed";
 					milestones[i].save(function(err){
 						if (err){
-							console.log("Error while closing milestone: "+err);
 							return;
 						}
 					});
@@ -46,7 +44,6 @@ function makeMilestoneClosed(callback){
 					//do nothing
 				}
 			}
-			console.log("exited makeMilestoneClosed");
 			callback();
 			return;
 		});
@@ -57,23 +54,20 @@ function makeMilestoneClosed(callback){
 	change status from "Inactive" to "Open"
 */
 function makeMilestoneActive(callback){
-	console.log("entered makeMilestoneActive");
 	var today = getToday();
 	var tomorrow = getTomorrow();
 	Milestone
 		.update({status:"Inactive", date:{$gte:today, $lt: tomorrow}}, {$set:{status: 'Open'}}, {multi:true})
 		.exec(function (err, milestones){
 			if (err){
-				console.log("Error activating the milestone: "+ err);
 				return;
 			}
 			else{
 			//nothing should happen
-			console.log("exited makeMilestoneActive");
 			callback();
 			return;
 			}
-		});
+	});
 }
 
 /*
@@ -81,7 +75,6 @@ function makeMilestoneActive(callback){
 	to "Pending Action" if its effective date passed and no one checked it
 */
 function makeMilestonePendingAndEmail(callback){
-	console.log("entered makeMilestonePendingAndEmail");
 	var today = getToday();
 	var tomorrow = getTomorrow();
 	Milestone
@@ -94,7 +87,6 @@ function makeMilestonePendingAndEmail(callback){
 					milestones[i].status = "Pending Action";
 					milestones[i].save(function(err){
 						if (err){
-							console.log("Error while making Milestone pending: "+err);
 							return;
 						}
 						else{
@@ -102,9 +94,7 @@ function makeMilestonePendingAndEmail(callback){
 						}
 					});
 				})(i);
-				
 			}
-			console.log("exited makeMilestonePendingAndEmail");
 			callback();
 			return;
 		});
@@ -116,20 +106,17 @@ function makeMilestonePendingAndEmail(callback){
      any status  -> dropped (if today is drop date) + sends email   
 */
 function changeBetStatus(callback){
-	console.log("entered changeBetStatus");
 	var today = getToday();
 	var tomorrow = getTomorrow();
 	//2 cases for transitions
 
 	//case 1: Not Started --> Action Required,
 	function notStartedToActionRequired(callback){
-		console.log("entered notStartedToActionRequired");
 		//enough monitors, good to go
 		Bet
 			.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or:[{monitors: {$size: 3}}, {monitors: {$size: 4}}, {monitors: {$size: 5}}]}, {$set:{status:"Action Required"}}, {multi:true})
 			.exec(function(err, bets1){
 				if (err){
-					console.log("Error while activating bet: "+err);
 					return;
 				}
 				else{
@@ -139,11 +126,8 @@ function changeBetStatus(callback){
 						.update({status: "Not Started", startDate: {$gte:today, $lt: tomorrow}, $or: [{monitors: {$size: 0}}, {monitors: {$size: 1}}, {monitors: {$size: 2}}]}, {$set:{status:"Dropped"}}, {multi:true})
 						.exec(function(err, bets){
 							if (err){
-								console.log("Error while activating bet: "+err);
 								return;
 							}
-						
-							console.log("exited notStartedToActionRequired")
 							callback();
 						});
 				}
@@ -151,15 +135,12 @@ function changeBetStatus(callback){
 	}
 	//case 2: Anything --> Dropped (after dropped date)
 	function dropBetAfterDropDate(callback){
-		console.log("entered dropBetAfterDropDate");
 		Bet
 			.update({status: 'Action Required', dropDate: {$lt: today}}, {$set:{status: "Dropped"}}, {multi:true})
 			.exec(function(err, bets3){
 				if (err){
-					console.log("Error while dropping bet: "+err);
 					return;
 				}
-				console.log("exited dropBetAfterDropDate");
 				callback();
 				return;
 			});
@@ -172,10 +153,8 @@ function changeBetStatus(callback){
 	operations.push(dropBetAfterDropDate);
 	async.series(operations, function(err, results){
 		if (err){
-			console.log("Error changin bet status: "+err);
 			return;
 		}
-		console.log("Exited changeBetStatus");
 		callback();
 		return;
 	});
@@ -185,8 +164,6 @@ function changeBetStatus(callback){
 
 //make database changes at midnight
 var overnightCheck = function(){
-	console.log("about to start cron series");
-	//console.log("async: "+async.series);
 	var operations = [];
 	operations.push(changeBetStatus);
 	operations.push(makeMilestoneClosed);
@@ -197,7 +174,7 @@ var overnightCheck = function(){
 			console.log('smth wrong '+err);
 		}    		
 			console.log('CRON JOB FINISHED');
-		});
+	});
 }
 
 //======================== Helpers =========================
