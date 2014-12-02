@@ -78,6 +78,7 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {
       console.log('dataaa');
+      friend_id = data.content._id;
       QUnitTesting("User successful login", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -113,7 +114,6 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      friend_id = data.content._id;
       QUnitTesting("Create new user2", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {

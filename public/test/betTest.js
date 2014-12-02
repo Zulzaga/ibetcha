@@ -136,8 +136,8 @@ $.ajax({
     type: "POST",
     dataType:"json",
     data: {
-      username: "Dana",
-      password: "18"
+      username: "Zulaa",
+      password: "11"
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
@@ -185,8 +185,8 @@ $.ajax({
     type: "POST",
     dataType:"json",
     data: {
-      username: "Zulaa",
-      password: "11"
+      username: "Dana",
+      password: "18"
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
