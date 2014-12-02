@@ -5,7 +5,6 @@ var MonitorRequest = require('./MonitorRequest');
 var Milestone = require('./Milestone');
 var MoneyRecord = require('./MoneyRecord');
 var Bet = require('./Bet');
-//var changeStatus = require('../utils/changeStatus');
 var emailNotifier = require('../utils/emails');
 
 
