@@ -3,7 +3,6 @@
   <script src="javascripts/ui/datepicker.js"></script>
   
     <ng-include src="'partials/navbar.html'"></ng-include>
-    <div class="err" ng-if="err">{{err}}</div>
     <div id= "newbet-instructions-container">
         <div id="newbet-instruction">
             <div id="main-text-color">
@@ -27,6 +26,7 @@
             Your monitors have upto 10 days after the end date to check you off, or else the bet is invalidated</br></br></br>
         </div>
     </div>
+    <div class="betErr">{{err}}</div>
     <div id="newbet-box">
         <div id="newbet-page">
             <h2 class="newbet-title">Make a New Bet</h2>
@@ -35,7 +35,7 @@
                 
                 <div class="newbet-form-group">
                     <label class="newbet-label">I resolve to </label>
-                    <input type="text" class="newbet form-control newbet-resolve" ng-model="editForm.description" placeholder="go to gym everyday"></input>
+                    <input type="text" class="newbet form-control newbet-resolve required" ng-model="editForm.description" placeholder="go to gym everyday"></input>
                 </div>
                 <div class="newbet-form-group">
                     <label class="newbet-label">Starting </label>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="newbet-form-group" >
                     <label class="newbet-label">Add Friends to Monitor You</label>
-                    <select class="newbet-friends-label" name="editForm.monitors" ng-model="editForm.monitors" ng-options="friend.username for friend in friends" ng-multiple="true" multiple>
+                    <select class="newbet-friends-label required" name="editForm.monitors" ng-model="editForm.monitors" ng-options="friend.username for friend in friends" ng-multiple="true" multiple>
                     </select>
                 </div>
                 <div id="submit-button-wrapper">

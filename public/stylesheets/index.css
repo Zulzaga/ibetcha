@@ -44,7 +44,7 @@ button {
 .form-panel {
 	width: 300px;
 	position: absolute;
-	top: 100px;
+	top: 0px;
 	right: 100px;
 	margin-bottom: 100px;
 }

@@ -37,9 +37,12 @@ a {
 }
 
 .msg {
+    height: 40px;
     color: blue;
 }
 
 .err {
+    height: 35px;
+    width: 300px;
     color: red;
 }

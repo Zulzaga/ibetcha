@@ -138,7 +138,9 @@ router.get('/:username', isAuthenticated, function(req, res) {
 
 // Creates a new user.
 router.post('/new', function(req, res, next) {
-    if (req.user) {
+    if (!req.body.password || !req.body.username || !req.body.email) {
+        utils.sendErrResponse(res, 401, 'Missing Credentials. Username, password and/or email cannot be empty.');
+    } else if (req.user) {
         //res.redirect('/');
         utils.sendErrResponse(res, 401, 'There was an error!');
     } else {
@@ -165,7 +167,9 @@ router.post('/new', function(req, res, next) {
 // If wrong password/username combination, responds back with an appropriate
 // message.
 router.post('/login', function(req, res, next) {
-    if (req.user) {
+    if (!req.body.password || !req.body.username) {
+        utils.sendErrResponse(res, 401, 'Missing Credentials. Username and/or password cannot be empty.');
+    } else if (req.user) {
         utils.sendErrResponse(res, 401, 'User already logged in!');
     } else {
         passport.authenticate('login', function(err, newUser, info){
