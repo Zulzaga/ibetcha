@@ -4,7 +4,8 @@
     <ng-include src="'partials/navbar.html'"></ng-include>
         <div class="err" ng-if="err">{{err}}</div>
         <div class="userInfo-container">
-            <div class="user-username">Welcome to {{userInfo.username}}'s Profile</div>
+            <div class="user-username">Welcome to <p class="other-username">{{userInfo.username}}</p>'s Profile
+            </div>
             <div class="userInfo-box">
                 <div class="bet-cat-title">Bets</div>
                     <!-- Div containing all the semesters for this -->
