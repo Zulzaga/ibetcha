@@ -40,46 +40,10 @@ monitorRequestSchema.statics.deleteRequest = function(req, requestId, callback) 
 	MonitorRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
         if (err) {
             callback(true, 500, 'There was an error! Could not find request.')
-        } else if (request == null){
+        } else if (request == null) {
             callback(true, 500, 'No such request exists!.');
         } else {
             callback(false, 200, request);
-        }
-    });
-}
-
-// Save user info.
-monitorRequestSchema.statics.saveUser = function(user, bet, req, callback) {
-    user.monitoring.push(bet._id);
-    user.save(function(err) {
-        if (err) {
-            callback(true, 500, 'There was an error! Could not save the bet.');
-        } else {
-            MonitorRequest.deleteRequest(req, req.params.requestId, function(err, code, content){
-                if (err) {
-                    callback(true, 500, content);      
-                } else{
-                    callback(false, 200, content);
-                }
-            });
-        }
-    });
-}
-
-// Save bet info.
-monitorRequestSchema.statics.saveBet = function(bet, req, callback) {
-    bet.monitors.push(req.user._id);
-    bet.save(function(err) {
-        if (err) {
-            callback(true, 500, 'There was an error! Could not save the bet.');
-        } else {
-            User.findById(req.user._id, function (err, user) {
-                if (err) {
-                    callback(true, 500, 'There was an error! Could not get requests.');
-                } else {
-                    MonitorRequest.saveUser(user, bet, req, callback);
-                }
-            });
         }
     });
 }
@@ -98,7 +62,43 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
                 } else if (bet === null) {
                     callback(true, 500, 'Bet not found!');
                 } else {
-                    MonitorRequest.saveBet(bet, req, callback);
+                    saveBet(bet, req, callback);
+                }
+            });
+        }
+    });
+}
+
+// Save user info.
+var saveUser = function(user, bet, req, callback) {
+    user.monitoring.push(bet._id);
+    user.save(function(err) {
+        if (err) {
+            callback(true, 500, 'There was an error! Could not save the bet.');
+        } else {
+            MonitorRequest.deleteRequest(req, req.params.requestId, function(err, code, content){
+                if (err) {
+                    callback(true, 500, content);      
+                } else{
+                    callback(false, 200, content);
+                }
+            });
+        }
+    });
+}
+
+// Save bet info.
+var saveBet = function(bet, req, callback) {
+    bet.monitors.push(req.user._id);
+    bet.save(function(err) {
+        if (err) {
+            callback(true, 500, 'There was an error! Could not save the bet.');
+        } else {
+            User.findById(req.user._id, function (err, user) {
+                if (err) {
+                    callback(true, 500, 'There was an error! Could not get requests.');
+                } else {
+                    saveUser(user, bet, req, callback);
                 }
             });
         }

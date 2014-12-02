@@ -37,12 +37,12 @@ var milestonesSchema = new Schema({
 
 //========================== SCHEMA STATICS ==========================
 // find all pending milestones whose bets are open
-milestonesSchema.statics.findPending = function(bet_id, callback){
-  	this.find({bet:bet_id, $or:[{status:'Pending Action'}, {status:'Open'}]})
+milestonesSchema.statics.findPending = function(bet_id, callback) {
+  	this.find({ bet: bet_id, $or:[{ status: 'Pending Action'}, { status: 'Open' }]})
        .populate('author monitors')
        .sort({date:-1})
        .exec(function(error, milestones) {
-          	if(error) {
+          	if (error) {
             	callback(true, 500, error);
           	} else {
             	callback(false, 200, milestones);
@@ -50,92 +50,93 @@ milestonesSchema.statics.findPending = function(bet_id, callback){
 		});
 }
 
-//update the payment
+// update the payment
 milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) {
-	mongoose.model('Bet').findById(bet_id)
-	   .exec(function(err, bet) {
-	   		if (err) {
-				callback(true, 500, 'An error occurred while looking up the bet');
-			} else if (bet){
-				var amount = bet.amount / bet.monitors.length;
-				var recordRequests = [];
+	mongoose.model('Bet').findById(bet_id, function(err, bet) {
+   		if (err) {
+			callback(true, 500, 'An error occurred while looking up the bet');
+		} else if (bet) {
+			var amount = bet.amount / bet.monitors.length;
+			var recordRequests = [];
 
-				//prepare money record for each monitor of the bet
-				for (var i = 0; i < bet.monitors.length; i++) {
-					var request = {
-						from: author_id,
-						to: bet.monitors[i],
-						amount: amount,
-						requested: false
-					};
-					recordRequests.push(request);
-				}
-
-				//insert them into the DB
-				MoneyRecord.create(recordRequests, function(err, records) {
-					if (err) {
-						callback(true, 500, "Cannot create the payment records");
-					} else {
-						callback(false, 200, records);
-					}
-				});
-			} else {
-				callback(true, 500, 'There is no such bet like that');
+			//prepare money record for each monitor of the bet
+			for (var i = 0; i < bet.monitors.length; i++) {
+				var request = {
+					from: author_id,
+					to: bet.monitors[i],
+					amount: amount,
+					requested: false
+				};
+				recordRequests.push(request);
 			}
-		});
 
+			//insert them into the DB
+			MoneyRecord.create(recordRequests, function(err, records) {
+				if (err) {
+					callback(true, 500, "Cannot create the payment records");
+				} else {
+					callback(false, 200, records);
+				}
+			});
+		} else {
+			callback(true, 500, 'There is no such bet like that');
+		}
+	});
 }
 
 var handle_success = function(milestone, callback){
-	Milestone
-		.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]})
-		.exec(function(err, milestones){
-			if (err){
-				callback(true, 500, "Cannot find fraternal milestones")
-			}
-			if (milestones.length === 0){ //means all other milestones got checked
-				milestone.bet.status = "Succeeded";
-				milestone.bet.save(function(err){
-					if (err){
-						callback(true, 500, "could not update bet status");
-					}
-					// send email to author
-					emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
-					callback(false, 200, savedmilestone);
-				})
-			}
-			else{
-				// user received checkoff but bet still ongoing
+	Milestone.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, function(err, milestones){
+		if (err) {
+			callback(true, 500, "Cannot find fraternal milestones")
+		}
+
+		if (milestones.length === 0){ // means all other milestones got checked
+			milestone.bet.status = "Succeeded";
+			milestone.bet.save(function(err){
+				if (err) {
+					callback(true, 500, "could not update bet status");
+				}
+				// send email to author
+				emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 				callback(false, 200, savedmilestone);
-			}
-		});
+			})
+		} else {
+			// user received checkoff but bet still ongoing
+			callback(false, 200, savedmilestone);
+		}
+	});
 }
 
 
 var handle_failure = function(milestone, callback){
-	Milestone
-			.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
-			.exec(function(err){
-				if(err){
-					callback(true, 500, "Cannot find fraternal milestones")
-				}
-				milestone.bet.status = "Failed";
-				milestone.bet.save(function (err){
-					if (err){
-						callback(true, 500, err);
-					}
-					
-					// UPDATE PAYMENT STUFF, notify author
-					MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
-						if (err) {
-							callback(true, 500, err);
-						} else {
-							Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
-						}
-					});
-					
-				});								
-			});
+	Milestone.update({ bet: milestone.bet._id, 
+					   $or: [{ status: 'Pending Action' }, { status:'Inactive' }, { status: 'Open' }] }, 
+					 { $set: { status: 'Closed' } }, 
+					 { multi: true }, function(err) {
+		if (err) {
+			callback(true, 500, "Cannot find fraternal milestones")
+		}
+
+		milestone.bet.status = "Failed";
+		milestone.bet.save(function (err){
+			if (err) {
+				callback(true, 500, err);
+			} else {
+				removeMonitorRequests(milestone, callback);
+			}
+		});								
+	});
+}
+
+var removeMonitorRequests = function(milestone, callback) {
+	// UPDATE PAYMENT STUFF, notify author
+	MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
+		if (err) {
+			callback(true, 500, err);
+		} else {
+			Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
+		}
+	});
 }
 
 //checkoff a user for a particular milestone:
