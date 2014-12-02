@@ -77,7 +77,7 @@ router.get('/current', isAuthenticated, function(req, res) {
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
-        else{
+        else {
             utils.sendSuccessResponse(res, content);
         }
     });
@@ -89,7 +89,7 @@ router.get('/payments', isAuthenticated, function(req, res) {
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
-        else{
+        else {
             utils.sendSuccessResponse(res, content);
         }
     });
@@ -101,7 +101,7 @@ router.get('/friends/:username', function(req, res) {
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
-        else{
+        else {
             utils.sendSuccessResponse(res, content);
         }
     });

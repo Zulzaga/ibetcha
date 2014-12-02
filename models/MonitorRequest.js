@@ -108,9 +108,9 @@ var saveBet = function(bet, req, callback) {
 monitorRequestSchema.statics.populateMonitorRequest = function(search, pathString, responseCallback) {
     MonitorRequest.find(search).populate(pathString).exec(function(err, requests) {
         if(err) {
-            cb(true, 500, "There was an error");
+            responseCallback(true, 500, "There was an error");
         } else {
-            cb(false, 200, {'user': user, 'requests': requests});
+            responseCallback(false, 200, {'requests': requests});
         }                         
     }); 
 }

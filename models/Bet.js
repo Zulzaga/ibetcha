@@ -64,7 +64,7 @@ var betSchema = new Schema({
 betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback) {
 	Bet.populateBet([user.bets], {"path":"milestones"}, // populate the milestones
 		Bet.populateBet([user.monitoring], {"path":"author"}, // populate the authors of the bets you're monitoring
-			MonitorRequest.populateMonitorRequest({to:userId}, 'to from bet', responseCallback)) // populate the monitors
+			MonitorRequest.populateMonitorRequest({ to:userId }, 'to from bet', responseCallback)) // populate the monitors
 		,responseCallback);
 };
 
