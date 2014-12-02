@@ -5,7 +5,7 @@ var router = express.Router();
 var utils = require('../utils/utils');
 var passport = require('passport');
 var utils = require('../utils/utils');
-var emailNotifier = require('../utils/email');
+var emailNotifier = require('../utils/emails');
 
 var User = require('../models/User');
 var Bet = require('../models/Bet');

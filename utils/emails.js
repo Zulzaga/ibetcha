@@ -2,8 +2,6 @@ var nodemailer = require('nodemailer');
 var Bet = require('../models/Bet');
 var utils = require('./utils');
 
-var emailNotifier = {"hi": "hi"};
-
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -15,6 +13,7 @@ var transporter = nodemailer.createTransport({
 
 // NB! No need to recreate the transporter object. You can use
 // the same transporter object for all e-mails
+var emailNotifier = {};
 
 emailNotifier.sendNotification = function (user, emailTo, res, msg){
     if (user){ // only for sending activation code to user
@@ -38,7 +37,6 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
             };
     }
     transmitEmail(mailOptions, res);   
-    
 };
 
 
@@ -48,11 +46,8 @@ var transmitEmail = function(mail, res) {
         var result = true;
         transporter.sendMail(mail, function(error, info){
             if(error){
-                console.log(error);
                 result = false;
 
-            } else {
-                console.log('Message sent: ' + info.response);
             }
             return result;
         });
@@ -61,10 +56,8 @@ var transmitEmail = function(mail, res) {
     else{ //send response
         transporter.sendMail(mail, function(error, info){
             if(error){
-                console.log(error);
                 utils.sendErrResponse( res, 500, error);
             } else {
-                console.log('Message sent: ' + info.response);
                 utils.sendSuccessResponse(res, "success");
             }
         });
@@ -129,7 +122,6 @@ emailNotifier.sendEmailAuthor = function(author, bet_id, status){
 };
 
 
-
 //send emails to the list of  monitors for each milestone if no one checked it off
 //monitors - list of JSON objects
 emailNotifier.sendEmailReminder = function(monitors, bet_id, author){
@@ -138,7 +130,6 @@ emailNotifier.sendEmailReminder = function(monitors, bet_id, author){
         .populate('monitors')
         .exec(function(err, bet){
             if (err){
-                console.log("ERROR IN FINDING BET IN REMINDING FUNCTION");
                 return;
             }
             var emailList = getMonitorEmails(bet.monitors);
@@ -153,10 +144,7 @@ emailNotifier.sendEmailReminder = function(monitors, bet_id, author){
                 };
                 emailNotifier.sendNotification(null,receiver, null, msg);
             }
-
         });
-
-
     };
 
 //======================== Helpers =========================

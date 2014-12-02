@@ -9,7 +9,7 @@ var router = express.Router();
 
 //linking collections and utils 
 var utils = require('./utils/utils');
-var emailNotifier = require('./utils/email');
+var emailNotifier = require('./utils/emails');
 var User = require('./models/User');
 var Bet = require('./models/Bet');
 var Milestone = require('./models/Milestone');
@@ -17,7 +17,6 @@ var Milestone = require('./models/Milestone');
 module.exports = {
 	  start: function(){
 	  	overnightCheck();
-
 	  }
 }
 
@@ -53,11 +52,11 @@ function makeMilestoneClosed(callback){
 			return;
 		});
 }
+
 /*
 	For those milestones whose effective date is today,
 	change status from "Inactive" to "Open"
 */
-
 function makeMilestoneActive(callback){
 	console.log("entered makeMilestoneActive");
 	var today = getToday();
@@ -82,7 +81,6 @@ function makeMilestoneActive(callback){
 	Change status of the Milestone object from "Open" or "Pending Action"
 	to "Pending Action" if its effective date passed and no one checked it
 */
-
 function makeMilestonePendingAndEmail(callback){
 	console.log("entered makeMilestonePendingAndEmail");
 	var today = getToday();
@@ -118,7 +116,6 @@ function makeMilestonePendingAndEmail(callback){
      not started -> action required (if today is start date) + sends email
      any status  -> dropped (if today is drop date) + sends email   
 */
-
 function changeBetStatus(callback){
 	console.log("entered changeBetStatus");
 	var today = getToday();
@@ -212,8 +209,6 @@ function getToday(){
 	today.minute(0);
 	today.hour(0);
 	return today;
-	//var timezone = (new Date()).getTimezoneOffset(); 
-	//someDate.zone(timezone);
 }
 function getTomorrow(){
 	var today = moment();
@@ -223,8 +218,6 @@ function getTomorrow(){
 	today.minute(0);
 	today.hour(0);
 	return today;
-	//var timezone = (new Date()).getTimezoneOffset(); 
-	//someDate.zone(timezone);
 }
 
 

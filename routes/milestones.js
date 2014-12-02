@@ -9,7 +9,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 //linking collections and utils 
 var utils = require('../utils/utils')
-var emailNotifier = require('../utils/email');
+var emailNotifier = require('../utils/emails');
 //var changeStatus = require('../utils/changeStatus');c
 var MoneyRecord = require('../models/MoneyRecord');
 var Bet = require('../models/Bet');
