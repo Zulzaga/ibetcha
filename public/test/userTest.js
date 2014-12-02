@@ -141,7 +141,6 @@ var dummyData = {
     async: false,
     success: function(data, textStatus, jqXHR) {
       console.log("998938493894", data.content._id);
-      new_bet_id = data.content._id;
       QUnitTesting("Create new Bet: success message", data.success);
       QUnitTesting("Create new Bet: check frequency", data.content.frequency = frequency);
       QUnitTesting("Create new Bet: check amount", data.content.amount=== amount);
@@ -304,3 +303,5 @@ $.ajax({
       QUnitTesting("Get friends", false);
     }
 });
+
+

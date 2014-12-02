@@ -123,7 +123,7 @@ router.post('/byEmail', isAuthenticated, function(req, res) {
                 utils.sendErrResponse(res, 500, 'No such user found!');
             } else {
                 //sendFriendRequest(requestReceiver, req, res);
-                User.sendFriendRequest(requestReceiver, req, function(err, code, content){
+                FriendRequest.sendFriendRequest(requestReceiver, req, function(err, code, content){
                     if (err) {
                         utils.sendErrResponse(res, code, content);      
                     }

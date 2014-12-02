@@ -14,7 +14,7 @@ var transporter = nodemailer.createTransport({
 // NB! No need to recreate the transporter object. You can use
 // the same transporter object for all e-mails
 
-var emailNotifier = {}
+var emailNotifier = {};
 
 emailNotifier.sendNotification = function (user, emailTo, res, msg){
     if (user){ // only for sending activation code to user
@@ -126,7 +126,7 @@ emailNotifier.sendEmailAuthor = function(author, bet_id, status){
         
     }
     emailNotifier.sendNotification(null, receiver,null, msg);
-}
+};
 
 
 
@@ -157,7 +157,7 @@ emailNotifier.sendEmailReminder = function(monitors, bet_id, author){
         });
 
 
-    }
+    };
 
 //======================== Helpers =========================
 function getMonitorEmails(monitors){
@@ -168,6 +168,6 @@ function getMonitorEmails(monitors){
     }
     return emailList;
 
-}
+};
 
 module.exports = emailNotifier;
