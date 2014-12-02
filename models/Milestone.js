@@ -84,60 +84,101 @@ milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) 
 	});
 }
 
-var handle_success = function(milestone, callback){
-	Milestone.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, function(err, milestones){
-		if (err) {
-			callback(true, 500, "Cannot find fraternal milestones")
-		}
 
-		if (milestones.length === 0){ // means all other milestones got checked
-			milestone.bet.status = "Succeeded";
-			milestone.bet.save(function(err){
-				if (err) {
-					callback(true, 500, "could not update bet status");
-				}
-				// send email to author
-				emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
-				callback(false, 200, savedmilestone);
-			})
-		} else {
-			// user received checkoff but bet still ongoing
-			callback(false, 200, savedmilestone);
-		}
-	});
-}
+// var handle_success = function(milestone, callback){
+// 	Milestone.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, function(err, milestones){
+// 		if (err) {
+// 			callback(true, 500, "Cannot find fraternal milestones")
+// 		}
 
+// 		if (milestones.length === 0){ // means all other milestones got checked
+// 			milestone.bet.status = "Succeeded";
+// 			milestone.bet.save(function(err){
+// 				if (err) {
+// 					callback(true, 500, "could not update bet status");
+// 				}
+// 				// send email to author
+// 				emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
+// 			}
+// 		}
+// 	}
 
-var handle_failure = function(milestone, callback){
-	Milestone.update({ bet: milestone.bet._id, 
-					   $or: [{ status: 'Pending Action' }, { status:'Inactive' }, { status: 'Open' }] }, 
-					 { $set: { status: 'Closed' } }, 
-					 { multi: true }, function(err) {
-		if (err) {
-			callback(true, 500, "Cannot find fraternal milestones")
-		}
-
-		milestone.bet.status = "Failed";
-		milestone.bet.save(function (err){
-			if (err) {
-				callback(true, 500, err);
-			} else {
-				removeMonitorRequests(milestone, callback);
+//handles the case where a successful checkoff is given to a milestone
+//if the bet is the last to receive a checkoff, it also updates the bet status
+milestonesSchema.statics.handle_success = function(milestone, callback){
+	Milestone
+		.find({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]})
+		.exec(function(err, milestones){
+			if (err){
+				callback(true, 500, "Cannot find fraternal milestones")
 			}
-		});								
-	});
+			if (milestones.length === 0){ //means all other milestones got checked
+				milestone.bet.status = "Succeeded";
+				milestone.bet.save(function(err){
+					if (err){
+						callback(true, 500, "could not update bet status");
+					}
+					// send email to author
+					emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
+					callback(false, 200, savedmilestone);
+				})
+			}
+			else{
+				// user received checkoff but bet still ongoing
+				callback(false, 200, savedmilestone);
+			}
+		});
 }
 
-var removeMonitorRequests = function(milestone, callback) {
-	// UPDATE PAYMENT STUFF, notify author
-	MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
-		if (err) {
-			callback(true, 500, err);
-		} else {
-			Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
-		}
-	});
+// var handle_failure = function(milestone, callback){
+// 	Milestone.update({ bet: milestone.bet._id, 
+// 					   $or: [{ status: 'Pending Action' }, { status:'Inactive' }, { status: 'Open' }] }, 
+// 					 { $set: { status: 'Closed' } }, 
+// 					 { multi: true }, function(err) {
+// 		if (err) {
+// 			callback(true, 500, "Cannot find fraternal milestones")
+// 		}
+
+// 		milestone.bet.status = "Failed";
+// 		milestone.bet.save(function (err){
+// 			if (err) {
+// 				callback(true, 500, err);
+// 			} else {
+// 				removeMonitorRequests(milestone, callback);
+// 			}
+// 		});								
+// 	});
+// }
+
+// var removeMonitorRequests = function(milestone, callback) {
+// 	// UPDATE PAYMENT STUFF, notify author
+// 	MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
+// 		if (err) {
+// 			callback(true, 500, err);
+// 		} else {
+// 			Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
+// 		}
+// 	});
+
+//handles notifying the user and proceeding to make payment objects for monitors and the betcher
+milestonesSchema.statics.handle_failure_helper = function(milestone,callback){
+	milestone.bet.status = "Failed";
+		milestone.bet.save(function (err){
+			if (err){
+				callback(true, 500, err);
+			}
+			
+			// UPDATE PAYMENT STUFF, notify author
+			MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
+				if (err) {
+					callback(true, 500, err);
+				} else {
+					Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
+				}
+			});
+		});	
 }
+
 
 //checkoff a user for a particular milestone:
 //* handles logic for the case where the checkoff is a "fail": closes bet and sends payment requests
@@ -155,14 +196,11 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 					if (err){
 						callback(true, 500, "Cannot save the milestone")
 					}
-					//new status = success
-					if (new_status === 'Success'){
-						// logic for success case
-						handle_success(milestone, callback);
+					if (new_status === 'Success'){ // logic for success case
+						Milestone.handle_success(milestone, callback);
 					}
-					//other status =  failed
 					else if (new_status==="Failed"){
-						handle_failure(milestone, callback);
+						Milestone.handle_failure(milestone, callback);
 					}
 					else{
 						//should never get here, other statuses shouldn't be sent

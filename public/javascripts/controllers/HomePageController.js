@@ -16,6 +16,7 @@ ibetcha.controller('HomePageController',
 	            url: "users/current"
 	            }).success(function(data, status, headers, config) {
 	                $scope.userInfo = data.content.user;
+                    console.log("loggedIn", $scope.loggedIn);
 	            }).
 	        error(function(data, status, headers, config) {
 	            $scope.err = data.err;
