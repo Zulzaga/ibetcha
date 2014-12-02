@@ -3,6 +3,7 @@ var mongoose = require("mongoose"),
 	Schema = mongoose.Schema;
 
 var Bet = require("./Bet");
+var MoneyRecord = require('./MoneyRecord');
 
 // Schema for keeping track of who owes what
 var MoneyRecordSchema = new Schema({
@@ -11,9 +12,6 @@ var MoneyRecordSchema = new Schema({
 	amount: {type: Number, required:true},
 	requested: {type: Boolean, required:true}
 });
-
-
-
 
 //Bindings
 var MoneyRecord = mongoose.model('MoneyRecord', MoneyRecordSchema);

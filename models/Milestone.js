@@ -2,8 +2,10 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 var MonitorRequest = require('./MonitorRequest');
+var Milestone = require('./Milestone');
+var MoneyRecord = require('./MoneyRecord');
 //var changeStatus = require('../utils/changeStatus');
-var emailNotifier = require('../utils/email');
+var emailNotifier = require('../utils/emails');
 
 
 var milestoneStatus = [
@@ -48,7 +50,7 @@ milestonesSchema.statics.findPending = function(bet_id, callback){
 }
 
 milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) {
-	Bet.findOne({_id:bet_id})
+	mongoose.model('Bet').findOne({_id:bet_id})
 	   .exec(function(err, bet) {
 	   		if (err) {
 				callback(true, 500, 'An error occurred while looking up the bet');
@@ -154,9 +156,11 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 											callback(true, 500, err);
 										} else {
 											console.log(requests);
+											console.log("moomoo");
+											console.log(emailNotifier);
 											console.log("Successfully deleted all monitor requests!.");
 											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-											Milestones.updatePayments(milestone.author._id, milestone.bet, callback);
+											Milestone.updatePayments(milestone.author._id, milestone.bet, callback);
 										}
 									});
 									
