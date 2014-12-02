@@ -145,28 +145,21 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 										console.log("9");
 										callback(true, 500, err);
 									}
-									if (!test){// not in test mode
-										console.log("10");
-										// UPDATE PAYMENT STUFF, notify author
-										console.log("milestone.author", milestone.author);
-										MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
-											if (err) {
-												callback(true, 500, err);
-											} else {
-												console.log(requests);
-												console.log("Successfully deleted all monitor requests!.");
-												emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-												Milestones.updatePayments(milestone.author._id, milestone.bet, callback);
-											}
-										});
 									
-									} else {
-										//test mode, just send success
-										//console.log("EMAIL DANA");
-										//sendEmailAuthor({username:"D", email:"mukushev@mit.edu"}, milestone.bet._id, "Failed");
-										console.log("11");
-										callback(false, 200, milestone);
-									}
+									console.log("10");
+									// UPDATE PAYMENT STUFF, notify author
+									console.log("milestone.author", milestone.author);
+									MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
+										if (err) {
+											callback(true, 500, err);
+										} else {
+											console.log(requests);
+											console.log("Successfully deleted all monitor requests!.");
+											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+											Milestones.updatePayments(milestone.author._id, milestone.bet, callback);
+										}
+									});
+									
 								});								
 							});
 					}

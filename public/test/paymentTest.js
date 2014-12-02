@@ -2,20 +2,6 @@ var user_id;
 var tos;
 var froms;
 
-//Logout 
-$.ajax({
-    url: urlString + "users/logout",
-    type: "GET",
-    dataType:"json",
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      QUnitTesting("User logout", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("User logout", false);
-    }
-});
-
 //Login Dana
 $.ajax({
     url: urlString + "users/login",
