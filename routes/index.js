@@ -9,6 +9,8 @@ var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 
+//======================== API route methods =========================
+
 /* GET home page. */
 router.get('/', function(req, res) {
 	res.render('index');

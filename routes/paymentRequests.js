@@ -15,6 +15,8 @@ var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
 var isAuthenticated = utils.isAuthenticated;
 
+//======================== API route methods =========================
+
 // Update the payment to indicate the claim that the user has paid friends
 router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
     console.log("inside serverside paid claim", req.params.paymentId);

@@ -15,7 +15,7 @@ var MonitorRequest = require('../models/MonitorRequest');
 var MoneyRecord = require('../models/MoneyRecord');
 var isAuthenticated = utils.isAuthenticated;
 
-//================== Important methods ===============================
+//================== Helper methods ===============================
 
 
 // Helper that formats the user information for sending user info
@@ -95,27 +95,6 @@ router.get('/payments', isAuthenticated, function(req, res) {
             utils.sendSuccessResponse(res, content);
         }
     });
-    // User.findById(req.user._id, function(err, user){
-    //     if (err) {
-    //         utils.sendErrResponse(res, 500, 'There was an error');
-    //     } else if (user === null) {
-    //         utils.sendErrResponse(res, 401, 'No such user found!');
-    //     } else {
-    //         MoneyRecord.find({ 'from': req.user._id }).populate('from to').exec(function(err, froms) {
-    //             if (err) {
-    //                 utils.sendErrResponse(res, 500, 'There was an error');
-    //             } else {
-    //                 MoneyRecord.find({ 'to': req.user._id}).populate('from to').exec(function(err, tos) {
-    //                     if (err) {
-    //                         utils.sendErrResponse(res, 500, 'There was an error');
-    //                     } else {
-    //                         utils.sendSuccessResponse(res, { 'froms': froms, 'tos': tos });
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
 }); 
 
 // Finds the friends of the given user.
