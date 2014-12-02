@@ -77,6 +77,7 @@ $.ajax({
 		QUnitTesting("Claim to have paid", data.success === true);
 	},
 	failure: function(jqXHR, textStatus, err) {
+    console.log("Fail milestone: success message", err, textStatus, jqXHR);
 		QUnitTesting("Claim to have paid", false);
 	}
 });

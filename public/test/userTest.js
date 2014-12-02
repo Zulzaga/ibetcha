@@ -14,10 +14,8 @@ var compareResponseText = function(jqXHR, expectedString) {
   return JSON.parse(jqXHR.responseText).err === expectedString;
 };
 
-var new_bet_id;
 var friend_id;
 var friend_request_id;
-var new_monitor_request_id;
 
   //form dummy bet attributes
 
@@ -47,7 +45,6 @@ $.ajax({
       console.log('dataaa');
       console.log(data);
       QUnitTesting("Create new user1", data.success === true);
-      friend_id = data.content._id;
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Create new user1", false);
@@ -116,6 +113,7 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
+      friend_id = data.content._id;
       QUnitTesting("Create new user2", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -130,46 +128,6 @@ var dummyData = {
     frequency:frequency, 
     amount: amount
   }
-
-//Create new bet
-  $.ajax({
-    url: urlString + "bets",
-    type: "POST",
-    dataType:"json",
-    data: dummyData,
-
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log("998938493894", data.content._id);
-      QUnitTesting("Create new Bet: success message", data.success);
-      QUnitTesting("Create new Bet: check frequency", data.content.frequency = frequency);
-      QUnitTesting("Create new Bet: check amount", data.content.amount=== amount);
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new Bet: error", false);
-    }
-  });
-
-// Create new monitor request
-  $.ajax({
-    url: urlString + "monitorRequests",
-    type: "POST",
-    dataType:"json",
-
-    data: { to: friend_id, bet: new_bet_id },
-
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log("boop");
-      console.log(data.content);
-      new_monitor_request_id = data.content._id;
-      QUnitTesting("Creating a new monitor request", true );
-
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Create new monitor request: error", false);
-    }
-  });
 
 //Logout
 $.ajax({
@@ -202,21 +160,6 @@ $.ajax({
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("User login", false);
-    }
-});
-
-//Login
-$.ajax({
-    url: urlString + "monitorRequests/" + new_monitor_request_id + "/accept",
-    type: "POST",
-    dataType:"json",
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
-      QUnitTesting("Accept monitor request", data.success === true);
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Accept monitor request: error", false);
     }
 });
 

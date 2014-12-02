@@ -28,6 +28,7 @@
   var numTestMilestonesInserted = 5; 
   var new_status = "Dropped";
   var new_bet_id;
+  var bet_id;
   var singleMilestoneId;
   var milestone_id_to_check;
   var dummyData = { 
@@ -79,7 +80,8 @@ $.ajax({
     dataType:"json",
     data: dummyData2,
     async: false,
-    success: function(data, textStatus, jqXHR) {   
+    success: function(data, textStatus, jqXHR) { 
+      bet_id = data.content._id;  
       QUnitTesting("Create new Bet: success message", data.success);
       QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===3);
       singleMilestoneId = data.content.milestones[0];
@@ -91,26 +93,25 @@ $.ajax({
     }
   });
 
-  // change milestone status to Failed and look at the bet status
+// Create new monitor request
   $.ajax({
-    url: urlString + "milestones/"+singleMilestoneId,
-    type: "PUT",
+    url: urlString + "monitorRequests",
+    type: "POST",
     dataType:"json",
-    data: { 
-      test: true,
-      monitor: true,
-      status: "Failed",
-    },
+
+    data: { to: friend_id, bet: bet_id },
+
     async: false,
-    success: function(data, textStatus, jqXHR) {   
-      QUnitTesting("Fail milestone: success message", data.success);
-      console.log("88888888888888888888888888888888888");
-      console.log(data.content)
-      QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
+    success: function(data, textStatus, jqXHR) {
+      console.log("boop");
+      console.log(data.content);
+      new_monitor_request_id = data.content._id;
+      QUnitTesting("Creating a new monitor request", true );
 
     },
     error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Fail milestone: error", false);
+      console.log("hoop", new_bet_id);
+      QUnitTesting("Create new monitor request: error", false);
     }
   });
 
@@ -129,3 +130,109 @@ $.ajax({
     }
 });
 
+//Login
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Dana",
+      password: "18"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User successful login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User login", false);
+    }
+});
+
+//Login
+$.ajax({
+    url: urlString + "monitorRequests/" + new_monitor_request_id + "/accept",
+    type: "POST",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("Accept monitor request", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Accept monitor request: error", false);
+    }
+});
+
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
+
+//Login
+$.ajax({
+    url: urlString + "users/login",
+    type: "POST",
+    dataType:"json",
+    data: {
+      username: "Zulaa",
+      password: "11"
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User successful login", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User login", false);
+    }
+});
+
+  // change milestone status to Failed and look at the bet status
+  $.ajax({
+    url: urlString + "milestones/"+singleMilestoneId,
+    type: "PUT",
+    dataType:"json",
+    data: { 
+      test: true,
+      monitor: true,
+      status: "Failed",
+    },
+    async: false,
+    success: function(data, textStatus, jqXHR) {   
+      QUnitTesting("Fail milestone: success message", data.success);
+      console.log("88888888888888888888888888888888888");
+      console.log(data.content)
+      // QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
+
+    },
+    error: function(jqXHR, textStatus, err) {
+      console.log("Fail milestone: success message", err, textStatus, jqXHR);
+      QUnitTesting("Fail milestone: error", false);
+    }
+  });
+
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});

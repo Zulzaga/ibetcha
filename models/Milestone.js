@@ -50,45 +50,45 @@ milestonesSchema.statics.findPending = function(bet_id, callback){
 		});
 }
 
-milestonesSchema.statics.updatePayments = function(author_id, bet, callback) {
-	if (bet) {
-		if (bet.monitors.length === 0) {
-			console.log("You don't have enough monitors");
-			callback(true, 500, "You don't have enough monitors");
-			return;
-		}
+milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) {
 
-		var amount = bet.amount / bet.monitors.length;
-		var recordRequests = [];
-		console.log("amount is this guy:", amount, bet.amount, bet.monitors, bet.monitors.length, "\n");
+	mongoose.model('Bet').findById(bet_id)
+	   .exec(function(err, bet) {
+	   		if (err) {
+				callback(true, 500, 'An error occurred while looking up the bet');
+			} else if (bet){
+				console.log("bb", bet);
+				var amount = bet.amount / bet.monitors.length;
+				var recordRequests = [];
+				console.log("amount is this guy:", amount, bet.amount, bet.monitors, bet.monitors.length, "\n");
 
 
-		//prepare money record for each monitor of the bet
-		for (var i = 0; i < bet.monitors.length; i++) {
-			console.log("ahhhhhhhhhh", bet.monitors)
-			var request = {
-				from: new ObjectId(author_id),
-				to: bet.monitors[i],
-				amount: amount,
-				requested: false
-			};
-			recordRequests.push(request);
-		}
-		console.log("recordRequests", recordRequests);
+				//prepare money record for each monitor of the bet
+				for (var i = 0; i < bet.monitors.length; i++) {
+					console.log("ahhhhhhhhhh", bet.monitors)
+					var request = {
+						from: author_id,
+						to: bet.monitors[i],
+						amount: amount,
+						requested: false
+					};
+					recordRequests.push(request);
+				}
+				console.log("recordRequests", recordRequests);
 
-		//insert them into the DB
-		MoneyRecord.create(recordRequests, function(err, records) {
-			if (err) {
-				callback(true, 500, "Cannot create the payment records");
+				//insert them into the DB
+				MoneyRecord.create(recordRequests, function(err, records) {
+					if (err) {
+						callback(true, 500, "Cannot create the payment records");
+					} else {
+						console.log("recoreds", records);
+						callback(false, 200, records);
+					}
+				});
 			} else {
-				console.log("recoreds", records);
-				callback(false, 200, records);
+				callback(true, 500, 'There is no such bet like that');
 			}
 		});
-
-	} else {
-		callback(true, 500, 'There is no such bet like that');
-	}
 
 }
 
@@ -161,16 +161,10 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 											callback(true, 500, err);
 										} else {
 											console.log(requests);
-											console.log("moomoo");
-											console.log(emailNotifier);
-											console.log("Successfully deleted all monitor requests!.");
-
-											console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-											console.log(emailNotifier);
-											console.log(milestone);
+											console.log("bet9999", milestone.bet);
 											console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 											//emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-											Milestone.updatePayments(milestone.author._id, milestone.bet, callback);
+											Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
 										}
 									});
 									
