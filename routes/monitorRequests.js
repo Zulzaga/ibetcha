@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 // linking collections and utils
-var utils = require('../utils/utils')
+var utils = require('../utils/utils');
 var passport = require('passport');
 var utils = require('../utils/utils');
 var emailNotifier = require('../utils/email');
@@ -12,7 +12,7 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var isAuthenticated = utils.isAuthenticated;
-
+var response = utils.response;
 
 // Helper function that deletes a monitor request with the given id, sent to
 // currently logged in user.

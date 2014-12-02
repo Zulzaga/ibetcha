@@ -260,30 +260,30 @@ $.ajax({
 
 // Accept friend request
   $.ajax({
-    url: urlString + "friendRequests/" + friend_request_id + "/accept",
-    type: "POST",
-    dataType:"json",
-    async: false,
-    success: function(data, textStatus, jqXHR) {
-      console.log(data.content);
-      QUnitTesting("Accepting a friend request", true );
+      url: urlString + "friendRequests/" + friend_request_id + "/accept",
+      type: "POST",
+      dataType:"json",
+      async: false,
+      success: function(data, textStatus, jqXHR) {
+        console.log(data.content);
+        QUnitTesting("Accepting a friend request", true );
 
-    },
-    error: function(jqXHR, textStatus, err) {
-      QUnitTesting("Accept friend request: error", false);
-    }
+      },
+      error: function(jqXHR, textStatus, err) {
+        QUnitTesting("Accept friend request: error", false);
+      }
   });
 
 // Get friends
 $.ajax({
-  url: urlString + "users/friends/" + "Zulaa",
-  type: "GET",
-  async: false,
-  success: function(data, textStatus, jqXHR) {
-    console.log(data.content);
-    QUnitTesting("Get friends", data.content.length >= 1);
-  },
-  error: function(jqXHR, textStatus, err) {
-    QUnitTesting("Get friends", false);
-  }
+    url: urlString + "users/friends/" + "Zulaa",
+    type: "GET",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log(data.content);
+      QUnitTesting("Get friends", data.content.length >= 1);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("Get friends", false);
+    }
 });

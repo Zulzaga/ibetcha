@@ -64,7 +64,6 @@
       QUnitTesting("Create new Bet: check end date", (new Date(data.content.endDate)).toLocaleString()===end_date.toLocaleString());
       milestone_id_to_check = data.content.milestones[0];
       QUnitTesting("Create new Bet: check number of milestones", data.content.milestones.length === numTestMilestonesInserted);
-
     },
     error: function(jqXHR, textStatus, err) {
       QUnitTesting("Create new Bet: error", false);

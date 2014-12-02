@@ -26,7 +26,7 @@ var app = express();
 
 var connection_string = process.env.MONGOLAB_URI || 'localhost/ibetcha';
 console.log("connection_string: "+connection_string);
-var User = require('./models/User');
+
 
 mongoose.connect(connection_string);
 var db = mongoose.connection;
@@ -60,6 +60,7 @@ app.use('/test', test);
 
 // Passport strategy for Venmo authentication.
 // Not used for MVP.
+var User = require('./models/User');
 passport.use(new VenmoStrategy({
     clientID: "2096",
     clientSecret: "3pm76Jsh2tqdV2TcmRxAyBn9C6uNu2rq",
