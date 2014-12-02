@@ -28,8 +28,6 @@ $.ajax({
 	async: false,
 	success: function(data, textStatus, jqXHR) {
 		QUnitTesting("Getting User payments", data.content.froms.length >= 1 && data.content.froms.length >= 1);
-		console.log("33333333333333333333333333333333333333333333");
-		console.log(data.content);
 		tos = data.content.tos;
 		froms = data.content.froms;
 	},
@@ -44,12 +42,9 @@ $.ajax({
 	dataType:"json",
 	async: false,
 	success: function(data, textStatus, jqXHR) {
-		console.log("777777777777777777777777777777777777");
 		QUnitTesting("Claim to have paid", data.success === true);
 	},
 	failure: function(jqXHR, textStatus, err) {
-		console.log("777777777777777777777777777777777777");
-    	//console.log("Fail milestone: success message", err, textStatus, jqXHR);
 		QUnitTesting("Claim to have paid", false);
 	}
 });
@@ -102,7 +97,6 @@ $.ajax({
 
 
 //Logout 
-
 $.ajax({
     url: urlString + "users/logout",
     type: "GET",
