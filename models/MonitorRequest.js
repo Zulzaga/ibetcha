@@ -4,7 +4,8 @@ var mongoose = require("mongoose"),
 
 var User = require('./User');
 
-// Monitor Request Schema
+//========================== SCHEMA DEFINITION ==========================
+
 var monitorRequestSchema = new Schema({
 	from:{
 		type: ObjectId,
@@ -20,8 +21,9 @@ var monitorRequestSchema = new Schema({
 	}
 });
 
+//========================== SCHEMA STATICS ==========================
+// Find allt he requests of the current user
 monitorRequestSchema.statics.getCurrentUserRequests = function(req, callback) {
-    console.log("********************************GETCURRENTUSERREQUESTS*************************************");
 	MonitorRequest.find({ to: req.user._id }).populate('from to bet').exec(function (err, requests) {
         if (err) {
             callback(true, 500, 'There was an error! Could not get users.')
@@ -46,6 +48,7 @@ monitorRequestSchema.statics.deleteRequest = function(req, requestId, callback) 
     });
 }
 
+// Accept a request tomonitor a bet
 monitorRequestSchema.statics.acceptRequest = function(req, callback) {
 	MonitorRequest.findOne({ _id: req.params.requestId, to: req.user._id }, function (err, request) {
         if (err) {
@@ -60,7 +63,6 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
                     callback(true, 500, 'Bet not found!');
                 } else {
                     bet.monitors.push(req.user._id);
-                    //console.log(bet.monitors);
                     bet.save(function(err) {
                         if (err) {
                             callback(true, 500, 'There was an error! Could not save the bet.');

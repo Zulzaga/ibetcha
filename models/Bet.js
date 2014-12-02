@@ -128,12 +128,10 @@ betSchema.statics.create = function(data, callback){
 			                    };
 			                    monitorRequestArray.push(my_request);
 			                }
-			                // here again...
 			                MonitorRequest.create(monitorRequestArray, function(err, requests) {
 			                    if (err) {
 			                        callback(true, 500,'There was an error');
 			                    } else {
-			                      //console.log("Created monitor request!");
 			                        var milestones_JSONs = generate_milestones(userId, bet._id, data.startDate, data.endDate, data.frequency);
 			                        store_all_milestones(milestones_JSONs, newBet._id, callback);
 			                    }

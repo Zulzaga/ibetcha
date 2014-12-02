@@ -9,7 +9,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 //linking collections and utils 
 var utils = require('../utils/utils')
-var emailNotifier = require('../utils/email');
+var emailNotifier = require('../utils/emails');
 //var changeStatus = require('../utils/changeStatus');c
 var MoneyRecord = require('../models/MoneyRecord');
 var Bet = require('../models/Bet');
@@ -19,63 +19,6 @@ var Milestone = require('../models/Milestone');
 
 
 //======================== API route methods =========================
-
-
-//get all milestones in the DB
-router.get('/', function(req, res) {
-	Milestone.find({}, function(err, doc){
-		if (err){
-			utils.sendErrResponse(res,500, "Cannot retrieve Milestones");
-		}else{
-			utils.sendSuccessResponse(res,doc);
-		}
-	});
-});
-
-// When milestone has failed, create a charge to the user's account
-
-//===================     Helpers        ===================
-/*
-Charge money once one of the milestones is failed
-*/
-// var updatePayments = function(author_id, bet_id, res) {
-// 	Bet.findOne({_id:bet_id})
-// 	   .exec(function(err, bet) {
-// 	   		if (err) {
-// 				utils.sendErrResponse(res, 500, 'An error occurred while looking up the bet');
-// 			} else if (bet){
-
-// 				var amount = bet.amount / bet.monitors.length;
-// 				var recordRequests = [];
-// 				console.log("amount is this guy:", amount, bet.amount, bet.monitors, bet.monitors.length, "\n");
-
-// 				//prepare money record for each monitor of the bet
-// 				for (var i = 0; i <bet.monitors.length; i++) {
-// 					var request = {
-// 						from: new ObjectId(author_id),
-// 						to: bet.monitors[i],
-// 						amount: amount,
-// 						requested: false
-// 					};
-// 					recordRequests.push(request);
-// 				}
-// 				//insert them into the DB
-// 				MoneyRecord.create(recordRequests, function(err, records) {
-// 					if(err) {
-// 						utils.sendErrResponse(res, 500, "Cannot create the payment records");
-// 					} else {
-// 						utils.sendSuccessResponse(res, records);
-// 					}
-// 				});
-
-// 			} else {
-// 				utils.sendErrResponse(res, 500, 'There is no such bet like that');
-// 			}
-// 		});
-	
-// }
-
-//=================== API route methods ===================
 
 //get all milestones in the DB
 router.get('/', function(req, res) {

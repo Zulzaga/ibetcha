@@ -4,6 +4,7 @@ var mongoose = require("mongoose"),
 
 var User = require('./User');
 
+//========================== SCHEMA DEFINITION ==========================
 // Friend Request Schema
 var friendRequestSchema = new Schema({
 	from:{
@@ -16,6 +17,9 @@ var friendRequestSchema = new Schema({
 	}
 });
 
+//============================ SCHEMA STATICS ============================
+
+/*Creates a friend request form a user to another */
 friendRequestSchema.statics.create = function(from, to, callback) {
     var newRequest = new FriendRequest({
         'from': from,
@@ -92,6 +96,7 @@ friendRequestSchema.statics.sendFriendRequest = function(to, req, responseCallba
         ,responseCallback);
 }
 
+/*Delete a friend request*/
 friendRequestSchema.statics.deleteRequest = function(req, requestId, callback) {
 	FriendRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
         if (err) {

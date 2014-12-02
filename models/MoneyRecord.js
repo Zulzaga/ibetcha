@@ -17,8 +17,6 @@ var MoneyRecordSchema = new Schema({
 
 // Methods
 MoneyRecordSchema.statics.processPaymentClaim = function(objectId, setParams, cb) {
-	
-	console.log(objectId, setParams);
 	return MoneyRecord.findOneAndUpdate(objectId, setParams, function(err, payment) {
 		if(err) {
 			cb(true, 500, "There was an error");
@@ -33,7 +31,6 @@ MoneyRecordSchema.statics.confirmPaymentClaim = function(objectId, cb) {
 		if(err) {
 			cb(true, 500, "There was an error");
 		} else {
-			console.log(payment)
 			cb(false, 200, payment);
 		}
 	});
