@@ -37,8 +37,7 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
                 html: "Hi " + msg.receiver /*user.venmo.name*/+ "," + "<br><br>" + msg.body /*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
             };
     }
-    transmitEmail(mailOptions, res);   
-    
+    transmitEmail(mailOptions, res);       
 };
 
 
@@ -48,11 +47,8 @@ var transmitEmail = function(mail, res) {
         var result = true;
         transporter.sendMail(mail, function(error, info){
             if(error){
-                console.log(error);
                 result = false;
 
-            } else {
-                console.log('Message sent: ' + info.response);
             }
             return result;
         });
@@ -61,10 +57,8 @@ var transmitEmail = function(mail, res) {
     else{ //send response
         transporter.sendMail(mail, function(error, info){
             if(error){
-                console.log(error);
                 utils.sendErrResponse( res, 500, error);
             } else {
-                console.log('Message sent: ' + info.response);
                 utils.sendSuccessResponse(res, "success");
             }
         });
@@ -129,34 +123,29 @@ emailNotifier.sendEmailAuthor = function(author, bet_id, status){
 };
 
 
-
 //send emails to the list of  monitors for each milestone if no one checked it off
 //monitors - list of JSON objects
 emailNotifier.sendEmailReminder = function(monitors, bet_id, author){
     Bet
-        .findOne({_id:bet_id})
-        .populate('monitors')
-        .exec(function(err, bet){
-            if (err){
-                console.log("ERROR IN FINDING BET IN REMINDING FUNCTION");
-                return;
-            }
-            var emailList = getMonitorEmails(bet.monitors);
-            for (var i = 0; i<emailList.length; i++){
-                var receiver = emailList[i];
-                var msg = {
-                  body: "There is a pending checkoff for "+author.username + "<br><br>" 
-                      + " follow the link http://mit-ibetcha.herokuapp.com/",
-                  subject: "Ibetcha Reminder for pending checkoff",
-                  text: "You need to checkoff "+author.username,
-                  receiver: receiver
-                };
-                emailNotifier.sendNotification(null,receiver, null, msg);
-            }
-
-        });
-
-
+      .findOne({_id:bet_id})
+      .populate('monitors')
+      .exec(function(err, bet){
+          if (err){
+              return;
+          }
+          var emailList = getMonitorEmails(bet.monitors);
+          for (var i = 0; i<emailList.length; i++){
+              var receiver = emailList[i];
+              var msg = {
+                body: "There is a pending checkoff for "+author.username + "<br><br>" 
+                    + " follow the link http://mit-ibetcha.herokuapp.com/",
+                subject: "Ibetcha Reminder for pending checkoff",
+                text: "You need to checkoff "+author.username,
+                receiver: receiver
+              };
+              emailNotifier.sendNotification(null,receiver, null, msg);
+          }
+      });
     };
 
 //======================== Helpers =========================

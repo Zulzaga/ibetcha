@@ -149,12 +149,10 @@ passport.use('signup', new LocalStrategy({
                         // create the user
                         User.create(req.body.username, req.body.password, req.body.email, function (err, user) {
                             if (err) {
-                                console.log(err);
                                 return done(err);
                             } else if (user === null){
                                 return done(null, false,  "Could not create a new user!");
                             } else {
-                                console.log(user);
                                 return done(null, user);
                             }
                         });
