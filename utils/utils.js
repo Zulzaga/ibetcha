@@ -47,10 +47,25 @@ utils.isAuthenticated = function (req, res, next) {
 //callback that propagates error codes or success messages up
 utils.propagateResponses = function(err, code, content){
     if (err) {
-        utils.sendErrResponse(res, code, content);      
+        var error = function(res, errcode, err) {
+            res.status(errcode).json({
+            success: false,
+            err: err
+            }).end();
+        };
+        error();
+
+        //utils.sendErrResponse(res, code, content);      
     }
     else{
-        utils.sendSuccessResponse(res, content);
+        var success = function(res, content) {
+            res.status(200).json({
+            success: true,
+            content: content
+            }).end();
+        };
+        success();
+        //utils.sendSuccessResponse(res, content);
     }
 };
 

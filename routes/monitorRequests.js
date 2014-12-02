@@ -12,14 +12,23 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var isAuthenticated = utils.isAuthenticated;
+var propagateResponses = utils.propagateResponses;
 
 //======================== API route methods =========================
+var send_responses = function(err, code, content){
+    if (err) {
+        utils.sendErrResponse(res, code, content);      
+    }
+    else{
+        utils.sendSuccessResponse(res, content);
+    }
+});
 
 //============================GET METHODS:============================
 
 // Gets all monitor requests current user received.
 router.get('/', isAuthenticated, function(req, res) {
-    MonitorRequest.getCurrentUserRequests(req, function(err, code, content){
+    MonitorRequest.getCurrentUserRequests(req, send_responses(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
