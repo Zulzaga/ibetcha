@@ -95,7 +95,7 @@ friendRequestSchema.statics.sendFriendRequest = function(to, req, responseCallba
     var errMsg5 = 'The user already sent a friend request to you. Go to your Home Page and click on Friends/FriendRequests page to accept.';
 
 
-    FriendRequest.sendSingleFriendRequest(to._id, req.user._id, errMsg1, errMsg2, 
+    FriendRequest.sendSingleFriendRequest(to._id, req.user._id, errMsg1, errMsg2, // simulate sending friend requests to each other
         FriendRequest.sendSingleFriendRequest(req.user._id, to._id, errMsg1, errMsg5, 
          FriendRequest.createFriendRequest(to, req.user._id, responseCallback),
          responseCallback)
