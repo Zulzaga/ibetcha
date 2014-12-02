@@ -2,6 +2,9 @@ var mongoose = require("mongoose"),
 	ObjectId = mongoose.Schema.ObjectId;
 	Schema = mongoose.Schema;
 var MonitorRequest = require('./MonitorRequest');
+var Milestone = require('./Milestone');
+var MoneyRecord = require('./MoneyRecord');
+var Bet = require('./Bet');
 //var changeStatus = require('../utils/changeStatus');
 var emailNotifier = require('../utils/email');
 
@@ -47,40 +50,47 @@ milestonesSchema.statics.findPending = function(bet_id, callback){
 		});
 }
 
-milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) {
-	Bet.findOne({_id:bet_id})
-	   .exec(function(err, bet) {
-	   		if (err) {
-				callback(true, 500, 'An error occurred while looking up the bet');
-			} else if (bet){
+milestonesSchema.statics.updatePayments = function(author_id, bet, callback) {
+	if (bet) {
+		if (bet.monitors.length === 0) {
+			console.log("You don't have enough monitors");
+			callback(true, 500, "You don't have enough monitors");
+			return;
+		}
 
-				var amount = bet.amount / bet.monitors.length;
-				var recordRequests = [];
-				console.log("amount is this guy:", amount, bet.amount, bet.monitors, bet.monitors.length, "\n");
 
-				//prepare money record for each monitor of the bet
-				for (var i = 0; i <bet.monitors.length; i++) {
-					var request = {
-						from: new ObjectId(author_id),
-						to: bet.monitors[i],
-						amount: amount,
-						requested: false
-					};
-					recordRequests.push(request);
-				}
-				//insert them into the DB
-				MoneyRecord.create(recordRequests, function(err, records) {
-					if(err) {
-						callback(true, 500, "Cannot create the payment records");
-					} else {
-						callback(false, 200, records);
-					}
-				});
+		var amount = bet.amount / bet.monitors.length;
+		var recordRequests = [];
+		console.log("amount is this guy:", amount, bet.amount, bet.monitors, bet.monitors.length, "\n");
 
+
+		//prepare money record for each monitor of the bet
+		for (var i = 0; i < bet.monitors.length; i++) {
+			console.log("ahhhhhhhhhh", bet.monitors)
+			var request = {
+				from: new ObjectId(author_id),
+				to: bet.monitors[i],
+				amount: amount,
+				requested: false
+			};
+			recordRequests.push(request);
+		}
+		console.log("recordRequests", recordRequests);
+
+		//insert them into the DB
+		MoneyRecord.create(recordRequests, function(err, records) {
+			if (err) {
+				callback(true, 500, "Cannot create the payment records");
 			} else {
-				callback(true, 500, 'There is no such bet like that');
+				console.log("recoreds", records);
+				callback(false, 200, records);
 			}
 		});
+
+	} else {
+		callback(true, 500, 'There is no such bet like that');
+	}
+
 }
 
 milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, callback) {
@@ -115,11 +125,9 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 											callback(true, 500, "could not update bet status");
 										}
 										// send email to author
-										if (!test){
-											console.log("5");
-											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
-										}
+										console.log("5");
 										console.log("6");
+										emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 										callback(false, 200, savedmilestone);
 									})
 								}
@@ -148,15 +156,19 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 									
 									console.log("10");
 									// UPDATE PAYMENT STUFF, notify author
-									console.log("milestone.author", milestone.author);
+									console.log("milestone", milestone);
 									MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
 										if (err) {
 											callback(true, 500, err);
 										} else {
 											console.log(requests);
 											console.log("Successfully deleted all monitor requests!.");
-											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
-											Milestones.updatePayments(milestone.author._id, milestone.bet, callback);
+											console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+											console.log(emailNotifier);
+											console.log(milestone);
+											console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+											//emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
+											Milestone.updatePayments(milestone.author._id, milestone.bet, callback);
 										}
 									});
 									

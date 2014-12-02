@@ -104,6 +104,8 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Fail milestone: success message", data.success);
+      console.log("88888888888888888888888888888888888");
+      console.log(data.content)
       QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
 
     },
