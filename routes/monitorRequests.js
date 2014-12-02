@@ -11,9 +11,7 @@ var User = require('../models/User');
 var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
-var isAuthenticated = utils.isAuthenticated;
-var propagateResponses = utils.propagateResponses;
-
+var isAuthenticated = utils.isAuthenticated; 
 
 //======================== API route methods =========================
 
