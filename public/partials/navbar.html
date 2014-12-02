@@ -19,7 +19,7 @@
           <input type="text" ng-model="text" class="form-control navbar-text" name="text" placeholder="Search">
         </div>
         <button type="submit" class="btn btn-default navbar-submit">Submit</button>
-        <div class="navbar-err" ng-if="err">{{err}}</div>
+        <div class="navbar-err" ng-if="searchErr">{{searchErr}}</div>
     </form>
     <div class="m-navbar-button" ng-show="loggedIn" id="m-navbar-logout-button" ng-click="logout()">
         <i class="m-navbar-icon fa fa-sign-out"></i>

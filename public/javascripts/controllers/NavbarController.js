@@ -6,6 +6,7 @@ ibetcha.controller('NavbarController',
     function($scope, $http, $location, $cookieStore, $routeParams) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
+        $scope.user = $cookieStore.get('user');
 
         // Helper function that helps load the page.
         var onPageLoad = function() {
@@ -66,16 +67,20 @@ ibetcha.controller('NavbarController',
         // When the Payment Requests is clicked, redirects to the Payment Requests page.
         $scope.search = function() {
             // get current user infos from the server.
-            $http({
-                method: "GET",
-                url: "users/" + $scope.text,
-                }).success(function(data, status, headers, config) {
-                    var user = data.content.user;
-                    $location.path("/profile/" + user.username);
-                }).
-            error(function(data, status, headers, config) {
-                $scope.err = data.err;
-            });
+            if ($scope.text == $scope.user) {
+                $location.path("/home");
+            } else {
+                $http({
+                    method: "GET",
+                    url: "users/" + $scope.text,
+                    }).success(function(data, status, headers, config) {
+                        var user = data.content.user;
+                        $location.path("/profile/" + user.username);
+                    }).
+                error(function(data, status, headers, config) {
+                    $scope.err = data.err;
+                });
+            }
         }  
 
         // When the request button is clicked, if there's a session (user logged in), 
