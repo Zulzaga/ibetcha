@@ -2,6 +2,8 @@ var nodemailer = require('nodemailer');
 var Bet = require('../models/Bet');
 var utils = require('./utils');
 
+var emailNotifier = {};
+
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -13,7 +15,6 @@ var transporter = nodemailer.createTransport({
 
 // NB! No need to recreate the transporter object. You can use
 // the same transporter object for all e-mails
-var emailNotifier = {};
 
 emailNotifier.sendNotification = function (user, emailTo, res, msg){
     if (user){ // only for sending activation code to user
