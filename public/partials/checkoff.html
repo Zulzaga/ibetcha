@@ -15,7 +15,7 @@
 
         Pending checkoffs: <br> 
         <div class="pending-milestone" ng-repeat="milestone in pending">
-            {{milestone.date.substring(0,10)}}
+            {{milestone.date}}
             <button type="Checkoff" class="btn btn-default" ng-click="check(milestone._id)">Check</button>
             <button type="Checkoff" class="btn btn-default" ng-click="fail(milestone._id)">Fail</button>
         </div>            
