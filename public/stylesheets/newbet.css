@@ -4,22 +4,44 @@
 
 #newbet-page {
 	margin-top:110px;
+	margin : 0 auto;
+}
+
+#main-text-color{
+	color: #001A66;
+}
+
+#newbet-instructions-container{
+	margin-top: 180px;
+	margin-bottom: 30px;
 }
 
 #newbet-instruction{
-	margin-top: 180px;
+	background-color: #E0EBFF;
+	padding: 15px;
+	border-radius: 25px;
 	display: inline-block;
 	width: 500px;
-	font-size: 22px;
+	font-size: 15px;
 	font-weight: 700;
 	color: steelBlue;
 	vertical-align: top;
-	text-align: center;
+	text-align: left;
+	margin-bottom: 30px;
+	margin-right: 20px;
 }
 
-#newbet-page{
-	margin-left: 100px;
+#newbet-rules{
+	background-color: #E0EBFF;
+	padding: 15px;
+	border-radius: 25px;
 	display: inline-block;
+	width: 500px;
+	font-size: 15px;
+	font-weight: 700;
+	color: steelBlue;
+	vertical-align: top;
+	text-align: left;
 }
 
 .newbet {
