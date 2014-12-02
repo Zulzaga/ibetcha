@@ -85,7 +85,6 @@ $.ajax({
       QUnitTesting("Create new Bet: success message", data.success);
       QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===3);
       singleMilestoneId = data.content.milestones[0];
-      console.log(data.content.milestones[0]);
 
     },
     error: function(jqXHR, textStatus, err) {
@@ -103,14 +102,11 @@ $.ajax({
 
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log("boop");
-      console.log(data.content);
       new_monitor_request_id = data.content._id;
       QUnitTesting("Creating a new monitor request", true );
 
     },
     error: function(jqXHR, textStatus, err) {
-      console.log("hoop", new_bet_id);
       QUnitTesting("Create new monitor request: error", false);
     }
   });
@@ -122,7 +118,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -141,7 +136,7 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
+
       QUnitTesting("User successful login", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -156,7 +151,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("Accept monitor request", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -171,7 +165,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -190,7 +183,6 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User successful login", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -211,13 +203,10 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {   
       QUnitTesting("Fail milestone: success message", data.success);
-      console.log("88888888888888888888888888888888888");
-      console.log(data.content)
       // QUnitTesting("Fail milestone: bet is also failed", data.content.bet.status==="Failed");
 
     },
     error: function(jqXHR, textStatus, err) {
-      console.log("Fail milestone: success message", err, textStatus, jqXHR);
       QUnitTesting("Fail milestone: error", false);
     }
   });

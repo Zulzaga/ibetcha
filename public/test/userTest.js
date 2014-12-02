@@ -42,8 +42,6 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
-      console.log(data);
       QUnitTesting("Create new user1", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -58,7 +56,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -77,7 +74,6 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       friend_id = data.content._id;
       QUnitTesting("User successful login", data.success === true);
     },
@@ -93,7 +89,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -136,7 +131,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -155,7 +149,6 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User successful login", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -174,7 +167,6 @@ $.ajax({
     async: false,
     success: function(data, textStatus, jqXHR) {
       friend_request_id = data.content._id;
-      console.log(data.content);
       QUnitTesting("Creating a new friend request", true );
 
     },
@@ -190,7 +182,6 @@ $.ajax({
     dataType:"json",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User logout", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -209,7 +200,6 @@ $.ajax({
     },
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log('dataaa');
       QUnitTesting("User successful login", data.success === true);
     },
     error: function(jqXHR, textStatus, err) {
@@ -224,7 +214,6 @@ $.ajax({
       dataType:"json",
       async: false,
       success: function(data, textStatus, jqXHR) {
-        console.log(data.content);
         QUnitTesting("Accepting a friend request", true );
 
       },
@@ -239,7 +228,6 @@ $.ajax({
     type: "GET",
     async: false,
     success: function(data, textStatus, jqXHR) {
-      console.log(data.content);
       QUnitTesting("Get friends", data.content.length >= 1);
     },
     error: function(jqXHR, textStatus, err) {

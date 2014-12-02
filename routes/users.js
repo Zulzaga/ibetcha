@@ -71,8 +71,6 @@ router.get('/', function(req, res) {
 
 // Gets the currently logged in user information.
 router.get('/current', isAuthenticated, function(req, res) {
-    console.log("inside users/current");
-    console.log("***************2***********************");
     User.getUserInfo(req.user._id, function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
