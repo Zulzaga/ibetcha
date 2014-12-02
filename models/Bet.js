@@ -151,7 +151,7 @@ var generateMonitorRequestArray = function(userId, betId, monitors) {
 var generateSingleMonitorRequest = function(userId, betId, monitor) {
 	return {
 		from: userId,
-		to: monitors[i],
+		to: monitor,
 		bet: betId
 	};
 }
