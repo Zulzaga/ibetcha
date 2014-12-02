@@ -35,7 +35,6 @@ router.get('/', isAuthenticated, function(req, res) {
 // email.
 router.post('/byEmail', isAuthenticated, function(req, res) {
     var requestTo = req.body.to;
-    console.log("moooomooo",requestTo);
     if (requestTo === req.user.email) {
         utils.sendErrResponse(res, 500, 'Cannot send a friend request to yourself!.');
     } else {
@@ -90,7 +89,6 @@ router.post('/byUsername', isAuthenticated, function(req, res) {
 // to the current user's friends list and deletes the friend request.
 router.post('/:requestId/accept', isAuthenticated, function(req, res) {
     var requestId = req.params.requestId;
-    console.log(requestId, req.user._id);
     FriendRequest.findOne({ _id: requestId, to: req.user._id }, function (err, request) {
         if (err) {
             utils.sendErrResponse(res, 500, 'There was an error! Could not get requests.');

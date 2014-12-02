@@ -19,8 +19,6 @@ var isAuthenticated = utils.isAuthenticated;
 
 // Update the payment to indicate the claim that the user has paid friends
 router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
-    console.log("inside serverside paid claim", req.params.paymentId);
-
     mongoose.model('MoneyRecord').processPaymentClaim({_id: req.params.paymentId}, 
         {$set: {requested: true}},
         function(err, code, content){
@@ -35,7 +33,6 @@ router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
 
 // Delete the payment record to indicate that the friend confirmed the claim (that the user has paid)
 router.get('/received/:paymentId', isAuthenticated, function(req, res) {
-    console.log('inside serverside received');
     mongoose.model('MoneyRecord').confirmPaymentClaim({_id: req.params.paymentId},
         function(err, code, content){
             if (err) {

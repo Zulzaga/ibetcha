@@ -41,7 +41,6 @@ router.post('/', isAuthenticated, function(req, res) {
     var betId = req.body.bet;
     MonitorRequest.create({ from: req.user._id, to: requestTo, bet: betId}, function(err, request) {
         if (err) {
-            console.log("ERRRRR:", err);
             utils.sendErrResponse(res, 500, 'There was an error');
         } else {
             utils.sendSuccessResponse(res, request);
@@ -54,7 +53,6 @@ router.post('/', isAuthenticated, function(req, res) {
 // Adds the bet to the user's monitoring list and deletes the monitor request.
 router.post('/:requestId/accept', isAuthenticated, function(req, res) {
     var requestId = req.params.requestId;
-    console.log(requestId, req.user._id);
     MonitorRequest.acceptRequest(req, function(err, code, content){
         if (err) {
             utils.sendErrResponse(res, code, content);      
