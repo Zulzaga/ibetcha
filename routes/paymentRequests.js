@@ -29,7 +29,6 @@ router.get('/paid/:paymentId/claim', isAuthenticated, function(req, res) {
                 utils.sendSuccessResponse(res, content);
             }
     });
-
 });
 
 // Delete the payment record to indicate that the friend confirmed the claim (that the user has paid)
@@ -44,7 +43,6 @@ router.get('/received/:paymentId', isAuthenticated, function(req, res) {
                 utils.sendSuccessResponse(res, content);
             }
     });
-
 });
 
 module.exports = router;
