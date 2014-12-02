@@ -53,7 +53,7 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
         } else if (request === null){
             callback(true, 500, 'No such request exists!.');
         } else {
-            Bet.findById(request.bet, function(err, bet) {
+            mongoose.model('Bet').findById(request.bet, function(err, bet) {
                 if (err) {
                     callback(true, 500, 'There was an error! Could not find bet.');
                 } else if (bet === null) {
@@ -76,10 +76,10 @@ monitorRequestSchema.statics.acceptRequest = function(req, callback) {
                                         } else {
                                             MonitorRequest.deleteRequest(req, req.params.requestId, function(err, code, content){
                                                 if (err) {
-                                                    utils.sendErrResponse(res, code, content);      
+                                                    callback(true, 500, content);      
                                                 }
                                                 else{
-                                                    utils.sendSuccessResponse(res, content);
+                                                    callback(false, 200, content);
                                                 }
                                             });
                                         }
