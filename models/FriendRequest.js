@@ -29,6 +29,7 @@ friendRequestSchema.statics.create = function(from, to, callback) {
     newRequest.save(callback);
 }
 
+// Adds one user as another's friend
 friendRequestSchema.statics.friendOne = function(userid1, userid2, callback, responseCallback) {
     User.findById(userid1, function(error, user1) {
         if(error) {
@@ -45,6 +46,8 @@ friendRequestSchema.statics.friendOne = function(userid1, userid2, callback, res
     });
 };
 
+// Given that User A has confirmed User B's friend request,
+// Make both of them friends
 friendRequestSchema.statics.friendEachOther = function(userid1, userid2, callback, responseCallback) {
     // Call friendOne function on each other
 	FriendRequest.friendOne(userid1, userid2,  
@@ -52,6 +55,7 @@ friendRequestSchema.statics.friendEachOther = function(userid1, userid2, callbac
             callback, responseCallback), responseCallback);
 } 
 
+// Process User A "friend requesting" User B
 friendRequestSchema.statics.sendSingleFriendRequest = function(toId, userId, errMsg1, errMsg2, callback, responseCallback) {
     FriendRequest.findOne({'to': toId, 'from': userId}, function(err, request) {
         if(err) {
@@ -64,13 +68,13 @@ friendRequestSchema.statics.sendSingleFriendRequest = function(toId, userId, err
     })
 }
 
+// Create a single friendRequest object for User A and User B 
 friendRequestSchema.statics.createFriendRequest = function(to, userId, responseCallback) {
     if (to.friends && to.friends.indexOf(userId) == -1) {
         FriendRequest.create(userId, to._id, function(err2, request3) {
             if (err2) {
                 responseCallback(true, 500, 'There was an error');
             } else {
-                console.log("created friend request!");
                 responseCallback(false, 200, request3);
             }
         });
@@ -80,7 +84,9 @@ friendRequestSchema.statics.createFriendRequest = function(to, userId, responseC
 }
 
 
-
+// Send friendRequest from User A to User B.
+// Simulate friendRequest going to both directions to catch edge cases
+// If everything is fine, create the friendRequest object to be confirmed by User B.
 friendRequestSchema.statics.sendFriendRequest = function(to, req, responseCallback){
     var errMsg1 = 'There was an error! Could not get requests.';
     var errMsg2 = 'Already sent a friend request. Cannot send a request again. Wait for your friend to accept!';
