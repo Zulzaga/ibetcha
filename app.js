@@ -105,7 +105,7 @@ passport.use('login', new LocalStrategy({
         User.findOne({'username': username}, function(err, user) {
             // In case of any error return
             if (err){
-                return done(err);
+                return done(null, false, 'There was an error!');
             }
             // already exists
             if (!user) {

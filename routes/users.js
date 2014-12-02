@@ -174,7 +174,7 @@ router.post('/login', function(req, res, next) {
             if (err) {
                 utils.sendErrResponse(res, 500, 'There was an error!');
             } else if (!newUser){
-                utils.sendErrResponse(res, 401, info);
+                utils.sendErrResponse(res, 401, "Wrong username and password combination!");
             } else {
                 req.logIn(newUser, function(err) {
                     if (err) { 
