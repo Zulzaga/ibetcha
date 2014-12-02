@@ -27,12 +27,12 @@ ibetcha.controller('CheckoffPageController',
                         $scope.todayDate = (new Date(data.content[0].date)).toDateString();
                         $scope.pending = data.content.slice(1, data.content.length);
                         var l = pending.length;
-                        (for var i=0; i<l; i++){
+                        for (var i=0; i<l; i++){
                            $scope.pending[i].date = (new Date($scope.pending[i].date)).toDateString();
                         }
                         console.log("today and pending", $scope.today, $scope.pending);
-                        if ($scope.pending && $scope.pending.length >= 1) {
-                            $scope.numpending = $scope.pending.length;
+                        if ($scope.pending && l >= 1) {
+                            $scope.numpending = l;
                         } else {
                             $scope.numpending = 0;
                         }                        
