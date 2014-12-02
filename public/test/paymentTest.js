@@ -81,3 +81,18 @@ $.ajax({
 		QUnitTesting("Claim to have paid", false);
 	}
 });
+
+//Logout
+$.ajax({
+    url: urlString + "users/logout",
+    type: "GET",
+    dataType:"json",
+    async: false,
+    success: function(data, textStatus, jqXHR) {
+      console.log('dataaa');
+      QUnitTesting("User logout", data.success === true);
+    },
+    error: function(jqXHR, textStatus, err) {
+      QUnitTesting("User logout", false);
+    }
+});
