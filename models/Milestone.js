@@ -113,6 +113,19 @@ milestonesSchema.statics.handle_success = function(milestone, callback){
 		});
 }
 
+//handles the case where a milestone is failed.
+//if there are remaining milestones, it closes those, so no checking off is possible
+milestonesSchema.statics.handle_failure = function(milestone, callback){
+	Milestone
+		.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
+		.exec(function(err){
+			if(err){
+				callback(true, 500, "Cannot find fraternal milestones")
+			}
+			Milestone.handle_failure_helper(milestone, callback);
+		});
+}
+
 
 //handles notifying the user and proceeding to make payment objects for monitors and the betcher
 milestonesSchema.statics.handle_failure_helper = function(milestone,callback){

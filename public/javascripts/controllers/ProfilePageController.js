@@ -6,7 +6,6 @@ ibetcha.controller('ProfilePageController',
         
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
-        $scope.currentUser = $cookieStore.get('user');
 
         // Helper function for loading the page.
         var onPageLoad = function() {

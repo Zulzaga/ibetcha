@@ -18,7 +18,7 @@ ibetcha.controller('NavbarController',
                     console.log("inside logout: cookiestore session is: " + $cookieStore.get('session'));
                 }).
                 error(function(data, status, headers, config) {
-                    alert(data.err);
+                    $scope.err = data.err;
                 });
         }
 
@@ -75,7 +75,6 @@ ibetcha.controller('NavbarController',
                 }).
             error(function(data, status, headers, config) {
                 $scope.err = data.err;
-                alert(data.err);
             });
         }  
 
