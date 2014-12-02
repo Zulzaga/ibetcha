@@ -78,7 +78,7 @@ ibetcha.controller('NavbarController',
                         $location.path("/profile/" + user.username);
                     }).
                 error(function(data, status, headers, config) {
-                    $scope.searchErr = data.searchErr;
+                    $scope.searchErr = data.err;
                 });
             }
         }  
