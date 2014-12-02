@@ -71,13 +71,9 @@ router.get('/', function(req, res) {
 
 // Gets the currently logged in user information.
 router.get('/current', isAuthenticated, function(req, res) {
-<<<<<<< HEAD
     console.log("inside users/current");
     console.log("***************2***********************");
     User.getUserInfo(req.user._id, function(err, code, content){
-=======
-    User.getCurrentUserInfo(req.user._id, function(err, code, content){
->>>>>>> 457144b23073b7927521dc385e85868dc6afa6c9
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
@@ -121,8 +117,7 @@ router.get('/logout', function(req, res) {
     }
 });
 
-// Finds the user by the id.
-<<<<<<< HEAD
+// Finds the user by username.
 router.get('/:username', isAuthenticated, function(req, res) {
     User.findOne({username: req.params.username}, function (err, user) {
         if (err) {
@@ -135,14 +130,6 @@ router.get('/:username', isAuthenticated, function(req, res) {
                     utils.sendSuccessResponse(res, content);
                 }
             });
-=======
-router.get('/:user_id', isAuthenticated, function(req, res) {
-    User.findById( req.params.user_id, function (err, user) {
-        if (err){
-            utils.sendErrResponse(res, 500, 'There was an error!');
-        } else if (user === null){
-            utils.sendErrResponse(res, 401, 'No such user found!');
->>>>>>> 457144b23073b7927521dc385e85868dc6afa6c9
         } else {
             utils.sendErrResponse(res, 500, "User does not exist!");  
         }

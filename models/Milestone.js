@@ -146,6 +146,8 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, cal
 										if (err) {
 											callback(true, 500, err);
 										} else {
+											console.log("emailNotifier", emailNotifier);
+											emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
 											Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
 										}
 									});
