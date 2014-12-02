@@ -17,6 +17,7 @@ var milestoneStatus = [
 	'Closed' // bet Drop date passed
 ];
 
+
 //========================== SCHEMA DEFINITION ==========================
 var milestonesSchema = new Schema({
 	date: Date,
@@ -103,12 +104,12 @@ milestonesSchema.statics.handle_success = function(milestone, callback){
 					}
 					// send email to author
 					emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
-					callback(false, 200, savedmilestone);
+					callback(false, 200, milestone);
 				})
 			}
 			else{
 				// user received checkoff but bet still ongoing
-				callback(false, 200, savedmilestone);
+				callback(false, 200, milestone);
 			}
 		});
 }
