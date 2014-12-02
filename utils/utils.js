@@ -39,7 +39,6 @@ utils.isAuthenticated = function (req, res, next) {
     if (req.user) {
         return next();
     }
-
     // If a user is not logged in, redirect to the login page.
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
