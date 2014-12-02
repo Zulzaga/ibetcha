@@ -75,19 +75,7 @@ userSchema.statics.fetchAllPayments = function(user, cb) {
         } else if (user === null) {
             cb(true, 401, 'No such user found!');
         } else {
-            MoneyRecord.find({ 'from': user._id }).populate('from to').exec(function(err, froms) {
-                if (err) {
-                    cb(true, 500, 'There was an error');
-                } else {
-                    MoneyRecord.find({ 'to': user._id}).populate('from to').exec(function(err, tos) {
-                        if (err) {
-                            cb(true, 500, 'There was an error');
-                        } else {
-                            cb(false, 200, { 'froms': froms, 'tos': tos });
-                        }
-                    });
-                }
-            });
+        	MoneyRecord.getUserPayments(user._id, cb);
         }
     });
 }
