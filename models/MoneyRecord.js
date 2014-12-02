@@ -36,6 +36,23 @@ MoneyRecordSchema.statics.confirmPaymentClaim = function(objectId, cb) {
 	});
 }
 
+MoneyRecordSchema.statics.getUserPayments = function(userId, cb) {
+	MoneyRecord.find({ 'from': userId }).populate('from to').exec(function(err, froms) {
+        if (err) {
+            cb(true, 500, 'There was an error');
+        } else {
+            MoneyRecord.find({ 'to': userId}).populate('from to').exec(function(err, tos) {
+                if (err) {
+                    cb(true, 500, 'There was an error');
+                } else {
+                    cb(false, 200, { 'froms': froms, 'tos': tos });
+                }
+            });
+        }
+    });
+}
+
+
 
 
 //Bindings

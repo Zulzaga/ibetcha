@@ -77,7 +77,7 @@ router.get('/current', isAuthenticated, function(req, res) {
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
-        else{
+        else {
             utils.sendSuccessResponse(res, content);
         }
     });
@@ -89,7 +89,7 @@ router.get('/payments', isAuthenticated, function(req, res) {
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
-        else{
+        else {
             utils.sendSuccessResponse(res, content);
         }
     });
@@ -101,7 +101,7 @@ router.get('/friends/:username', function(req, res) {
         if (err) {
             utils.sendErrResponse(res, code, content);      
         }
-        else{
+        else {
             utils.sendSuccessResponse(res, content);
         }
     });
@@ -119,7 +119,7 @@ router.get('/logout', function(req, res) {
 
 // Finds the user by username.
 router.get('/:username', isAuthenticated, function(req, res) {
-    User.findOne({username: req.params.username}, function (err, user) {
+    User.findOne({ username: req.params.username }, function (err, user) {
         if (err) {
             utils.sendErrResponse(res, 401, 'There was an error!');      
         } else if (user){

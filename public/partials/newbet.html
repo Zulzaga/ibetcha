@@ -4,15 +4,30 @@
   
     <ng-include src="'partials/navbar.html'"></ng-include>
     <div class="err" ng-if="err">{{err}}</div>
+    <div id= "newbet-instructions-container">
     <div id="newbet-instruction">
+        <div id="main-text-color">
         Hello There :)! Make sure to read the guidelines below before making a new bet:</br></br>
-
+        </div>
         The earliest start date you can start your resolution is tomorrow and the end date cannot be after the start date. </br></br>
 
         The minimum amount amount you can bet is $5 and the maximum is $100. </br></br>
 
-        You can only add your friends as your monitors. </br></br>
+        You can only add your friends as your monitors.  </br></br> 
+
+        Although you may send many monitor requests, a valid bet can have only 3-5 monitors</br></br>
     </div>
+    <div id="newbet-rules">
+        <div id="main-text-color">
+        Here's a rundown of the various statuses of your checkoff and of the rules of the game!</br></br>
+        </div>
+        If you pass all checkoffs, you win! (and do not lose any money)</br></br>
+        If you fail one checkoff, you lose!</br></br>
+        On the day of the checkoff, the checkoff will be made "open"</br></br>
+        Your monitors have upto 10 days after the end date to check you off, or else the bet is invalidated</br></br></br>
+
+    </div>
+</div>
     <div id="newbet-page">
         <h2>Make a New Bet</h2>
         <form class="newbet-form" novalidate ng-submit="editSubmit()" >
