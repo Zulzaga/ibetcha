@@ -17,6 +17,7 @@ var milestoneStatus = [
 	'Closed' // bet Drop date passed
 ];
 
+
 //========================== SCHEMA DEFINITION ==========================
 var milestonesSchema = new Schema({
 	date: Date,
