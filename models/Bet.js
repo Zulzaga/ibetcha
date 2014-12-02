@@ -60,6 +60,7 @@ var betSchema = new Schema({
 
 //========================== SCHEMA STATICS ==========================
 
+// Correctly populate nested fields and return the current user's bet
 betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback) {
 	Bet.populateBet([user.bets], {"path":"milestones"}, // populate the milestones
 		Bet.populateBet([user.monitoring], {"path":"author"}, // populate the authors of the bets you're monitoring
@@ -67,6 +68,7 @@ betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback) 
 		,responseCallback);
 };
 
+// Custom populate method for Bet object
 betSchema.statics.populateBet = function(populate, path, callback, responseCallback) {
 	Bet.populate(populate, path, function(err, output) {
 		if(err) {
@@ -78,6 +80,7 @@ betSchema.statics.populateBet = function(populate, path, callback, responseCallb
 	});
 }
 
+// Creates a bet in the database and sends monitor requests for people who were requested
 betSchema.statics.create = function(data, responseCallback){
 	  var callback = callback;
 	  var userId = data.userId;
@@ -116,6 +119,7 @@ betSchema.statics.create = function(data, responseCallback){
 	  });
 }
 
+// Update the user with monitors info
 var saveMonitorsForUser = function(user, monitorRequestArray, callback, responseCallback, userId, betId, newBetId, data) {
 	user.save(function(err, newUser) {
 		if(err) {
@@ -126,6 +130,7 @@ var saveMonitorsForUser = function(user, monitorRequestArray, callback, response
 	});
 }
 
+// Create the MonitorRequest objects from the monitorRequest array and then make/store milestones
 var createMonitorRequestsForMilestones = function(monitorRequestArray, userId, betId, newBetId, data, responseCallback) {
 	MonitorRequest.create(monitorRequestArray, function(err, requests) {
         if (err) {
@@ -137,14 +142,16 @@ var createMonitorRequestsForMilestones = function(monitorRequestArray, userId, b
     });
 }
 
+// Generate MonitorRequest objects array
 var generateMonitorRequestArray = function(userId, betId, monitors) {
 	monitorRequests = [];
-	for (i = 0; i < monitors.length; i++) { //note we start at i=1
+	for (i = 0; i < monitors.length; i++) { 
 		monitorRequests.push(generateSingleMonitorRequest(userId, betId, monitors[i]));
 	}
 	return monitorRequests;
 }
 
+// Given userId, betId, and monitor, return the MonitorRequest object
 var generateSingleMonitorRequest = function(userId, betId, monitor) {
 	return {
 		from: userId,
@@ -181,6 +188,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency) {
 	return milestones_array;
 }
 
+// return the default Inactive milestone object
 var makeDefaultMilestone = function(current_date, betID, userID) {
 	return {
 		date: current_date,
@@ -191,6 +199,7 @@ var makeDefaultMilestone = function(current_date, betID, userID) {
 	};
 }
 
+// Make milestones at the given frequency from the start date to end date
 var makeMilestones = function(num_milestones, days_to_add_to_next_milestone, start_date, default_milestone) {
 	var milestones = [];
 	for (i = 0; i <= num_milestones; i++) { //note we start at i=0
@@ -205,12 +214,6 @@ var makeMilestones = function(num_milestones, days_to_add_to_next_milestone, sta
 var makeMilestoneEndDate = function(add_end_date) {
 	return ((add_end_date) !== 0); 
 }
-
-
-
-
-
-
 
 //transforms the data into JSON format for bet creation
 var make_bet_JSON = function(data, userId){
@@ -254,6 +257,7 @@ var store_all_milestones = function(MilestonesArray, betId, responseCallback) {
 	});
 }
 
+// Goes through milestones and saves them into the bet
 var saveMilestonesIntoBet = function(bet, arguments, responseCallback) {
 	for (var i = 1; i < arguments.length; ++i) {
 		bet.milestones.push(arguments[i]._id);
