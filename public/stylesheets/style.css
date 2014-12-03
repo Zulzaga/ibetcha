@@ -47,7 +47,7 @@ a {
     color: red;
 }
 
-#fail {
+.fail {
   background: #d93434;
   background-image: -webkit-linear-gradient(top, #d93434, #b82b2b);
   background-image: -moz-linear-gradient(top, #d93434, #b82b2b);
@@ -64,7 +64,7 @@ a {
   text-decoration: none;
 }
 
-#fail:hover {
+.fail:hover {
   background: #fc3c56;
   background-image: -webkit-linear-gradient(top, #fc3c56, #d93434);
   background-image: -moz-linear-gradient(top, #fc3c56, #d93434);
@@ -74,7 +74,7 @@ a {
   text-decoration: none;
 }
 
-#check {
+.check {
   background: #00c717;
   background-image: -webkit-linear-gradient(top, #00c717, #16b80d);
   background-image: -moz-linear-gradient(top, #00c717, #16b80d);
@@ -91,7 +91,7 @@ a {
   text-decoration: none;
 }
 
-#check:hover {
+.check:hover {
   background: #5bfa52;
   background-image: -webkit-linear-gradient(top, #5bfa52, #65e33b);
   background-image: -moz-linear-gradient(top, #5bfa52, #65e33b);
