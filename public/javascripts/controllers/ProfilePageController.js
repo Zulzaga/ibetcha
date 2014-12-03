@@ -28,7 +28,6 @@ ibetcha.controller('ProfilePageController',
                     $scope.err = data.err;
                 });
             }
-
         }
 
         // If no session, (no user), redirect back to the login page.
