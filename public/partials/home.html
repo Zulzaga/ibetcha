@@ -34,9 +34,9 @@
                 <div class="bets" ng-if="userInfo.monitoring.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.monitoring">
                         <div class="bet-monitoring-info">
-                            <div class="bet-description">description: {{bet.description}}</div>
-                            <div class="bet-status">status: {{bet.status}}</div>
-                            <div class="bet-author">by: {{bet.author.username}}</div>
+                            <div class="bet-description">Description: {{bet.description}}</div>
+                            <div class="bet-status">Status: {{bet.status}}</div>
+                            <div class="bet-author">By: {{bet.author.username}}</div>
                             <div class="bet-detail-link" ng-click="detail(bet._id, 'monitor')"><i class="fa fa-star">Detail</i></div>
                         </div>
                     </div>

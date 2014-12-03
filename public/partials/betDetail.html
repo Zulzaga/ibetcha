@@ -18,6 +18,7 @@
             <div class="bet-amount bet-box">Amount: ${{bet.amount}}</div>
             <div class="bet-monitors bet-box">
                 Monitors:
+                <p ng-if = "monitors.length===0">None</p>
                 <p ng-repeat = "monitor in monitors">
                     <a href="#/profile/{{monitor.username}}">{{monitor.username}}</a>
                 </p>
