@@ -54,7 +54,7 @@ var betSchema = new Schema({
 	}]
 });
 
-//================== Helper methods ===============================
+//=========================== HELPERS ===============================
 
 /*
 Check bet data before entering it to the DB
@@ -84,112 +84,6 @@ var validateBetData = function(data){
     return validation;
 }
 
-//========================== SCHEMA STATICS ==========================
-
-// Correctly populate nested fields and return the current user's bet
-betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback, res) {
-	Bet.populateBet([user.bets], {"path":"milestones"}, // populate the milestones
-		Bet.populateBet([user.monitoring], {"path":"author"}, // populate the authors of the bets you're monitoring
-			MonitorRequest.populateMonitorRequest({ to: userId }, 'to from bet', user, responseCallback, res)) // populate the monitors
-		, responseCallback, res);
-};
-
-// Custom populate method for Bet object
-betSchema.statics.populateBet = function(populate, path, callback, responseCallback, res) {
-	Bet.populate(populate, path, function(err, output) {
-		if (err) {
-			responseCallback(true, 500, "There was an error", res);
-		} else {
-			populate[0] = output;
-			callback;
-		}
-	});
-}
-
-// Creates a bet in the database and sends monitor requests for people who were requested
-betSchema.statics.create = function(data, responseCallback, res){
-	if (data.test){
-		//add three dummy monitors
-		data.monitors = [mongoose.Types.ObjectId(),mongoose.Types.ObjectId(),mongoose.Types.ObjectId()];
-	}
-	var validation = validateBetData(data);
-	if (validation !== "valid"){
-    	responseCallback(true, 500, validation, res);
-    } else {
-		var userId = data.userId;
-		var bet_data_extractor = make_bet_JSON(data, userId);
-		var betJSON = bet_data_extractor[0];
-		var endDate = bet_data_extractor[1];
-		var dropDate = bet_data_extractor[2];
-		var newBet = new Bet(betJSON);	  
-
-		newBet.save(function(err, bet){
-		    if (err){
-		      responseCallback(true, 500, err, res);
-		    }
-		    else{
-
-		        mongoose.model('User').findById(userId, function (err, user) {
-		            if (err){
-		                responseCallback(true, 401, 'There was an error!', res);
-		            } else if (user === null){
-		                responseCallback(true, 500, 'No user found!', res);
-		            } else {
-		            	var betId = bet._id;
-		                user.bets.push(betId);
-		                var monitors = data.monitors || [];
-				        var monitorRequestArray = generateMonitorRequestArray(userId, betId, monitors);
-
-				        saveMonitorsForUser(user, monitorRequestArray, createMonitorRequestsForMilestones, responseCallback, 
-				        	                userId, betId, data, res); // extra params for the callback function
-		            }
-		        });
-		    }
-		});
-	}
-}
-
-// Update the user with monitors info
-var saveMonitorsForUser = function(user, monitorRequestArray, callback, responseCallback, userId, betId, data, res) {
-	user.save(function(err, newUser) {
-		if (err) {
-			responseCallback(true, 500, 'There was an error!', res);
-		} else {
-			callback(monitorRequestArray, userId, betId, data, responseCallback, res);
-		}
-	});
-}
-
-// Create the MonitorRequest objects from the monitorRequest array and then make/store milestones
-var createMonitorRequestsForMilestones = function(monitorRequestArray, userId, betId, data, responseCallback, res) {
-	MonitorRequest.create(monitorRequestArray, function(err, requests) {
-        if (err) {
-            callback(true, 500,'There was an error', res);
-        } else {
-            var milestones_JSONs = generate_milestones(userId, betId, data.startDate, data.endDate, data.frequency);
-            store_all_milestones(milestones_JSONs, betId, responseCallback, res);
-        }
-    });
-}
-
-// Generate MonitorRequest objects array
-var generateMonitorRequestArray = function(userId, betId, monitors) {
-	monitorRequests = [];
-	for (i = 0; i < monitors.length; i++) { 
-		monitorRequests.push(generateSingleMonitorRequest(userId, betId, monitors[i]));
-	}
-	return monitorRequests;
-}
-
-// Given userId, betId, and monitor, return the MonitorRequest object
-var generateSingleMonitorRequest = function(userId, betId, monitor) {
-	return {
-		from: userId,
-		to: monitor,
-		bet: betId
-	};
-}
-//========================== HELPERS ==========================
 /*
 Handle the logic of generating milestone JSONs (note that this does not save the milestones)
 */
@@ -301,6 +195,112 @@ var saveMilestonesIntoBet = function(bet, arguments, responseCallback, res) {
 			responseCallback(false, 200, bet, res);
 		}
 	});
+}
+
+//========================== SCHEMA STATICS ==========================
+
+// Correctly populate nested fields and return the current user's bet
+betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback, res) {
+	Bet.populateBet([user.bets], {"path":"milestones"}, // populate the milestones
+		Bet.populateBet([user.monitoring], {"path":"author"}, // populate the authors of the bets you're monitoring
+			MonitorRequest.populateMonitorRequest({ to: userId }, 'to from bet', user, responseCallback, res)) // populate the monitors
+		, responseCallback, res);
+};
+
+// Custom populate method for Bet object
+betSchema.statics.populateBet = function(populate, path, callback, responseCallback, res) {
+	Bet.populate(populate, path, function(err, output) {
+		if (err) {
+			responseCallback(true, 500, "There was an error", res);
+		} else {
+			populate[0] = output;
+			callback;
+		}
+	});
+}
+
+// Creates a bet in the database and sends monitor requests for people who were requested
+betSchema.statics.create = function(data, responseCallback, res){
+	if (data.test){
+		//add three dummy monitors
+		data.monitors = [mongoose.Types.ObjectId(),mongoose.Types.ObjectId(),mongoose.Types.ObjectId()];
+	}
+	var validation = validateBetData(data);
+	if (validation !== "valid"){
+    	responseCallback(true, 500, validation, res);
+    } else {
+		var userId = data.userId;
+		var bet_data_extractor = make_bet_JSON(data, userId);
+		var betJSON = bet_data_extractor[0];
+		var endDate = bet_data_extractor[1];
+		var dropDate = bet_data_extractor[2];
+		var newBet = new Bet(betJSON);	  
+
+		newBet.save(function(err, bet){
+		    if (err){
+		      responseCallback(true, 500, err, res);
+		    }
+		    else{
+
+		        mongoose.model('User').findById(userId, function (err, user) {
+		            if (err){
+		                responseCallback(true, 401, 'There was an error!', res);
+		            } else if (user === null){
+		                responseCallback(true, 500, 'No user found!', res);
+		            } else {
+		            	var betId = bet._id;
+		                user.bets.push(betId);
+		                var monitors = data.monitors || [];
+				        var monitorRequestArray = generateMonitorRequestArray(userId, betId, monitors);
+
+				        saveMonitorsForUser(user, monitorRequestArray, createMonitorRequestsForMilestones, responseCallback, 
+				        	                userId, betId, data, res); // extra params for the callback function
+		            }
+		        });
+		    }
+		});
+	}
+}
+
+// Update the user with monitors info
+var saveMonitorsForUser = function(user, monitorRequestArray, callback, responseCallback, userId, betId, data, res) {
+	user.save(function(err, newUser) {
+		if (err) {
+			responseCallback(true, 500, 'There was an error!', res);
+		} else {
+			callback(monitorRequestArray, userId, betId, data, responseCallback, res);
+		}
+	});
+}
+
+// Create the MonitorRequest objects from the monitorRequest array and then make/store milestones
+var createMonitorRequestsForMilestones = function(monitorRequestArray, userId, betId, data, responseCallback, res) {
+	MonitorRequest.create(monitorRequestArray, function(err, requests) {
+        if (err) {
+            callback(true, 500,'There was an error', res);
+        } else {
+            var milestones_JSONs = generate_milestones(userId, betId, data.startDate, data.endDate, data.frequency);
+            store_all_milestones(milestones_JSONs, betId, responseCallback, res);
+        }
+    });
+}
+
+// Generate MonitorRequest objects array
+var generateMonitorRequestArray = function(userId, betId, monitors) {
+	monitorRequests = [];
+	for (i = 0; i < monitors.length; i++) { 
+		monitorRequests.push(generateSingleMonitorRequest(userId, betId, monitors[i]));
+	}
+	return monitorRequests;
+}
+
+// Given userId, betId, and monitor, return the MonitorRequest object
+var generateSingleMonitorRequest = function(userId, betId, monitor) {
+	return {
+		from: userId,
+		to: monitor,
+		bet: betId
+	};
 }
 
 //Bindings
