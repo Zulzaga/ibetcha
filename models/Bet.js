@@ -45,9 +45,7 @@ var betSchema = new Schema({
 	},
 	
 	amount:{
-		type:Number,
-		min: 5,
-		max: 100
+		type: Number
 	},
 
 	milestones:[{
@@ -56,7 +54,35 @@ var betSchema = new Schema({
 	}]
 });
 
+//================== Helper methods ===============================
 
+/*
+Check bet data before entering it to the DB
+*/
+var validateBetData = function(data){
+	var validation = "valid";
+
+	if (!data.endDate || !data.startDate || !data.description || !data.frequency || !data.monitors || !data.amount) {
+		validation = "Please fill in all the required fields.";
+	} else if (data.amount < 5) {
+		validation = "Amount should be at least $5."
+	} else if (data.amount > 100){
+		validation = "Amount could be at most $100."
+	} else if (data.monitors.length < 3) {
+		validation = "Please invite at least 3 monitors!";
+	} 
+
+    var result = true;
+    var startDate = (new Date(data.startDate)).valueOf();
+    var endDate = (new Date(data.endDate)).valueOf();
+    var result = (startDate < endDate);
+    var result = ((Math.ceil((endDate-startDate)/MILLIS_IN_A_DAY)) > data.frequency);
+    if (!result) {
+    	validation = "Please make sure that end date, start date and frequency are consistent!";
+    } 
+
+    return validation;
+}
 
 //========================== SCHEMA STATICS ==========================
 
@@ -82,38 +108,40 @@ betSchema.statics.populateBet = function(populate, path, callback, responseCallb
 
 // Creates a bet in the database and sends monitor requests for people who were requested
 betSchema.statics.create = function(data, responseCallback, res){
-	var callback = callback;
-	var userId = data.userId;
+	var validation = validateBetData(data);
+	if (validation !== "valid"){
+    	responseCallback(true, 500, validation, res);
+    } else {
+		var userId = data.userId;
+		var bet_data_extractor = make_bet_JSON(data, userId);
+		var betJSON = bet_data_extractor[0];
+		var endDate = bet_data_extractor[1];
+		var dropDate = bet_data_extractor[2];
+		var newBet = new Bet(betJSON);	  
+		newBet.save(function(err, bet){
+		    if (err){
+		      responseCallback(true, 500, err, res);
+		    }
+		    else{
+		        mongoose.model('User').findById(userId, function (err, user) {
+		            if (err){
+		                responseCallback(true, 401, 'There was an error!', res);
+		            } else if (user === null){
+		                responseCallback(true, 500, 'No user found!', res);
+		            } else {
+		            	var betId = bet._id;
+		                user.bets.push(betId);
+		                var monitors = data.monitors || [];
+				        var monitorRequestArray = generateMonitorRequestArray(userId, betId, monitors);
 
-	var bet_data_extractor = make_bet_JSON(data, userId);
-	var betJSON = bet_data_extractor[0];
-	var endDate = bet_data_extractor[1];
-	var dropDate = bet_data_extractor[2];
-
-	var newBet = new Bet(betJSON);	  
-	newBet.save(function(err, bet){
-	    if (err){
-	      responseCallback(true, 500, err, res);
-	    }
-	    else{
-	        mongoose.model('User').findById(userId, function (err, user) {
-	            if (err){
-	                responseCallback(true, 401, 'There was an error!', res);
-	            } else if (user === null){
-	                responseCallback(true, 500, 'No user found!', res);
-	            } else {
-	            	var betId = bet._id;
-	                user.bets.push(betId);
-	                var monitors = data.monitors || [];
-			        var monitorRequestArray = generateMonitorRequestArray(userId, betId, monitors);
-
-			        saveMonitorsForUser(user, monitorRequestArray, createMonitorRequestsForMilestones, responseCallback, 
-			        	                userId, betId, data, res); // extra params for the callback function
-	            }
-	        });
-	    }
-	});
+				        saveMonitorsForUser(user, monitorRequestArray, createMonitorRequestsForMilestones, responseCallback, 
+				        	                userId, betId, data, res); // extra params for the callback function
+		            }
+		        });
+		    }
+		});
 	}
+}
 
 // Update the user with monitors info
 var saveMonitorsForUser = function(user, monitorRequestArray, callback, responseCallback, userId, betId, data, res) {

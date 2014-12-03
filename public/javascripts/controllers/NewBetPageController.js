@@ -30,26 +30,34 @@ ibetcha.controller('NewBetPageController',
         // Upon success, redirects back to the Home page and upon error,
         // alerts the error with an appropriate message.
         $scope.submit = function(){
-            console.log($scope.editForm);
-            var monitorsArray = [];
-            var monitors = $scope.editForm.monitors;
-            for (i =0; i< monitors.length; i++) {
-                monitorsArray.push(monitors[i]._id);
+            if (!$scope.editForm || !$scope.editForm.monitors) {
+                $scope.err = "Please fill in all the required fields!";
+            } else {
+                var monitorsArray = [];
+                var monitors = $scope.editForm.monitors;
+                for (i =0; i< monitors.length; i++) {
+                    monitorsArray.push(monitors[i]._id);
+                }
+                $scope.editForm.monitors = monitorsArray;
+                console.log($scope.editForm.startDate);
+                $http({
+                    method: "POST",
+                    url: "bets",
+                    data: $scope.editForm,
+                    }).success(function(data, status, headers, config) {
+                        console.log(data.content);
+                        $scope.msg = "Successfully created the bet! Good luck on your resolution! You can do this ;)!";
+                        $location.path('/home');
+                    }).
+                error(function(data, status, headers, config) {
+                    console.log(data.err);
+                    if (!data.err) {
+                        $scope.err = "Please read the instructions again and enter valid details!"
+                    } else {
+                        $scope.err = data.err;
+                    }
+                });
             }
-            $scope.editForm.monitors = monitorsArray;
-            console.log($scope.editForm.startDate );
-            $http({
-                method: "POST",
-                url: "bets",
-                data: $scope.editForm,
-                }).success(function(data, status, headers, config) {
-                    console.log(data.content);
-                    $scope.msg = "Successfully created the bet! Good luck on your resolution! You can do this ;)!";
-                    $location.path('/home');
-                }).
-            error(function(data, status, headers, config) {
-                $scope.err = "Could not create a new bet! Make sure to follow the guidelines!";
-            });
         }
     }
 
