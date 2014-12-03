@@ -8,6 +8,7 @@
 .userInfo-container {
     padding: 30px;
     margin-top: 40px;
+
 }
 
 .bet-cat-title, .request-monitor-title, .request-friend-title {
@@ -16,6 +17,10 @@
     font-size: 24px;
     margin-bottom: 20px;
     margin-top: 20px;
+}
+
+.request-monitor-title, .request-friend-title {
+    font-size: 17px;
 }
 
 .single-bet-container{

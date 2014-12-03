@@ -157,7 +157,6 @@ function getMonitorEmails(monitors){
         emailList.push(monitors[i].email);
     }
     return emailList;
-
 };
 
 module.exports = emailNotifier;
