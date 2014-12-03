@@ -12,7 +12,7 @@
                 <div class="request-monitor-title" ng-click="paymentRequests()">Payment History</div>
             </div>
             <div class="userInfo-box">
-                <div class="bet-cat-title">My Bets</div>
+                <div class="bet-cat-title">Your Bets</div>
                     <!-- Div containing all the semesters for this -->
                 <div class="no-bets" ng-if="userInfo.bets.length == 0">You don't have any bets. Make a new bet.</div>
                 <div class="bets" ng-if="userInfo.bets.length != 0">
@@ -29,7 +29,7 @@
                         </div> -->
                     </div>
                 </div>
-                <div class="bet-cat-title">Monitoring Bets</div>
+                <div class="bet-cat-title">Bets You Monitor</div>
                 <div class="no-bets" ng-if="userInfo.monitoring.length == 0">You don't have any bets to monitor.</div>
                 <div class="bets" ng-if="userInfo.monitoring.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.monitoring">
