@@ -154,9 +154,9 @@ milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, res
 		.findById(milestone_id)
 		.populate('bet author')
 		.exec(function(err, milestone){
-			if (err){
+			if (err) {
 				responseCallback(true, 500, "Cannot retrieve Milestone with provided ID", res);
-			}else{
+			} else{
 				milestone.status = new_status;
 				milestone.save(function(err, savedmilestone){
 					if (err){

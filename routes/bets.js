@@ -20,18 +20,6 @@ var MILLIS_IN_A_DAY = 24*60*60*1000;
 
 //========================      Helpers      =========================
 
-/*
-Check bet data before entering it to the DB
-*/
-var validateBetData = function(data){
-    var result = true;
-    var startDate = (new Date(data.startDate)).valueOf();
-    var endDate = (new Date(data.endDate)).valueOf();
-    var result = (startDate < endDate);
-    var result = ((Math.ceil((endDate-startDate)/MILLIS_IN_A_DAY)) > data.frequency);
-    return result;
-}
-
 // function for ajax response calls
 var ajaxResponse = function(err, code, content, res){
     if (err) {
@@ -48,8 +36,7 @@ router.get('/', isAuthenticated, function(req, res) {
     Bet.find({}).populate('author monitors milestones').exec(function(err, bets){
         if (err){
             utils.sendErrResponse(res, 500, err);
-        }
-        else{
+        } else{
             utils.sendSuccessResponse(res, bets);
         }
     });
@@ -59,12 +46,7 @@ router.get('/', isAuthenticated, function(req, res) {
 router.post('/', function(req, res) {
     var data = req.body;
     data.userId = req.user._id;
-
-    if (validateBetData(data)){
-    		Bet.create(data, ajaxResponse, res);
-    } else {
-    		utils.sendErrResponse(res, 500, "Invalid data for Bet");
-    }
+    Bet.create(data, ajaxResponse, res);
 });
 
 //get one single bet by bet_id
