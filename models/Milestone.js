@@ -85,9 +85,40 @@ milestonesSchema.statics.updatePayments = function(author_id, bet_id, responseCa
 	});
 }
 
+
+//checkoff a user for a particular milestone:
+//* handles logic for the case where the checkoff is a "fail": closes bet and sends payment requests
+//* if checkoff is the last one required, marks the bet as success and notifies user
+milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, responseCallback, res) {
+	Milestone
+		.findById(milestone_id)
+		.populate('bet author')
+		.exec(function(err, milestone){
+			if (err) {
+				responseCallback(true, 500, "Cannot retrieve Milestone with provided ID", res);
+			} else{
+				milestone.status = new_status;
+				milestone.save(function(err, savedmilestone){
+					if (err){
+						responseCallback(true, 500, "Cannot save the milestone", res)
+					} else if (new_status === 'Success'){ // logic for success case
+						handle_success(milestone, responseCallback, res);
+					} else if (new_status==="Failed"){
+						handle_failure(milestone, responseCallback, res);
+					} else{
+						//should never get here, other statuses shouldn't be sent
+						responseCallback(false, 200, savedmilestone, res);
+					}
+				});
+			}
+		});
+}
+
+//=============================== HELPERS ===============================
+
 //handles the case where a successful checkoff is given to a milestone
 //if the bet is the last to receive a checkoff, it also updates the bet status
-milestonesSchema.statics.handle_success = function(milestone, responseCallback, res){
+var handle_success = function(milestone, responseCallback, res){
 	Milestone
 		.find({bet: milestone.bet._id, $or:[{ status:'Pending Action' }, { status:'Inactive' }, {status:'Open'}]})
 		.exec(function(err, milestones){
@@ -114,20 +145,20 @@ milestonesSchema.statics.handle_success = function(milestone, responseCallback, 
 
 //handles the case where a milestone is failed.
 //if there are remaining milestones, it closes those, so no checking off is possible
-milestonesSchema.statics.handle_failure = function(milestone, responseCallback, res){
+var handle_failure = function(milestone, responseCallback, res){
 	Milestone
 		.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
 		.exec(function(err){
 			if (err){
 				responseCallback(true, 500, "Cannot find fraternal milestones", res)
 			}
-			Milestone.handle_failure_helper(milestone, responseCallback, res);
+			handle_failure_helper(milestone, responseCallback, res);
 		});
 }
 
 
 //handles notifying the user and proceeding to make payment objects for monitors and the betcher
-milestonesSchema.statics.handle_failure_helper = function(milestone, responseCallback, res){
+var handle_failure_helper = function(milestone, responseCallback, res){
 	milestone.bet.status = "Failed";
 		milestone.bet.save(function (err){
 			if (err){
@@ -143,35 +174,6 @@ milestonesSchema.statics.handle_failure_helper = function(milestone, responseCal
 				}
 			});
 		});	
-}
-
-
-//checkoff a user for a particular milestone:
-//* handles logic for the case where the checkoff is a "fail": closes bet and sends payment requests
-//* if checkoff is the last one required, marks the bet as success and notifies user
-milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, responseCallback, res) {
-	Milestone
-		.findById(milestone_id)
-		.populate('bet author')
-		.exec(function(err, milestone){
-			if (err) {
-				responseCallback(true, 500, "Cannot retrieve Milestone with provided ID", res);
-			} else{
-				milestone.status = new_status;
-				milestone.save(function(err, savedmilestone){
-					if (err){
-						responseCallback(true, 500, "Cannot save the milestone", res)
-					} else if (new_status === 'Success'){ // logic for success case
-						Milestone.handle_success(milestone, responseCallback, res);
-					} else if (new_status==="Failed"){
-						Milestone.handle_failure(milestone, responseCallback, res);
-					} else{
-						//should never get here, other statuses shouldn't be sent
-						responseCallback(false, 200, savedmilestone, res);
-					}
-				});
-			}
-		});
 }
 
 //Bindings
