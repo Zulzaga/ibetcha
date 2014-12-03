@@ -21,6 +21,8 @@ ibetcha.controller('ProfilePageController',
                     url: "users/" + $routeParams.username,
                     }).success(function(data, status, headers, config) {
                         $scope.userInfo = data.content;
+                        $scope.notMyFriend = notMyFriend();
+
                     }).
                 error(function(data, status, headers, config) {
                     $scope.err = data.err;
@@ -41,7 +43,8 @@ ibetcha.controller('ProfilePageController',
         	console.log("showing detail!", type);	        	
         	$location.path('/bets/' + id + '/' + type);
         } 
-        $scope.notMyFriend = function(userInfo){
+        var notMyFriend = function(){
+            var userInfo = $scope.userInfo;
             var l = userInfo.friends.length;
             for (var i = 0; i< l; i++){
                 if ($scope.currentUser===userInfo.friends[i].username){

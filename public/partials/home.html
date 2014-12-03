@@ -13,7 +13,7 @@
             </div>
             <div class="userInfo-box">
                 <div class="bet-cat-title">Your Bets</div>
-                    <!-- Div containing all the semesters for this -->
+                <!-- Div containing all the bets of the user -->
                 <div class="no-bets" ng-if="userInfo.bets.length == 0">You don't have any bets. Make a new bet.</div>
                 <div class="bets" ng-if="userInfo.bets.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.bets">
@@ -24,9 +24,6 @@
                             <div class="bet-monitors">Monitors: {{bet.monitors.length}}</div>
                             <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
                         </div>
-<!--                         <div class="bet-monitoring" ng-repeat="">
-                            <div class="bet-milestone-monitors">monitors: {{milestone.monitors}}</div>
-                        </div> -->
                     </div>
                 </div>
                 <div class="bet-cat-title">Bets You Monitor</div>

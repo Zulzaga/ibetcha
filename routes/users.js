@@ -107,10 +107,10 @@ router.post('/emailinvite', function(req, res) {
         body: "Please go the following link to signup to Ibetcha:" + "<br><br>" + "http://ibetcha-mit.herokuapp.com/#/login",
         subject: "Ibetcha Invite from Your Friend!",
         text: "You have been invited by your friend to join ibetcha.",
-        receiver: req.body.friendName
+        receiver: ""
     };
 
-    emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
+    emailNotifier.sendNotification(null, [req.body.friendEmail], res, msg);
 });
 
 module.exports = router;
