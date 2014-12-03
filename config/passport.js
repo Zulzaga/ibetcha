@@ -4,7 +4,6 @@ var User = require('../models/User');
 
 var localLogin = require('./passport/localLogin');
 var localSignup = require('./passport/localSignup');
-var venmo = require('./passport/venmo');
 
 module.exports = function(passport) {
     // serialize sessions
@@ -18,5 +17,4 @@ module.exports = function(passport) {
 
     passport.use('login', localLogin);
     passport.use('signup', localSignup);
-    passport.use(venmo);
 }
