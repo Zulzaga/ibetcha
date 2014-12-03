@@ -57,13 +57,13 @@
     overflow-y: auto;
 }
 
-.request-monitor-title, .request-friend-title{
+.request-monitor-title, .request-friend-title {
     color: steelBlue;
     text-decoration: underline;
     padding-right: 50px;
     display: inline-block;
     font-weight: 700;
-    font-size: 10px;
+    font-size: 30px;
     margin-bottom: 20px;
     margin-top: 20px;
     cursor: pointer;
