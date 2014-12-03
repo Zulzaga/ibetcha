@@ -28,15 +28,6 @@ var formatUser = function (user) {
     };
 }
 
-// Helper that formats the friend information for sending info
-// to the client-side.
-var formatFriend = function(friend) {
-    return {
-        username: friend.username,
-        _id: friend._id
-    }
-}
-
 // function for ajax response calls
 var ajaxResponse = function(err, code, content, res){
     if (err) {

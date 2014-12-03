@@ -97,7 +97,7 @@ userSchema.statics.findAllFriends = function(username, formatFriend, responseCal
 
 userSchema.statics.getUserInfo = function(userId, responseCallback, res) {
 	return User.findById(userId).populate('bets monitoring').exec(function(err, user) {
-		if(err) {
+		if (err) {
 			responseCallback(true, 500, "There was an error", res);
 		} else if (user !== null) {
 			mongoose.model('Bet').getCurrentUserBets(user, userId, responseCallback, res);
@@ -109,7 +109,7 @@ userSchema.statics.getUserInfo = function(userId, responseCallback, res) {
 
 // find a user by ID
 userSchema.statics.findByUsername = function(username, formatUser, responseCallback, res) {
-	return User.findOne({ "username": username }, function (err, user) {
+	return User.findOne({ "username": username }).populate('bets').exec(function (err, user) {
         if (err){
             responseCallback(true, 500, 'There was an error!', res);
         } else if (user === null){

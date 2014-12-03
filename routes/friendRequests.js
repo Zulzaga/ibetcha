@@ -113,7 +113,7 @@ router.post('/:requestId/accept', isAuthenticated, function(req, res) {
                     }
                 }), function(err, code, content){
                     if (err) {
-                        utils.sendErrResponse(res, code, content);      
+                        utils.sendErrResponse(res, code, content);     
                     }
                     else{
                         utils.sendSuccessResponse(res, content);
