@@ -10,12 +10,21 @@ var ObjectId = require('mongoose').Types.ObjectId;
 //linking collections and utils 
 var utils = require('../utils/utils')
 //var changeStatus = require('../utils/changeStatus');c
-var MoneyRecord = require('../models/MoneyRecord');
+var PaymentRequest = require('../models/PaymentRequest');
 var Bet = require('../models/Bet');
 var MonitorRequest = require('../models/MonitorRequest');
 var Milestone = require('../models/Milestone');
 
+//================== Helper methods ===============================
 
+// function for ajax response calls
+var ajaxResponse = function(err, code, content, res){
+    if (err) {
+        utils.sendErrResponse(res, code, content);
+    } else{
+        utils.sendSuccessResponse(res, content);
+    }
+};
 
 //======================== API route methods =========================
 
@@ -43,14 +52,7 @@ router.put('/:milestone_id', function(req, res) {
 	var new_status = req.body.status; //Success or Failed
 	var test = req.body.test;
 
-	Milestone.checkoff(milestone_id, new_status, test, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else{
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+	Milestone.checkoff(milestone_id, new_status, test, ajaxResponse, res);
 });
 
 module.exports = router;

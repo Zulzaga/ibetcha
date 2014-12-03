@@ -34,7 +34,7 @@ var betSchema = new Schema({
 		ref: 'User'
 	},
 
-	monitors:[{
+	monitors: [{
 		type: ObjectId,
 		ref: 'User'
 	}],
@@ -61,18 +61,18 @@ var betSchema = new Schema({
 //========================== SCHEMA STATICS ==========================
 
 // Correctly populate nested fields and return the current user's bet
-betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback) {
+betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback, res) {
 	Bet.populateBet([user.bets], {"path":"milestones"}, // populate the milestones
 		Bet.populateBet([user.monitoring], {"path":"author"}, // populate the authors of the bets you're monitoring
-			MonitorRequest.populateMonitorRequest({ to: userId }, 'to from bet', user, responseCallback)) // populate the monitors
-		,responseCallback);
+			MonitorRequest.populateMonitorRequest({ to: userId }, 'to from bet', user, responseCallback, res)) // populate the monitors
+		, responseCallback, res);
 };
 
 // Custom populate method for Bet object
-betSchema.statics.populateBet = function(populate, path, callback, responseCallback) {
+betSchema.statics.populateBet = function(populate, path, callback, responseCallback, res) {
 	Bet.populate(populate, path, function(err, output) {
-		if(err) {
-			responseCallback(true, 500, "There was an error");
+		if (err) {
+			responseCallback(true, 500, "There was an error", res);
 		} else {
 			populate[0] = output;
 			callback;
@@ -81,26 +81,26 @@ betSchema.statics.populateBet = function(populate, path, callback, responseCallb
 }
 
 // Creates a bet in the database and sends monitor requests for people who were requested
-betSchema.statics.create = function(data, responseCallback){
-	  var callback = callback;
-	  var userId = data.userId;
+betSchema.statics.create = function(data, responseCallback, res){
+	var callback = callback;
+	var userId = data.userId;
 
-	  var bet_data_extractor = make_bet_JSON(data, userId);
-	  var betJSON = bet_data_extractor[0];
-	  var endDate = bet_data_extractor[1];
-	  var dropDate = bet_data_extractor[2];
+	var bet_data_extractor = make_bet_JSON(data, userId);
+	var betJSON = bet_data_extractor[0];
+	var endDate = bet_data_extractor[1];
+	var dropDate = bet_data_extractor[2];
 
-	  var newBet = new Bet(betJSON);	  
-	  newBet.save(function(err, bet){
+	var newBet = new Bet(betJSON);	  
+	newBet.save(function(err, bet){
 	    if (err){
-	      responseCallback(true, 500, err);
+	      responseCallback(true, 500, err, res);
 	    }
 	    else{
 	        mongoose.model('User').findById(userId, function (err, user) {
 	            if (err){
-	                responseCallback(true, 401, 'There was an error!');
+	                responseCallback(true, 401, 'There was an error!', res);
 	            } else if (user === null){
-	                responseCallback(true, 500, 'No user found!');
+	                responseCallback(true, 500, 'No user found!', res);
 	            } else {
 	            	var betId = bet._id;
 	                user.bets.push(betId);
@@ -108,32 +108,32 @@ betSchema.statics.create = function(data, responseCallback){
 			        var monitorRequestArray = generateMonitorRequestArray(userId, betId, monitors);
 
 			        saveMonitorsForUser(user, monitorRequestArray, createMonitorRequestsForMilestones, responseCallback, 
-			        	                userId, betId, data); // extra params for the callback function
+			        	                userId, betId, data, res); // extra params for the callback function
 	            }
 	        });
 	    }
-	  });
-}
+	});
+	}
 
 // Update the user with monitors info
-var saveMonitorsForUser = function(user, monitorRequestArray, callback, responseCallback, userId, betId, data) {
+var saveMonitorsForUser = function(user, monitorRequestArray, callback, responseCallback, userId, betId, data, res) {
 	user.save(function(err, newUser) {
-		if(err) {
-			responseCallback(true, 500, 'There was an error!');
+		if (err) {
+			responseCallback(true, 500, 'There was an error!', res);
 		} else {
-			callback(monitorRequestArray, userId, betId, data, responseCallback);
+			callback(monitorRequestArray, userId, betId, data, responseCallback, res);
 		}
 	});
 }
 
 // Create the MonitorRequest objects from the monitorRequest array and then make/store milestones
-var createMonitorRequestsForMilestones = function(monitorRequestArray, userId, betId, data, responseCallback) {
+var createMonitorRequestsForMilestones = function(monitorRequestArray, userId, betId, data, responseCallback, res) {
 	MonitorRequest.create(monitorRequestArray, function(err, requests) {
         if (err) {
-            callback(true, 500,'There was an error');
+            callback(true, 500,'There was an error', res);
         } else {
             var milestones_JSONs = generate_milestones(userId, betId, data.startDate, data.endDate, data.frequency);
-            store_all_milestones(milestones_JSONs, betId, responseCallback);
+            store_all_milestones(milestones_JSONs, betId, responseCallback, res);
         }
     });
 }
@@ -175,7 +175,7 @@ function generate_milestones(userID, betID, startDate, endDate, frequency) {
 	milestones_array = makeMilestones(num_milestones, days_to_add_to_next_milestone, start_date, betID, userID);
 
 	//edge case for end date
-	if(makeMilestOnEndDate(add_end_date)) {
+	if (makeMilestOnEndDate(add_end_date)) {
 		var end_date_milestone = makeOneMilestone(end_date, betID, userID);
 		milestones_array.push(end_date_milestone);
 	}
@@ -237,33 +237,34 @@ var make_bet_JSON = function(data, userId){
 /*
 Insert milestones into the bets
 */
-var store_all_milestones = function(MilestonesArray, betId, responseCallback) {
+var store_all_milestones = function(MilestonesArray, betId, responseCallback, res) {
 	Bet.findOne({
 		_id: betId
 	}, function(err, bet) {
 		if (err) {
-			responseCallback(true, 500, err);
+			responseCallback(true, 500, err, res);
 		}
 		Milestone.create(MilestonesArray, function(err) {
 			if (err) {
-				responseCallback(true, 500, "Cannot post milestones to database")
+				responseCallback(true, 500, "Cannot post milestones to database", res)
 			} else {
-				saveMilestonesIntoBet(bet, arguments, responseCallback);
+				saveMilestonesIntoBet(bet, arguments, responseCallback, res);
 			}
 		});
 	});
 }
 
 // Goes through milestones and saves them into the bet
-var saveMilestonesIntoBet = function(bet, arguments, responseCallback) {
+var saveMilestonesIntoBet = function(bet, arguments, responseCallback, res) {
 	for (var i = 1; i < arguments.length; ++i) {
 		bet.milestones.push(arguments[i]._id);
 	}
+	
 	bet.save(function(err) {
 		if (err) {
-			responseCallback(true, 500, "Cannot post milestones to database");
+			responseCallback(true, 500, "Cannot post milestones to database", res);
 		} else {
-			responseCallback(false, 200, bet);
+			responseCallback(false, 200, bet, res);
 		}
 	});
 }

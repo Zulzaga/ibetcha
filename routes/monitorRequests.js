@@ -12,20 +12,24 @@ var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var isAuthenticated = utils.isAuthenticated; 
 
+//================== Helper methods ===============================
+
+// function for ajax response calls
+var ajaxResponse = function(err, code, content, res){
+    if (err) {
+        utils.sendErrResponse(res, code, content);
+    } else{
+        utils.sendSuccessResponse(res, content);
+    }
+};
+
 //======================== API route methods =========================
 
 //============================GET METHODS:============================
 
 // Gets all monitor requests current user received.
 router.get('/', isAuthenticated, function(req, res) {
-    MonitorRequest.getCurrentUserRequests(req, function(err, code, content){
-         if (err) {
-             utils.sendErrResponse(res, code, content);      
-         }
-         else{
-             utils.sendSuccessResponse(res, content);
-         }
-    });
+    MonitorRequest.getCurrentUserRequests(req, ajaxResponse, res);
 });
 
 //============================POST METHODS:============================
@@ -38,13 +42,7 @@ router.post('/', isAuthenticated, function(req, res) {
 
     var requestTo = req.body.to;
     var betId = req.body.bet;
-    MonitorRequest.create({ from: req.user._id, to: requestTo, bet: betId}, function(err, request) {
-        if (err) {
-            utils.sendErrResponse(res, 500, 'There was an error');
-        } else {
-            utils.sendSuccessResponse(res, request);
-        }
-    })
+    MonitorRequest.create({ from: req.user._id, to: requestTo, bet: betId}, ajaxResponse, res)
 });
 
 // Accepts a monitor request.
@@ -52,28 +50,13 @@ router.post('/', isAuthenticated, function(req, res) {
 // Adds the bet to the user's monitoring list and deletes the monitor request.
 router.post('/:requestId/accept', isAuthenticated, function(req, res) {
     var requestId = req.params.requestId;
-    MonitorRequest.acceptRequest(req, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else{
-            utils.sendSuccessResponse(res, content);
-        }
-    });
-
+    MonitorRequest.acceptRequest(req, ajaxResponse, res);
 });
 
 // Rejects a monitor request. Deletes the request with the given id.
 router.post('/:requestId/reject', isAuthenticated, function(req, res) {
     var requestId = req.params.requestId;
-    MonitorRequest.deleteRequest(req, requestId, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else{
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    MonitorRequest.deleteRequest(req, requestId, ajaxResponse, res);
 });
 
 module.exports = router;

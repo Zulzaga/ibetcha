@@ -74,7 +74,7 @@ ibetcha.controller('NavbarController',
                     method: "GET",
                     url: "users/" + $scope.text,
                     }).success(function(data, status, headers, config) {
-                        var user = data.content.user;
+                        var user = data.content;
                         $location.path("/profile/" + user.username);
                     }).
                 error(function(data, status, headers, config) {

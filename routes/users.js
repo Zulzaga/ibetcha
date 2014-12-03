@@ -10,11 +10,10 @@ var Bet = require('../models/Bet');
 var Milestone = require('../models/Milestone');
 var FriendRequest = require('../models/FriendRequest');
 var MonitorRequest = require('../models/MonitorRequest');
-var MoneyRecord = require('../models/MoneyRecord');
+var PaymentRequest = require('../models/PaymentRequest');
 var isAuthenticated = utils.isAuthenticated;
 
 //================== Helper methods ===============================
-
 
 // Helper that formats the user information for sending user info
 // to the client-side.
@@ -39,12 +38,10 @@ var formatFriend = function(friend) {
 }
 
 // function for ajax response calls
-// NOT USED RIGHT NOW
 var ajaxResponse = function(err, code, content, res){
     if (err) {
         utils.sendErrResponse(res, code, content);
-    }
-    else{
+    } else{
         utils.sendSuccessResponse(res, content);
     }
 };
@@ -57,50 +54,22 @@ var ajaxResponse = function(err, code, content, res){
 // For testing purposes, shows all information about the users and will be
 // deleted for the final implementation.
 router.get('/', function(req, res) {
-    User.fetchAllUsers(function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else{
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.fetchAllUsers(ajaxResponse, res);
 });
 
 // Gets the currently logged in user information.
 router.get('/current', isAuthenticated, function(req, res) {
-    User.getUserInfo(req.user._id, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else {
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.getUserInfo(req.user._id, ajaxResponse, res);
 });
 
 // Gets all the payments that the current user owes other people
 router.get('/payments', isAuthenticated, function(req, res) {
-    User.fetchAllPayments(req.user, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else {
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.fetchAllPayments(req.user, ajaxResponse, res);
 }); 
 
 // Finds the friends of the given user.
 router.get('/friends/:username', function(req, res) {
-    User.findAllFriends(req.params.username, formatFriend, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else {
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.findAllFriends(req.params.username, formatFriend, ajaxResponse, res);
 });
 
 // Logs out the user
@@ -115,42 +84,21 @@ router.get('/logout', function(req, res) {
 
 // Finds the user by username.
 router.get('/:username', isAuthenticated, function(req, res) {
-    User.findByUsername(req.params.username, formatUser, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else {
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.findByUsername(req.params.username, formatUser, ajaxResponse, res);
 });
 
 //============================POST METHODS===========================
 
 // Creates a new user.
 router.post('/new', function(req, res, next) {
-    User.signup(req, res, next, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else {
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.signup(req, res, next, ajaxResponse);
 });
 
 // Logs in a user.
 // If wrong password/username combination, responds back with an appropriate
 // message.
 router.post('/login', function(req, res, next) {
-    User.login(req, res, next, function(err, code, content){
-        if (err) {
-            utils.sendErrResponse(res, code, content);      
-        }
-        else {
-            utils.sendSuccessResponse(res, content);
-        }
-    });
+    User.login(req, res, next, formatUser, ajaxResponse);
 });
 
 // Sends email invites.
@@ -161,7 +109,7 @@ router.post('/emailinvite', function(req, res) {
       text: "You have been invited by your friend to join ibetcha.",
       receiver: req.body.friendName
     };
-    
+
     emailNotifier.sendNotification(req.user, [req.body.friendEmail], res, msg);
 });
 
