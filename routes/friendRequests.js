@@ -83,8 +83,7 @@ router.post('/byUsername', isAuthenticated, function(req, res) {
                 FriendRequest.sendFriendRequest(requestReceiver, req, function(err, code, content){
                     if (err) {
                         utils.sendErrResponse(res, code, content);      
-                    }
-                    else{
+                    } else{
                         utils.sendSuccessResponse(res, content);
                     }
                 });
