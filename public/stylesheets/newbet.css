@@ -23,7 +23,7 @@
 }
 
 #newbet-instruction, #newbet-rules{
-	background-color: #E0EBFF;
+	background-color: #F6ECD1;
 	padding: 15px;
 	border-radius: 25px;
 	display: inline-block;
@@ -37,6 +37,8 @@
 	margin-bottom: 10px;
 	margin-right: 20px;
 	margin-left: 20px;
+	border-color: #F0E0B2;
+	box-shadow:5px 5px 5px #888888;
 }
 
 #newbet-rules{
