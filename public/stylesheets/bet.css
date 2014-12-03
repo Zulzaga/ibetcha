@@ -71,7 +71,8 @@
     display: inline-block;
     background-color: #F5F5F5;
     padding: 20px;
-    border-radius: 2px;
+    border-radius: 10px;
+
 }
 
 .bets {
