@@ -46,7 +46,8 @@ a {
     width: 300px;
     color: red;
 }
-.fail {
+
+#fail {
   background: #d93434;
   background-image: -webkit-linear-gradient(top, #d93434, #b82b2b);
   background-image: -moz-linear-gradient(top, #d93434, #b82b2b);
@@ -63,7 +64,7 @@ a {
   text-decoration: none;
 }
 
-.fail:hover {
+#fail:hover {
   background: #fc3c56;
   background-image: -webkit-linear-gradient(top, #fc3c56, #d93434);
   background-image: -moz-linear-gradient(top, #fc3c56, #d93434);
