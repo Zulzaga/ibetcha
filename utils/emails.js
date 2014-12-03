@@ -26,7 +26,7 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
             to: emailTo, // list of receivers
             subject: msg.subject, // Subject line
             text: msg.text, // plaintext body
-            html: "Hi " + msg.receiver /*user.venmo.name*/+ "," + "<br><br>" + msg.body /*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
+            html: "Hi " + msg.receiver+ "," + "<br><br>" + msg.body + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
         };    
     } 
     else{
@@ -35,7 +35,7 @@ emailNotifier.sendNotification = function (user, emailTo, res, msg){
                 to: emailTo, // list of receivers
                 subject: msg.subject, // Subject line
                 text: msg.text, // plaintext body
-                html: "Hi " + msg.receiver /*user.venmo.name*/+ "," + "<br><br>" + msg.body /*user.venmo.id*/ + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
+                html: "Hi " + msg.receiver + "," + "<br><br>" + msg.body + "<br><br>" + "Best," + "<br><br>" + "ibetcha Team" // html body
             };
     }
     transmitEmail(mailOptions, res);   
