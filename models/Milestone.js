@@ -170,6 +170,7 @@ var handle_failure_helper = function(milestone, responseCallback, res){
 				if (err) {
 					responseCallback(true, 500, err, res);
 				} else {
+					emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Failed");
 					Milestone.updatePayments(milestone.author._id, milestone.bet._id, responseCallback, res);
 				}
 			});
