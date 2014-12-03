@@ -19,14 +19,24 @@ var friendRequestSchema = new Schema({
 
 //============================ SCHEMA STATICS ============================
 
-/*Creates a friend request form a user to another */
-friendRequestSchema.statics.create = function(from, to, responseCallback1) {
-    var newRequest = new FriendRequest({
-        'from': from,
-        'to': to
-    });
+/* Checks if the two users are already friends and if not, creates a friend request from a user to another */
+friendRequestSchema.statics.create = function(from, to, responseCallback) {    
+    if (to.friends && to.friends.indexOf(from._id) == -1) {
+        var newRequest = new FriendRequest({
+            'from': from._id,
+            'to': to._id
+        });
 
-    newRequest.save(responseCallback1);
+        newRequest.save(function(err, request) {
+            if (err) {
+                responseCallback(true, 500, 'There was an error');
+            } else {
+                responseCallback(false, 200, request);
+            }
+        });
+    } else {
+        responseCallback(true, 500, "You already have this friend.");
+    }
 }
 
 // Adds one user as another's friend
@@ -55,66 +65,41 @@ friendRequestSchema.statics.friendEachOther = function(userid1, userid2, respons
             responseCallback1, responseCallback2), responseCallback2);
 } 
 
-// Process User A "friend requesting" User B
-friendRequestSchema.statics.sendSingleFriendRequest = function(toId, userId, errMsg1, errMsg2, responseCallback1, responseCallback2) {
-    FriendRequest.findOne({'to': toId, 'from': userId}, function(err, request) {
-        if(err) {
-            responseCallback2(true, 500, errMsg1);
-        } else if(request === null) {
-            responseCallback1;
-        } else {
-            responseCallback2(true, 500, errMsg2);
-        }
-    })
-}
-
-// Create a single friendRequest object for User A and User B 
-friendRequestSchema.statics.createFriendRequest = function(to, userId, responseCallback2) {
-    if (to.friends && to.friends.indexOf(userId) == -1) {
-        FriendRequest.create(userId, to._id, function(err2, request3) {
-            if (err2) {
-                responseCallback2(true, 500, 'There was an error');
-            } else {
-                responseCallback2(false, 200, request3);
-            }
-        });
-    } else {
-        responseCallback2(true, 500, "You already have this friend.");
-    }
-}
-
-
 // Send friendRequest from User A to User B.
 // Simulate friendRequest going to both directions to catch edge cases
 // If everything is fine, create the friendRequest object to be confirmed by User B.
-friendRequestSchema.statics.sendFriendRequest = function(to, req, responseCallback2){
-    var errMsg1 = 'There was an error! Could not get requests.';
-    var errMsg2 = 'Already sent a friend request. Cannot send a request again. Wait for your friend to accept!';
-    var errMsg3 = "You already have this friend.";
-    var errMsg4 = 'There was an error';
-    var errMsg5 = 'The user already sent a friend request to you. Go to your Home Page and click on Friends/FriendRequests page to accept.';
-
-
-    FriendRequest.sendSingleFriendRequest(to._id, req.user._id, errMsg1, errMsg2, // simulate sending friend requests to each other
-        FriendRequest.sendSingleFriendRequest(req.user._id, to._id, errMsg1, errMsg5, 
-         FriendRequest.createFriendRequest(to, req.user._id, responseCallback2),
-         responseCallback2)
-        ,responseCallback2);
-}
-
-/*Delete a friend request*/
-friendRequestSchema.statics.deleteRequest = function(req, requestId, responseCallback1) {
-	FriendRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
-        if (err) {
-           responseCallback1(true, 500, 'There was an error! Could not find request.')
-        } else if (request == null){
-            responseCallback1(true, 500, 'No such request exists!.');
+friendRequestSchema.statics.sendFriendRequest = function(to, req, responseCallback){
+    FriendRequest.findOne({ 'to': to._id, 'from': req.user._id }, function (err1, request1) {
+        if (err1) {
+            responseCallback(true, 500, 'There was an error! Could not get requests.');
+        } else if (request1 === null) {
+            FriendRequest.findOne({ 'from': to._id, 'to': req.user._id }, function (err1, request2) {
+                if (err1) {
+                    responseCallback(true, 500, 'There was an error! Could not get requests.');
+                } else if (request2 === null) {
+                    FriendRequest.create(req.user, to, responseCallback);
+                } else {
+                    responseCallback(true, 500, 'The user already sent a friend request to you. Go to your Home Page and click on Friends/FriendRequests page to accept.');
+                }
+            });
         } else {
-            responseCallback1(false, 200, request);
+            responseCallback(true, 500, 'Already sent a friend request. Cannot send a request again. Wait for your friend to accept!');
         }
     });
 }
 
+/*Delete a friend request*/
+friendRequestSchema.statics.deleteRequest = function(req, requestId, responseCallback) {
+	FriendRequest.findOneAndRemove({ _id: requestId, to: req.user._id }, function (err, request) {
+        if (err) {
+            responseCallback(true, 500, 'There was an error! Could not find request.')
+        } else if (request == null){
+            responseCallback(true, 500, 'No such request exists!.');
+        } else {
+            responseCallback(false, 200, request);
+        }
+    });
+}
 
 //Bindings
 var FriendRequest = mongoose.model('FriendRequest', friendRequestSchema);

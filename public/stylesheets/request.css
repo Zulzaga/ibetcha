@@ -73,3 +73,8 @@
     border: black solid 1px;
     border-radius: 5px;
 }
+
+.inviteErr{
+    color: red;
+    width: 450px;
+}
