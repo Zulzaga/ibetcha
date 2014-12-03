@@ -42,7 +42,13 @@ router.post('/', isAuthenticated, function(req, res) {
 
     var requestTo = req.body.to;
     var betId = req.body.bet;
-    MonitorRequest.create({ from: req.user._id, to: requestTo, bet: betId}, ajaxResponse, res)
+    MonitorRequest.create({ from: req.user._id, to: requestTo, bet: betId}, function(err, request) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error');
+        } else {
+            utils.sendSuccessResponse(res, request);
+        }
+    });
 });
 
 // Accepts a monitor request.
