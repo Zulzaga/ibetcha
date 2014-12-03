@@ -87,7 +87,7 @@ milestonesSchema.statics.updatePayments = function(author_id, bet_id, responseCa
 
 //handles the case where a successful checkoff is given to a milestone
 //if the bet is the last to receive a checkoff, it also updates the bet status
-milestonesSchema.statics.handle_success = function(milestone, responseCallback){
+milestonesSchema.statics.handle_success = function(milestone, responseCallback, res){
 	Milestone
 		.find({bet: milestone.bet._id, $or:[{ status:'Pending Action' }, { status:'Inactive' }, {status:'Open'}]})
 		.exec(function(err, milestones){
@@ -114,7 +114,7 @@ milestonesSchema.statics.handle_success = function(milestone, responseCallback){
 
 //handles the case where a milestone is failed.
 //if there are remaining milestones, it closes those, so no checking off is possible
-milestonesSchema.statics.handle_failure = function(milestone, responseCallback){
+milestonesSchema.statics.handle_failure = function(milestone, responseCallback, res){
 	Milestone
 		.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
 		.exec(function(err){
@@ -149,7 +149,7 @@ milestonesSchema.statics.handle_failure_helper = function(milestone, responseCal
 //checkoff a user for a particular milestone:
 //* handles logic for the case where the checkoff is a "fail": closes bet and sends payment requests
 //* if checkoff is the last one required, marks the bet as success and notifies user
-milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, responseCallback) {
+milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, responseCallback, res) {
 	Milestone
 		.findById(milestone_id)
 		.populate('bet author')

@@ -83,7 +83,7 @@ $.ajax({
     success: function(data, textStatus, jqXHR) { 
       bet_id = data.content._id;  
       QUnitTesting("Create new Bet: success message", data.success);
-      QUnitTesting("Create new Bet: two milestones", data.content.milestones.length===3);
+      QUnitTesting("Create new Bet: three milestones", data.content.milestones.length===3);
       singleMilestoneId = data.content.milestones[0];
 
     },
