@@ -5,7 +5,7 @@ var mongoose = require("mongoose"),
 	passport = require('passport');
 
 var Bet = require("./Bet");
-var MoneyRecord = require("./MoneyRecord");
+var PaymentRequest = require("./PaymentRequest");
 
 //========================== SCHEMA DEFINITION ==========================
 var userSchema = new Schema({
@@ -58,86 +58,86 @@ userSchema.statics.create = function(username, password, email, callback) {
 }
 
 //find all users
-userSchema.statics.fetchAllUsers = function(cb) {
+userSchema.statics.fetchAllUsers = function(responseCallback, res) {
 	return User.find({}, function(err, users) {
 		if(err) {
-			cb(true, 500, 'There was an error');
+			responseCallback(true, 500, 'There was an error', res);
 		} else {
-			cb(false, 200, users);
+			responseCallback(false, 200, users, res);
 		}
 	});
 }
 
 //find all payments for a particular user
-userSchema.statics.fetchAllPayments = function(user, cb) {
+userSchema.statics.fetchAllPayments = function(user, responseCallback, res) {
 	return User.findById(user._id, function(err, user){
         if (err) {
-            cb(true, 500, 'There was an error');
+            responseCallback(true, 500, 'There was an error', res);
         } else if (user === null) {
-            cb(true, 401, 'No such user found!');
+            responseCallback(true, 401, 'No such user found!', res);
         } else {
-        	MoneyRecord.getUserPayments(user._id, cb);
+        	PaymentRequest.getUserPayments(user._id, responseCallback, res);
         }
     });
 }
 
 //find all friends for a user
-userSchema.statics.findAllFriends = function(username, formatFriend, cb) {
+userSchema.statics.findAllFriends = function(username, formatFriend, responseCallback, res) {
 	return User.findOne({username:username})
         .populate("friends")
         .exec(function(error, user) {
-            if(error) {
+            if (error) {
             	console.log(error);
-                cb(true, 500, error);
+                responseCallback(true, 500, error, res);
             } else if(user) {
-                cb(false, 200, user.friends.map(formatFriend));
+                responseCallback(false, 200, user.friends.map(formatFriend), res);
             }
         });
 }
 
-userSchema.statics.getUserInfo = function(userId, cb) {
+userSchema.statics.getUserInfo = function(userId, responseCallback, res) {
 	return User.findById(userId).populate('bets monitoring').exec(function(err, user) {
 		if(err) {
-			cb( true, 500, "There was an error");
+			responseCallback(true, 500, "There was an error", res);
 		} else if (user !== null) {
-			mongoose.model('Bet').getCurrentUserBets(user, userId, cb);
+			mongoose.model('Bet').getCurrentUserBets(user, userId, responseCallback, res);
 		} else {
-			cb( true, 500, "No user logged in.");
+			responseCallback(true, 500, "No user logged in.", res);
 		}
 	});
 }
 
 // find a user by ID
-userSchema.statics.findByUsername = function(username, formatUser, cb) {
+userSchema.statics.findByUsername = function(username, formatUser, responseCallback, res) {
 	return User.findOne({ "username": username }, function (err, user) {
         if (err){
-            cb(true, 500, 'There was an error!');
+            responseCallback(true, 500, 'There was an error!', res);
         } else if (user === null){
-            cb(true, 401, 'No such user found!');
+            responseCallback(true, 401, 'No such user found!', res);
         } else {
-            cb(false, 200, formatUser(user));
+            responseCallback(false, 200, formatUser(user), res);
         }
     });
 }
 
 // signup a new user
-userSchema.statics.signup = function(req, res, next, cb) {
+userSchema.statics.signup = function(req, res, next, responseCallback) {
 	if (!req.body.password || !req.body.username || !req.body.email) {
-        cb(true, 401, 'Missing Credentials. Username, password and/or email cannot be empty.');
+        responseCallback(true, 401, 'Missing Credentials. Username, password and/or email cannot be empty.', res);
     } else if (req.user) {
-        cb(true, 401, 'User already logged in!');
+        responseCallback(true, 401, 'User already logged in!', res);
     } else {
         passport.authenticate('signup', function(err, newUser, info){
             if (err) {
-                cb(true, 500, 'There was an error!');
+                responseCallback(true, 500, 'There was an error!', res);
             } else if (!newUser){
-                cb(true, 500, info);
+                responseCallback(true, 500, info, res);
             } else {
                 req.logIn(newUser, function(err) {
                   if (err) { 
-                        cb(res, 500, 'There was an error!');
+                        responseCallback(res, 500, 'There was an error!', res);
                   } else {
-                        cb(false, 200, newUser);
+                        responseCallback(false, 200, newUser, res);
                   }
                 }); 
             }
@@ -146,24 +146,24 @@ userSchema.statics.signup = function(req, res, next, cb) {
 }
 
 // login a user
-userSchema.statics.login = function(req, res, next, cb) {
+userSchema.statics.login = function(req, res, next, formatUser, responseCallback) {
 	if (!req.body.password || !req.body.username) {
-        cb(true, 401, 'Missing Credentials. Username and/or password cannot be empty.');
+        responseCallback(true, 401, 'Missing Credentials. Username and/or password cannot be empty.', res);
     } else if (req.user) {
-        cb(true, 401, 'User already logged in!');
+        responseCallback(true, 401, 'User already logged in!', res);
     } else {
     	// authenticate the user info using passport 
         passport.authenticate('login', function(err, newUser, info){
             if (err) {
-                cb(true, 500, 'There was an error!');
+                responseCallback(true, 500, 'There was an error!', res);
             } else if (!newUser){
-                cb(true, 401, "Wrong username and password combination!");
+                responseCallback(true, 401, "Wrong username and password combination!", res);
             } else {
                 req.logIn(newUser, function(err) {
                     if (err) { 
-                        cb(true, 500, 'There was an error!');
+                        responseCallback(true, 500, 'There was an error!', res);
                     } else {
-                        cb(false, 200, newUser);
+                        responseCallback(false, 200, formatUser(newUser), res);
                     }
                 }); 
             }

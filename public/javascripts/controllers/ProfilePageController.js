@@ -19,7 +19,7 @@ ibetcha.controller('ProfilePageController',
                     method: "GET",
                     url: "users/" + $routeParams.username,
                     }).success(function(data, status, headers, config) {
-                        $scope.userInfo = data.content.user;
+                        $scope.userInfo = data.content;
                     }).
                 error(function(data, status, headers, config) {
                     $scope.err = data.err;

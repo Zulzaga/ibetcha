@@ -13,6 +13,17 @@ var MonitorRequest = require('../models/MonitorRequest');
 var FriendRequest = require('../models/FriendRequest');
 var isAuthenticated = utils.isAuthenticated;
 
+//================== Helper methods ===============================
+
+// function for ajax response calls
+var ajaxResponse = function(err, code, content, res){
+    if (err) {
+        utils.sendErrResponse(res, code, content);
+    } else{
+        utils.sendSuccessResponse(res, content);
+    }
+};
+
 //======================== API route methods =========================
 
 //============================GET METHODS:============================
@@ -77,7 +88,6 @@ router.post('/byUsername', isAuthenticated, function(req, res) {
                         utils.sendSuccessResponse(res, content);
                     }
                 });
-                //sendFriendRequest(requestReceiver, req, res);
             }
         });
     }

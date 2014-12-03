@@ -3,7 +3,7 @@ var mongoose = require("mongoose"),
 	Schema = mongoose.Schema;
 var MonitorRequest = require('./MonitorRequest');
 var Milestone = require('./Milestone');
-var MoneyRecord = require('./MoneyRecord');
+var PaymentRequest = require('./PaymentRequest');
 var Bet = require('./Bet');
 var emailNotifier = require('../utils/emails');
 
@@ -38,24 +38,24 @@ var milestonesSchema = new Schema({
 
 //========================== SCHEMA STATICS ==========================
 // find all pending milestones whose bets are open
-milestonesSchema.statics.findPending = function(bet_id, callback) {
+milestonesSchema.statics.findPending = function(bet_id, responseCallback, res) {
   	this.find({ bet: bet_id, $or:[{ status: 'Pending Action'}, { status: 'Open' }]})
        .populate('author monitors')
        .sort({date:-1})
        .exec(function(error, milestones) {
           	if (error) {
-            	callback(true, 500, error);
+            	responseCallback(true, 500, error, res);
           	} else {
-            	callback(false, 200, milestones);
+            	responseCallback(false, 200, milestones, res);
           	}
 		});
 }
 
 // update the payment
-milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) {
+milestonesSchema.statics.updatePayments = function(author_id, bet_id, responseCallback, res) {
 	mongoose.model('Bet').findById(bet_id, function(err, bet) {
    		if (err) {
-			callback(true, 500, 'An error occurred while looking up the bet');
+			responseCallback(true, 500, 'An error occurred while looking up the bet', res);
 		} else if (bet) {
 			var amount = bet.amount / bet.monitors.length;
 			var recordRequests = [];
@@ -72,76 +72,74 @@ milestonesSchema.statics.updatePayments = function(author_id, bet_id, callback) 
 			}
 
 			//insert them into the DB
-			MoneyRecord.create(recordRequests, function(err, records) {
+			PaymentRequest.create(recordRequests, function(err, records) {
 				if (err) {
-					callback(true, 500, "Cannot create the payment records");
+					responseCallback(true, 500, "Cannot create the payment records", res);
 				} else {
-					callback(false, 200, records);
+					responseCallback(false, 200, records, res);
 				}
 			});
 		} else {
-			callback(true, 500, 'There is no such bet like that');
+			responseCallback(true, 500, 'There is no such bet like that', res);
 		}
 	});
 }
 
-
-
 //handles the case where a successful checkoff is given to a milestone
 //if the bet is the last to receive a checkoff, it also updates the bet status
-milestonesSchema.statics.handle_success = function(milestone, callback){
+milestonesSchema.statics.handle_success = function(milestone, responseCallback){
 	Milestone
 		.find({bet: milestone.bet._id, $or:[{ status:'Pending Action' }, { status:'Inactive' }, {status:'Open'}]})
 		.exec(function(err, milestones){
 			if (err){
-				callback(true, 500, "Cannot find fraternal milestones")
+				responseCallback(true, 500, "Cannot find fraternal milestones", res)
 			}
 			if (milestones.length === 0){ //means all other milestones got checked
 				milestone.bet.status = "Succeeded";
 				milestone.bet.save(function(err){
 					if (err){
-						callback(true, 500, "could not update bet status");
+						responseCallback(true, 500, "could not update bet status", res);
 					}
 					// send email to author
 					emailNotifier.sendEmailAuthor(milestone.author, milestone.bet._id, "Succeeded");
-					callback(false, 200, milestone);
+					responseCallback(false, 200, milestone, res);
 				})
 			}
 			else{
 				// user received checkoff but bet still ongoing
-				callback(false, 200, milestone);
+				responseCallback(false, 200, milestone, res);
 			}
 		});
 }
 
 //handles the case where a milestone is failed.
 //if there are remaining milestones, it closes those, so no checking off is possible
-milestonesSchema.statics.handle_failure = function(milestone, callback){
+milestonesSchema.statics.handle_failure = function(milestone, responseCallback){
 	Milestone
 		.update({bet: milestone.bet._id, $or:[{status:'Pending Action'}, {status:'Inactive'}, {status:'Open'}]}, {$set:{status:'Closed'}}, {multi:true})
 		.exec(function(err){
-			if(err){
-				callback(true, 500, "Cannot find fraternal milestones")
+			if (err){
+				responseCallback(true, 500, "Cannot find fraternal milestones", res)
 			}
-			Milestone.handle_failure_helper(milestone, callback);
+			Milestone.handle_failure_helper(milestone, responseCallback, res);
 		});
 }
 
 
 //handles notifying the user and proceeding to make payment objects for monitors and the betcher
-milestonesSchema.statics.handle_failure_helper = function(milestone,callback){
+milestonesSchema.statics.handle_failure_helper = function(milestone, responseCallback, res){
 	milestone.bet.status = "Failed";
 		milestone.bet.save(function (err){
 			if (err){
-				callback(true, 500, err);
+				responseCallback(true, 500, err, res);
 			}
 			
 			// UPDATE PAYMENT STUFF, notify author
 			MonitorRequest.remove({ "bet": milestone.bet._id }, function(err, requests) {
 				if (err) {
-					callback(true, 500, err);
+					responseCallback(true, 500, err, res);
 				} else {
-					Milestone.updatePayments(milestone.author._id, milestone.bet._id, callback);
+					Milestone.updatePayments(milestone.author._id, milestone.bet._id, responseCallback, res);
 				}
 			});
 		});	
@@ -151,28 +149,25 @@ milestonesSchema.statics.handle_failure_helper = function(milestone,callback){
 //checkoff a user for a particular milestone:
 //* handles logic for the case where the checkoff is a "fail": closes bet and sends payment requests
 //* if checkoff is the last one required, marks the bet as success and notifies user
-milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, callback) {
+milestonesSchema.statics.checkoff = function(milestone_id, new_status, test, responseCallback) {
 	Milestone
 		.findById(milestone_id)
 		.populate('bet author')
 		.exec(function(err, milestone){
 			if (err){
-				callback(true,500, "Cannot retrieve Milestone with provided ID");
+				responseCallback(true, 500, "Cannot retrieve Milestone with provided ID", res);
 			}else{
 				milestone.status = new_status;
 				milestone.save(function(err, savedmilestone){
 					if (err){
-						callback(true, 500, "Cannot save the milestone")
-					}
-					if (new_status === 'Success'){ // logic for success case
-						Milestone.handle_success(milestone, callback);
-					}
-					else if (new_status==="Failed"){
-						Milestone.handle_failure(milestone, callback);
-					}
-					else{
+						responseCallback(true, 500, "Cannot save the milestone", res)
+					} else if (new_status === 'Success'){ // logic for success case
+						Milestone.handle_success(milestone, responseCallback, res);
+					} else if (new_status==="Failed"){
+						Milestone.handle_failure(milestone, responseCallback, res);
+					} else{
 						//should never get here, other statuses shouldn't be sent
-						callback(false, 200, savedmilestone);
+						responseCallback(false, 200, savedmilestone, res);
 					}
 				});
 			}
