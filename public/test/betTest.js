@@ -36,14 +36,16 @@
       startDate:start_date,
       endDate:end_date, 
       frequency:frequency, 
-      amount: amount
+      amount: amount,
+      description: "test bet"
     }
     var dummyData2 = { 
       test: true,
       startDate:start_date,
       endDate: tomorrow, 
       frequency:frequencyDaily, 
-      amount: amount
+      amount: amount,
+      description: "test bet"
     }
 
   

@@ -121,7 +121,8 @@ var dummyData = {
     startDate:start_date,
     endDate:end_date, 
     frequency:frequency, 
-    amount: amount
+    amount: amount,
+    description: "test bet"
   }
 
 //Logout

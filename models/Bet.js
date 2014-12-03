@@ -69,7 +69,7 @@ var validateBetData = function(data){
 	} else if (data.amount > 100){
 		validation = "Amount could be at most $100."
 	} else if (data.monitors.length < 3) {
-		validation = "Please invite at least 3 monitors!";
+			validation = "Please invite at least 3 monitors!";
 	} 
 
     var result = true;
@@ -108,6 +108,10 @@ betSchema.statics.populateBet = function(populate, path, callback, responseCallb
 
 // Creates a bet in the database and sends monitor requests for people who were requested
 betSchema.statics.create = function(data, responseCallback, res){
+	if (data.test){
+		//add three dummy monitors
+		data.monitors = [mongoose.Types.ObjectId(),mongoose.Types.ObjectId(),mongoose.Types.ObjectId()];
+	}
 	var validation = validateBetData(data);
 	if (validation !== "valid"){
     	responseCallback(true, 500, validation, res);
@@ -118,11 +122,13 @@ betSchema.statics.create = function(data, responseCallback, res){
 		var endDate = bet_data_extractor[1];
 		var dropDate = bet_data_extractor[2];
 		var newBet = new Bet(betJSON);	  
+
 		newBet.save(function(err, bet){
 		    if (err){
 		      responseCallback(true, 500, err, res);
 		    }
 		    else{
+
 		        mongoose.model('User').findById(userId, function (err, user) {
 		            if (err){
 		                responseCallback(true, 401, 'There was an error!', res);
@@ -245,8 +251,8 @@ var make_bet_JSON = function(data, userId){
 	var status = "Not Started";
 	var endDate = new Date(data.endDate);
 	var dropDate = new Date(endDate.valueOf()+10*MILLIS_IN_A_DAY);
+	var monitors = [];
 	//window of 10 days after bet ends to check off
-
 	var betJSON = {
 		author: userId,
 		startDate: data.startDate,

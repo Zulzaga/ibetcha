@@ -7,6 +7,7 @@ ibetcha.controller('ProfilePageController',
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
         $scope.currentUser = $cookieStore.get('user');
+
         
 
         // Helper function for loading the page.
@@ -20,12 +21,12 @@ ibetcha.controller('ProfilePageController',
                     url: "users/" + $routeParams.username,
                     }).success(function(data, status, headers, config) {
                         $scope.userInfo = data.content;
-                        console.log($scope.userInfo.bets);
                     }).
                 error(function(data, status, headers, config) {
                     $scope.err = data.err;
                 });
             }
+
         }
 
         // If no session, (no user), redirect back to the login page.
@@ -39,6 +40,32 @@ ibetcha.controller('ProfilePageController',
         $scope.detail = function(id, type){
         	console.log("showing detail!", type);	        	
         	$location.path('/bets/' + id + '/' + type);
-        }      
+        } 
+        $scope.notMyFriend = function(userInfo){
+            var l = userInfo.friends.length;
+            for (var i = 0; i< l; i++){
+                if ($scope.currentUser===userInfo.friends[i].username){
+                    return false;
+                }
+            }
+            return true;
+        }
+        $scope.sendRequest = function(username){
+            $http({
+                method: "POST",
+                url: "friendRequests/byUsername",
+                data: { to: username },
+                }).success(function(data, status, headers, config) {
+                    console.log(data.content);
+                    $scope.requestMsg = "Successfully sent a friend request to " + username + "!";
+                    $scope.requestErr = "";
+                }).
+            error(function(data, status, headers, config) {
+                $scope.requestMsg = "";
+                $scope.requestErr = data.err;
+            });
+        } 
+
     }
+
 );
