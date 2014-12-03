@@ -10,7 +10,7 @@ var passport = require('passport');
 var passportConfig = require('./config/passport');
 
 var CronJob = require('cron').CronJob;
-var worker = require('./worker.js');
+var worker = require('./utils/worker.js');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

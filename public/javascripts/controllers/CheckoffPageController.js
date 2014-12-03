@@ -24,11 +24,15 @@ ibetcha.controller('CheckoffPageController',
                         $scope.pending = [];
                     } else {
                         $scope.today = data.content[0];
-                        $scope.today.date = data.content[0].date.substring(0,10);
+                        $scope.todayDate = (new Date(data.content[0].date)).toDateString();
                         $scope.pending = data.content.slice(1, data.content.length);
+                        var l = $scope.pending.length;
+                        for (var i=0; i<l; i++){
+                           $scope.pending[i].date = (new Date($scope.pending[i].date)).toDateString();
+                        }
                         console.log("today and pending", $scope.today, $scope.pending);
-                        if ($scope.pending && $scope.pending.length >= 1) {
-                            $scope.numpending = $scope.pending.length;
+                        if ($scope.pending && l >= 1) {
+                            $scope.numpending = l;
                         } else {
                             $scope.numpending = 0;
                         }                        

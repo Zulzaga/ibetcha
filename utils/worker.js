@@ -8,10 +8,10 @@ moment().format();
 var router = express.Router();
 
 //linking collections and utils 
-var emailNotifier = require('./utils/emails');
-var User = require('./models/User');
-var Bet = require('./models/Bet');
-var Milestone = require('./models/Milestone');
+var emailNotifier = require('./emails');
+var User = require('../models/User');
+var Bet = require('../models/Bet');
+var Milestone = require('../models/Milestone');
 
 module.exports = {
 	  start: function(){
