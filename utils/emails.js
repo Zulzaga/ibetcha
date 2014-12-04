@@ -1,4 +1,5 @@
 var nodemailer = require('nodemailer');
+var mongoose = require('mongoose');
 var Bet = require('../models/Bet');
 var utils = require('./utils');
 
@@ -127,8 +128,7 @@ emailNotifier.sendEmailAuthor = function(author, bet_id, status){
 //send emails to the list of  monitors for each milestone if no one checked it off
 //monitors - list of JSON objects
 emailNotifier.sendEmailReminder = function(monitors, bet_id, author){
-    Bet
-        .findOne({_id:bet_id})
+    mongoose.model('Bet').findOne({_id:bet_id})
         .populate('monitors')
         .exec(function(err, bet){
             if (err){
