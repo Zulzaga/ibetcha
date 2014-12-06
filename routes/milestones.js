@@ -8,23 +8,15 @@ var router = express.Router();
 var ObjectId = require('mongoose').Types.ObjectId;
 
 //linking collections and utils 
-var utils = require('../utils/utils')
+var utils = require('../utils/utils');
+var ajaxResponse = utils.ajaxResponse;
+
 //var changeStatus = require('../utils/changeStatus');c
 var PaymentRequest = require('../models/PaymentRequest');
 var Bet = require('../models/Bet');
 var MonitorRequest = require('../models/MonitorRequest');
 var Milestone = require('../models/Milestone');
 
-//================== Helper methods ===============================
-
-// function for ajax response calls
-var ajaxResponse = function(err, code, content, res){
-    if (err) {
-        utils.sendErrResponse(res, code, content);
-    } else{
-        utils.sendSuccessResponse(res, content);
-    }
-};
 
 //======================== API route methods =========================
 

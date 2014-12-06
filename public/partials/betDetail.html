@@ -5,7 +5,9 @@
         <div class="err" ng-if="err">{{err}}</div>
         <div class="single-bet-container">
             <div class="bet-title">Bet Detail:</div>
-            <div class="bet-description bet-box"> <p>Description: <br> {{bet.description}}</p>
+            <div class="bet-description bet-box"> 
+                <p>Description: {{bet.description}}</p>
+                <p>By: {{bet.author.username}}</p>
             </div>
             <div class="bet-status bet-box">Status: {{bet.status}}</div>
             <div class ="bet-timing bet-box">
