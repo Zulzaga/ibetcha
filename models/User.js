@@ -100,7 +100,7 @@ userSchema.statics.getUserInfo = function(userId, responseCallback, res) {
 		if (err) {
 			responseCallback(true, 500, "There was an error", res);
 		} else if (user !== null) {
-			mongoose.model('Bet').getCurrentUserBets(user, userId, responseCallback, res);
+			mongoose.model('Bet').getCurrentUserBets(user, responseCallback, res);
 		} else {
 			responseCallback(true, 500, "No user logged in.", res);
 		}

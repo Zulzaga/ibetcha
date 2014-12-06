@@ -200,11 +200,24 @@ var saveMilestonesIntoBet = function(bet, arguments, responseCallback, res) {
 //========================== SCHEMA STATICS ==========================
 
 // Correctly populate nested fields and return the current user's bet
-betSchema.statics.getCurrentUserBets = function(user, userId, responseCallback, res) {
-	Bet.populateBet([user.bets], {"path":"milestones"}, // populate the milestones
-		Bet.populateBet([user.monitoring], {"path":"author"}, // populate the authors of the bets you're monitoring
-			MonitorRequest.populateMonitorRequest({ to: userId }, 'to from bet', user, responseCallback, res)) // populate the monitors
-		, responseCallback, res);
+betSchema.statics.getCurrentUserBets = function(user, responseCallback, res) {
+	// populate the user bets milestones
+	Bet.populate([user.bets], {"path":"milestones"}, function (err, output) {
+		if (err) {
+			responseCallback(true, 500, 'There was an error!', res);
+		} else {
+			user.bets = output;
+			// populate the author of the monitoring bets
+			Bet.populate([user.monitoring], {"path": "author" }, function (err, updatedBets) {
+	            if (err) {
+	                responseCallback(true, 500, 'There was an error!', res);
+	            } else {
+	                user.monitoring = updatedBets;
+	                MonitorRequest.populateMonitorRequest({ to: user._id }, 'to from bet', user, responseCallback, res);
+	            }
+            });
+		}
+	});
 };
 
 // Custom populate method for Bet object
