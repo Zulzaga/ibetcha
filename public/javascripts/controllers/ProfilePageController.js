@@ -21,7 +21,16 @@ ibetcha.controller('ProfilePageController',
                     url: "users/" + $routeParams.username,
                     }).success(function(data, status, headers, config) {
                         $scope.userInfo = data.content;
-                        $scope.notMyFriend = notMyFriend();
+                        $http({
+                            method: "GET",
+                            url: "friendRequests/receivers"
+                        }). success(function(data,status, header, config){
+                            $scope.receivers = data.content;
+                            $scope.displayAddFriend = notSent()&&notMyFriend();
+                        }).
+                            error(function(data, status, headers, config){
+                                $scope.err = data.err;
+                            });
 
                     }).
                 error(function(data, status, headers, config) {
@@ -38,8 +47,7 @@ ibetcha.controller('ProfilePageController',
         }
 
         // When the Detail is clicked, redirects to the bet detail page.
-        $scope.detail = function(id, type){
-        	console.log("showing detail!", type);	        	
+        $scope.detail = function(id, type){        	
         	$location.path('/bets/' + id + '/' + type);
         } 
         var notMyFriend = function(){
@@ -52,15 +60,27 @@ ibetcha.controller('ProfilePageController',
             }
             return true;
         }
+        var notSent = function(){
+        
+            var userInfo = $scope.userInfo;
+            var l = $scope.receivers.length;
+            for (var i = 0; i< l; i++){
+
+                if ($scope.receivers[i].to.username===userInfo.username){
+                    return false;
+                }
+            }
+            return true;
+        }
         $scope.sendRequest = function(username){
             $http({
                 method: "POST",
                 url: "friendRequests/byUsername",
                 data: { to: username },
                 }).success(function(data, status, headers, config) {
-                    console.log(data.content);
                     $scope.requestMsg = "Successfully sent a friend request to " + username + "!";
                     $scope.requestErr = "";
+                    onPageLoad();
                 }).
             error(function(data, status, headers, config) {
                 $scope.requestMsg = "";

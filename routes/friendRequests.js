@@ -39,6 +39,16 @@ router.get('/', isAuthenticated, function(req, res) {
     });
 });
 
+// Gets all monitor requests from current user
+router.get('/receivers', isAuthenticated, function(req, res) {
+    FriendRequest.find({ from: req.user._id }).populate('from to').exec(function (err, requests) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'There was an error! Could not get requests.')
+        } else {
+            utils.sendSuccessResponse(res, requests);
+        }
+    });
+});
 //============================POST METHODS:============================
 
 // Creates a new friend request from the logged in user to the user with given

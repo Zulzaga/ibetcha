@@ -6,7 +6,7 @@
         <div class="userInfo-container">
             <div class="user-username">Welcome to <p class="other-username">{{userInfo.username}}</p>'s Profile
             </div>
-            <div class = "friendUser" ng-if="notMyFriend">
+            <div class = "friendUser" ng-if="displayAddFriend">
                 <button id="submit-button" ng-click="sendRequest(userInfo.username)" class="btn btn-primary" > Add friend</button>
             </div>
             <div class="userInfo-box">
