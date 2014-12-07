@@ -69,8 +69,8 @@
                     </div>
                 </div>
 
-                <div class="my-bet-cat-title">Action Required</div>
-                <div class="my-no-bets" ng-if="userInfo.bets.actionRequired.length == 0">You don't have any action required bets.</div>
+                <div class="my-bet-cat-title">Ongoing</div>
+                <div class="my-no-bets" ng-if="userInfo.bets.actionRequired.length == 0">You don't have any ongoing bets.</div>
                 <div class="my-bets" ng-if="userInfo.bets.actionRequired.length != 0">
                     <div class="single-bet" ng-repeat="bet in userInfo.bets.actionRequired">
                         <div class="bet-info">
