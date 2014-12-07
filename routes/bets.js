@@ -34,11 +34,7 @@ var ajaxResponse = function(err, code, content, res){
 // Gets the bets of the currently logged in user.
 router.get('/', isAuthenticated, function(req, res) {
     Bet.find({}).populate('author monitors milestones').exec(function(err, bets){
-        if (err){
-            utils.sendErrResponse(res, 500, err);
-        } else{
-            utils.sendSuccessResponse(res, bets);
-        }
+        ajaxResponse(err, 500, bets, res);
     });
 });
 
@@ -53,11 +49,7 @@ router.post('/', function(req, res) {
 router.get('/:bet_id', function(req, res) {
     var bet_id = req.params.bet_id;
     Bet.findOne({ _id: bet_id }).populate('author monitors milestones').exec(function(err, bet){
-        if (err) {
-            utils.sendErrResponse(res, 500, err);
-        } else {
-            utils.sendSuccessResponse(res, bet);
-        }
+        ajaxResponse(err, 500, bet, res);
     });
 });
 
