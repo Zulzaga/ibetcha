@@ -5,7 +5,7 @@ ibetcha.controller('NewBetPageController',
     function($scope, $http, $location, $cookieStore) {
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
-        $scope.searchUsername = "";
+        
 
         // Helper function that helps load the page.
         var onPageLoad = function() {
