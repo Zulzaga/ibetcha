@@ -1,5 +1,5 @@
 #bet-container {
-    min-height: 900px;
+    min-height: 1200px;
     background: white;
     margin-left: 120px;
     padding: 20px;
@@ -19,7 +19,14 @@
     margin-top: 20px;
 }
 
-
+.my-bet-cat-title {
+    height: 30px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: steelBlue;
+}
 .single-bet-container{
     margin-top: 110px;
     top :300px;
@@ -48,7 +55,7 @@
     display: inline-block;
 }
 
-.no-bets, .no-requests{
+.no-bets, .no-requests, .my-no-bets{
     font-weight: 700;
     font-size: 20px;   
     color: steelBlue;
@@ -63,6 +70,20 @@
 .bets, .no-bets {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 20px;
+    width: 1100px;
+}
+
+.my-bets {
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    width: 1100px;
+}
+
+.my-no-bets {
+    font-size: 14px; 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    width: 1100px;
+    padding-bottom: 20px;
 }
 
 .single-bet {
@@ -76,8 +97,7 @@
 
 }
 
-.bets {
-    width: 1000px;
+.bets, .my-bets {
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;

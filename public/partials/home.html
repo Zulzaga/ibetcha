@@ -14,9 +14,10 @@
             <div class="userInfo-box">
                 <div class="bet-cat-title">Your Bets</div>
                 <!-- Div containing all the bets of the user -->
-                <div class="no-bets" ng-if="userInfo.bets.length == 0">You don't have any bets. Make a new bet.</div>
-                <div class="bets" ng-if="userInfo.bets.length != 0">
-                    <div class="single-bet" ng-repeat="bet in userInfo.bets">
+                <div class="my-bet-cat-title">Failed</div>
+                <div class="my-no-bets" ng-if="userInfo.bets.failed.length == 0">You don't have any failed bets.</div>
+                <div class="my-bets" ng-if="userInfo.bets.failed.length != 0">
+                    <div class="single-bet" ng-repeat="bet in userInfo.bets.failed">
                         <div class="bet-info">
                             <div class="bet-description">Description: {{bet.description}}</div>
                             <div class="bet-status">Status: {{bet.status}}</div>
@@ -26,6 +27,62 @@
                         </div>
                     </div>
                 </div>
+                <div class="my-bet-cat-title">Dropped</div>
+                <div class="my-no-bets" ng-if="userInfo.bets.dropped.length == 0">You don't have any dropped bets.</div>
+                <div class="my-bets" ng-if="userInfo.bets.dropped.length != 0">
+                    <div class="single-bet" ng-repeat="bet in userInfo.bets.dropped">
+                        <div class="bet-info">
+                            <div class="bet-description">Description: {{bet.description}}</div>
+                            <div class="bet-status">Status: {{bet.status}}</div>
+                            <div class="bet-amount">Amount: ${{bet.amount}}</div>
+                            <div class="bet-monitors">Monitors: {{bet.monitors.length}}</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="my-bet-cat-title">Succeeded</div>
+                <div class="my-no-bets" ng-if="userInfo.bets.succeeded.length == 0">You don't have any succeeded bets.</div>
+                <div class="my-bets" ng-if="userInfo.bets.succeeded.length != 0">
+                    <div class="single-bet" ng-repeat="bet in userInfo.bets.succeeded">
+                        <div class="bet-info">
+                            <div class="bet-description">Description: {{bet.description}}</div>
+                            <div class="bet-status">Status: {{bet.status}}</div>
+                            <div class="bet-amount">Amount: ${{bet.amount}}</div>
+                            <div class="bet-monitors">Monitors: {{bet.monitors.length}}</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="my-bet-cat-title">Not Started</div>
+                <div class="my-no-bets" ng-if="userInfo.bets.notstarted.length == 0">You don't have any not started bets.</div>
+                <div class="my-bets" ng-if="userInfo.bets.notStarted.length != 0">
+                    <div class="single-bet" ng-repeat="bet in userInfo.bets.notStarted">
+                        <div class="bet-info">
+                            <div class="bet-description">Description: {{bet.description}}</div>
+                            <div class="bet-status">Status: {{bet.status}}</div>
+                            <div class="bet-amount">Amount: ${{bet.amount}}</div>
+                            <div class="bet-monitors">Monitors: {{bet.monitors.length}}</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="my-bet-cat-title">Action Required</div>
+                <div class="my-no-bets" ng-if="userInfo.bets.actionRequired.length == 0">You don't have any action required bets.</div>
+                <div class="my-bets" ng-if="userInfo.bets.actionRequired.length != 0">
+                    <div class="single-bet" ng-repeat="bet in userInfo.bets.actionRequired">
+                        <div class="bet-info">
+                            <div class="bet-description">Description: {{bet.description}}</div>
+                            <div class="bet-status">Status: {{bet.status}}</div>
+                            <div class="bet-amount">Amount: ${{bet.amount}}</div>
+                            <div class="bet-monitors">Monitors: {{bet.monitors.length}}</div>
+                            <div class="bet-detail-link" ng-click="detail(bet._id, 'user')"><i class="fa fa-star">Detail</i></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bet-cat-title">Bets You Monitor</div>
                 <div class="no-bets" ng-if="userInfo.monitoring.length == 0">You don't have any bets to monitor.</div>
                 <div class="bets" ng-if="userInfo.monitoring.length != 0">

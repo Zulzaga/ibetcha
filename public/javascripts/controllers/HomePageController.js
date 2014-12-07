@@ -15,7 +15,27 @@ ibetcha.controller('HomePageController',
 	            method: "GET",
 	            url: "users/current"
 	            }).success(function(data, status, headers, config) {
-	                $scope.userInfo = data.content.user;
+	                var userInfo = data.content.user;
+                    var categorizedBets = {'failed':[], 'dropped':[], 'notStarted': [], 'succeeded':[], 'actionRequired':[]};
+                    var bets = data.content.user.bets;
+                    console.log('btes', bets);
+                    for (i=0; i< bets.length; i++) {
+                        if (bets[i].status == 'Failed') {
+                            categorizedBets.failed.push(bets[i]);
+                        } else if (bets[i].status == 'Dropped') {
+                            categorizedBets.dropped.push(bets[i]);
+                        } else if (bets[i].status == 'Not Started') {
+                            categorizedBets.notStarted.push(bets[i]);
+                        } else if (bets[i].status == 'Succeeded') {
+                            categorizedBets.succeeded.push(bets[i]);
+                        } else if (bets[i].status == 'Action Required') {
+                            categorizedBets.actionRequired.push(bets[i]);
+                        } 
+                    }
+
+                    userInfo.bets = categorizedBets;
+                    console.log(userInfo.bets, 'd');
+                    $scope.userInfo = userInfo;
 	            }).
 	        error(function(data, status, headers, config) {
 	            $scope.err = data.err;
