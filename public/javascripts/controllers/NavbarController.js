@@ -7,6 +7,7 @@ ibetcha.controller('NavbarController',
         $http.defaults.headers.post["Content-Type"] = "application/json";
         $scope.loggedIn = $cookieStore.get('session');
         $scope.user = $cookieStore.get('user');
+        $scope.searchUsername = null;
 
         // Helper function that helps load the page.
         var onPageLoad = function() {
@@ -67,18 +68,27 @@ ibetcha.controller('NavbarController',
         // When the Payment Requests is clicked, redirects to the Payment Requests page.
         $scope.search = function() {
             // get current user infos from the server.
-            if ($scope.text == $scope.user) {
+            if ($scope.searchUsername == $scope.user) {
                 $location.path("/home");
             } else {
-                $http({
-                    method: "GET",
-                    url: "users/" + $scope.text,
-                    }).success(function(data, status, headers, config) {
-                        $location.path("/profile/" + data.content.username);
-                    }).
-                error(function(data, status, headers, config) {
-                    $scope.searchErr = data.err;
-                });
+                console.log($scope.searchUsername);
+                $scope.searchUsername = sanitizeTextInput(validator.toString($scope.searchUsername));
+                if($scope.searchUsername) {
+                    $http({
+                        method: "GET",
+                        url: "users/" + $scope.searchUsername,
+                        }).success(function(data, status, headers, config) {
+                            $location.path("/profile/" + data.content.username);
+                        }).
+                    error(function(data, status, headers, config) {
+                        $scope.searchErr = data.err;
+                        $scope.searchUsername = "";
+                    });
+                } else {
+                    $scope.searchErr = "Please enter a valid username";
+                    $scope.searchUsername = "";
+                }
+                
             }
         }  
 

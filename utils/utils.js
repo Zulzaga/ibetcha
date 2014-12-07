@@ -1,7 +1,9 @@
 // to use: just add to routes file: var utils = require('../utils/utils')
 //note: .. is to go 1 level down
 
+
 var utils = {};
+var validator = require('validator');
 
 // Send a 200 SUCCESS code with success:true in the request body to the response argument
 // provided. The caller of this function should return after calling.
@@ -51,5 +53,6 @@ utils.ajaxResponse = function(err, code, content, res){
         utils.sendSuccessResponse(res, content);
     }
 };
+
 
 module.exports = utils;
