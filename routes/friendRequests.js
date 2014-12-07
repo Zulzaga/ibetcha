@@ -12,17 +12,8 @@ var Milestone = require('../models/Milestone');
 var MonitorRequest = require('../models/MonitorRequest');
 var FriendRequest = require('../models/FriendRequest');
 var isAuthenticated = utils.isAuthenticated;
+var ajaxResponse = utils.ajaxResponse;
 
-//================== Helper methods ===============================
-
-// function for ajax response calls
-var ajaxResponse = function(err, code, content, res){
-    if (err) {
-        utils.sendErrResponse(res, code, content);
-    } else{
-        utils.sendSuccessResponse(res, content);
-    }
-};
 
 //======================== API route methods =========================
 

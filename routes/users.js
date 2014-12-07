@@ -12,6 +12,7 @@ var FriendRequest = require('../models/FriendRequest');
 var MonitorRequest = require('../models/MonitorRequest');
 var PaymentRequest = require('../models/PaymentRequest');
 var isAuthenticated = utils.isAuthenticated;
+var ajaxResponse = utils.ajaxResponse;
 
 //================== Helper methods ===============================
 
@@ -37,14 +38,6 @@ var formatFriend = function(friend) {
     }
 }
 
-// function for ajax response calls
-var ajaxResponse = function(err, code, content, res){
-    if (err) {
-        utils.sendErrResponse(res, code, content);
-    } else{
-        utils.sendSuccessResponse(res, content);
-    }
-};
 
 //======================== API route methods =========================
 

@@ -43,4 +43,13 @@ utils.isAuthenticated = function (req, res, next) {
     utils.sendErrResponse(res, 401, "User is not logged in!");
 };
 
+// function for ajax response calls
+utils.ajaxResponse = function(err, code, content, res){
+    if (err) {
+        utils.sendErrResponse(res, code, content);
+    } else{
+        utils.sendSuccessResponse(res, content);
+    }
+};
+
 module.exports = utils;
